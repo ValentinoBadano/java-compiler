@@ -1,0 +1,1 @@
+java-compiler es un compilador para el lenguaje de programación Java escrito enteramente en Java. Este proyecto implementa un compilador completo que consta de cuatro etapas principales: análisis léxico, análisis sintáctico, análisis semántico y generación de código.
