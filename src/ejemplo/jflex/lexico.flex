@@ -52,17 +52,11 @@ constante_flotante = ([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*)
 
 dupla = \(-*(([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*)),-*(([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*))\)
 
-
 constante_entera = \d+
 
 constante_booleana = true|false
 
 comentario_unilinea = \#.+
-
-comilla = \"
-
-contenido = .
-
 
 %%
 
@@ -117,7 +111,7 @@ contenido = .
 	input_duple   	        {return token("PR_INPUT_DUPLE", yytext());}
 	declare.section         {return token("PR_DECLARE.SECTION", yytext());}
 	enddeclare.section   	{return token("PR_ENDDECLARE.SECTION", yytext());}
-	program.section        {return token("PR_PROGRAM.SECTION", yytext());}
+	program.section         {return token("PR_PROGRAM.SECTION", yytext());}
 	endprogram.section      {return token("PR_ENDPROGRAM.SECTION", yytext());}
     
 
@@ -126,31 +120,27 @@ contenido = .
 	boolean              	{return token("PR_BOOLEAN", yytext());}
 	integer              	{return token("PR_INTEGER", yytext());}
 	float                	{return token("PR_FLOAT", yytext());}
-        duple                  	{return token("PR_DUPLE", yytext());}
+    duple                  	{return token("PR_DUPLE", yytext());}
     
-	{dupla}	{ return token("DUPLE", yytext()); }
-    
-	{constante_entera}	{ return token("INTEGER", Integer.parseInt(yytext())); }
-
+	{dupla}	                { return token("DUPLE", yytext()); }
+	{constante_entera}	    { return token("INTEGER", Integer.parseInt(yytext())); }
 	{constante_flotante}  	{ return token ("FLOAT",Float.parseFloat(yytext())); }
-
-	{constante_booleana}  { return token("BOOLEAN", yytext()); }
-   	 
-        
-
-	{identificador}   	{ return token("IDENTIFICADOR", yytext()); }
+	{constante_booleana}    { return token("BOOLEAN", yytext()); }
+	{identificador}   	    { return token("IDENTIFICADOR", yytext()); }
 
          /* whitespace */
-         {WhiteSpace}                   { /* ignore */ }
+    {WhiteSpace}                   { /* ignore */ }
 
-        {comentario_unilinea}      { /* ignore */ }
+    {comentario_unilinea}      { /* ignore */ }
 
-        {comilla}               {
+     \"                     {   string.setLength(0);
+                                string_yyline = this.yyline;
+                                string_yycolumn = this.yycolumn;
                                 yybegin(STRING);
-                                }
+                            }
 
 
-        "*)"                	{ throw new Error("Comentario no balanceado:");}
+    "*)"                    { throw new Error("Comentario no balanceado:");}
 	"(*"                	{
                             	yybegin(COMMENT_M);
                             	comment_cont++;
@@ -181,17 +171,17 @@ contenido = .
 
             "\""                    {
                                     yybegin(YYINITIAL);
-                                    String stringValor = string.toString();
-                                    string.setLength(0);
-                                    return token("STRING", stringValor);
+                                    return token("STRING_LITERAL",
+                                    string_yyline, string_yycolumn,
+                                    string.toString());
                                     }
 
+          /* Fin de archivo */
+          <<EOF>>              { throw new Error("Fin de archivo dentro de la cadena: \n" +
+                                                 string.toString()); }
 
-            {contenido}             {string.append(yytext());}
-
-         
-
-    	[^]             	{ }
+          /* Cualquier otro carácter */
+          [^]                  { string.append(yytext()); }
 	}
 
 [^]   { throw new Error("Caracter no permitido: <" + yytext() + ">"); }
