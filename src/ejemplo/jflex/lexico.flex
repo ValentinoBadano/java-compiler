@@ -1,9 +1,6 @@
 /* JFlex example: partial Java language lexer specification */
 package ejemplo.jflex;
 
-/**
- * This class is a simple example lexer.
- */
 %%
 
 %public
@@ -95,7 +92,8 @@ comentario_unilinea = \#.+
 	not           	{return token("NOT", yytext());}
    
 
-/*PALABRAS RESERVADAS*/  
+/*PALABRAS RESERVADAS*/
+    fibonacci               {return token("PR_FIBONACCI", yytext());}
 	repeat                	{return token("PR_REPEAT", yytext());}
 	until                   {return token("PR_UNTIL", yytext());}
 	break                 	{return token("PR_BREAK", yytext());}
@@ -157,7 +155,7 @@ comentario_unilinea = \#.+
                                 	yybegin(YYINITIAL);
                             	}
                         	}
-    	{WhiteSpace} { }
+    	[^] { }
 	}
 }
 
