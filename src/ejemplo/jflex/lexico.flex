@@ -153,7 +153,7 @@ comentario_unilinea = \#.+
 <COMMENT_M>
 	{
     	"(*"            	{ comment_cont++;}
-
+        <<EOF>>             { throw new Error("Fin de archivo dentro del comentario"); }
     	"*)"            	{
                             	comment_cont--;
                             	if (comment_cont == 0)
