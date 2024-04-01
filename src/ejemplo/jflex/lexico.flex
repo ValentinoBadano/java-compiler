@@ -45,7 +45,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
 identificador = ([a-zA-Z])\w*
 
-constante_flotante = ([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*)
+constante_flotante = (\d+\.\d*)|(\d*\.\d+)
 
 dupla = \(-*(([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*)),-*(([0]\.[1-9]*)|([0]\ \d+|[1-9]*\.\d*))\)
 
@@ -115,14 +115,17 @@ comentario_unilinea = \#.+
 
     
 /*TIPOS DE DATOS*/
+    {constante_flotante}  	{ return token ("FLOAT",Float.parseFloat(yytext())); }
+    {constante_entera}	    { return token("INTEGER", Integer.parseInt(yytext())); }
+
 	boolean              	{return token("PR_BOOLEAN", yytext());}
 	integer              	{return token("PR_INTEGER", yytext());}
 	float                	{return token("PR_FLOAT", yytext());}
     duple                  	{return token("PR_DUPLE", yytext());}
     
 	{dupla}	                { return token("DUPLE", yytext()); }
-	{constante_entera}	    { return token("INTEGER", Integer.parseInt(yytext())); }
-	{constante_flotante}  	{ return token ("FLOAT",Float.parseFloat(yytext())); }
+
+
 	{constante_booleana}    { return token("BOOLEAN", yytext()); }
 	{identificador}   	    { return token("IDENTIFICADOR", yytext()); }
 
@@ -143,8 +146,11 @@ comentario_unilinea = \#.+
                             	yybegin(COMMENT_M);
                             	comment_cont++;
                         	}
+    [^]   { throw new Error("Caracter no permitido: <" + yytext() + ">"); }
 
-	<COMMENT_M>
+}
+
+<COMMENT_M>
 	{
     	"(*"            	{ comment_cont++;}
 
@@ -157,32 +163,31 @@ comentario_unilinea = \#.+
                         	}
     	[^] { }
 	}
-}
 
-	<STRING>
-	{
-            "\\n"             {string.append("\n");}
-            "\\t"             {string.append("\t");}
-            "\\\\"             {string.append("\\");}
-            "\\\""             {string.append("\"");}
+<STRING>
+    	{
+                "\\n"             {string.append("\n");}
+                "\\t"             {string.append("\t");}
+                "\\\\"             {string.append("\\");}
+                "\\\""             {string.append("\"");}
 
 
-            "\""                    {
-                                    yybegin(YYINITIAL);
-                                    return token("STRING_LITERAL",
-                                    string_yyline, string_yycolumn,
-                                    string.toString());
-                                    }
+                "\""                    {
+                                        yybegin(YYINITIAL);
+                                        return token("STRING_LITERAL",
+                                        string_yyline, string_yycolumn,
+                                        string.toString());
+                                        }
 
-          /* Fin de archivo */
-          <<EOF>>              { throw new Error("Fin de archivo dentro de la cadena: \n" +
-                                                 string.toString()); }
+              /* Fin de archivo */
+              <<EOF>>              { throw new Error("Fin de archivo dentro de la cadena: \n" +
+                                                     string.toString()); }
 
-          /* Cualquier otro carácter */
-          [^]                  { string.append(yytext()); }
-	}
+              /* Cualquier otro carácter */
+              [^]                  { string.append(yytext()); }
+    	}
 
-[^]   { throw new Error("Caracter no permitido: <" + yytext() + ">"); }
+
 
 
 
