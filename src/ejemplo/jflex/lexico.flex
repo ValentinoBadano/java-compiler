@@ -19,7 +19,7 @@ package ejemplo.jflex;
 
     int string_yyline = 0;
     int string_yycolumn = 0;
-    int comment_cont =0;
+    int comment_cont = 0;
 
     StringBuffer string = new StringBuffer();
 
@@ -125,7 +125,6 @@ comentario_unilinea = \#.+
     
 	{dupla}	                { return token("DUPLE", yytext()); }
 
-
 	{constante_booleana}    { return token("BOOLEAN", yytext()); }
 	{identificador}   	    { return token("IDENTIFICADOR", yytext()); }
 
@@ -166,8 +165,9 @@ comentario_unilinea = \#.+
 
 <STRING>
     	{
-                "\\n"             {string.append("\n");}
-                "\\t"             {string.append("\t");}
+                "\\n"              {string.append("\n");}
+                "\\"               {} // ignorar la barra
+                "\\t"              {string.append("\t");}
                 "\\\\"             {string.append("\\");}
                 "\\\""             {string.append("\"");}
 

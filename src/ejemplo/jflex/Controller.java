@@ -15,6 +15,7 @@ public class Controller implements ActionListener {
 
     public void init() {
         view.getCompileButton().addActionListener(this);
+        view.getCleanButton().addActionListener(this);
         view.setVisible(true);
     }
 
@@ -25,7 +26,9 @@ public class Controller implements ActionListener {
                 this.compile();
 
                 break;
+
             case "Borrar":
+                this.clean();
                 break;
         }
     }
@@ -49,5 +52,10 @@ public class Controller implements ActionListener {
         }
 
         view.appendTextOutput("Compilación finalizada con éxito.");
+    }
+
+    public void clean(){
+        view.clearOutput();
+        view.getCodeTextArea().setText("");
     }
 }

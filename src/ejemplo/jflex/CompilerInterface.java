@@ -10,6 +10,7 @@ public class CompilerInterface extends JFrame {
     private JTextArea codeTextArea;
     private JButton compileButton;
     private JTextArea outputTextArea;
+    private JButton cleanButton;
 
     public CompilerInterface() {
         setTitle("Compilador");
@@ -24,6 +25,7 @@ public class CompilerInterface extends JFrame {
 
         // botón de compilación
         compileButton = new JButton("Compilar");
+        cleanButton = new JButton("Borrar");
 
         // área de texto para la salida
         outputTextArea = new JTextArea();
@@ -47,9 +49,14 @@ public class CompilerInterface extends JFrame {
 
         setLayout(new BorderLayout());
         JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel buttonsPanel = new JPanel();
         topPanel.add(new JLabel("Código a compilar:"), BorderLayout.NORTH);
         topPanel.add(codeScrollPane, BorderLayout.CENTER);
-        topPanel.add(compileButton, BorderLayout.SOUTH);
+//        topPanel.add(compileButton, BorderLayout.SOUTH);
+        topPanel.add(cleanButton, BorderLayout.SOUTH);
+        buttonsPanel.add(compileButton);
+        buttonsPanel.add(cleanButton);
+        topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
         add(outputScrollPane, BorderLayout.SOUTH);
     }
@@ -91,5 +98,9 @@ public class CompilerInterface extends JFrame {
 
     public void clearOutput() {
         this.getOutputTextArea().setText("");
+    }
+
+    public JButton getCleanButton(){
+        return cleanButton;
     }
 }
