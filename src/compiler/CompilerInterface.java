@@ -1,4 +1,4 @@
-package ejemplo.jflex;
+package compiler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,8 @@ import java.io.*;
 public class CompilerInterface extends JFrame {
 
     private JTextArea codeTextArea;
-    private JButton compileButton;
+    private JButton lexicButton;
+    private JButton syntacticButton;
     private JTextArea outputTextArea;
     private JButton cleanButton;
 
@@ -24,8 +25,14 @@ public class CompilerInterface extends JFrame {
         JScrollPane codeScrollPane = new JScrollPane(codeTextArea);
 
         // botón de compilación
-        compileButton = new JButton("Compilar");
+        lexicButton = new JButton("Análisis Léxico");
+        this.lexicButton.setActionCommand("lexico");
+
+        // boton de limpiar
         cleanButton = new JButton("Borrar");
+
+        syntacticButton = new JButton("Análisis Sintáctico"); //
+        this.syntacticButton.setActionCommand("syntactic");
 
         // área de texto para la salida
         outputTextArea = new JTextArea();
@@ -54,7 +61,8 @@ public class CompilerInterface extends JFrame {
         topPanel.add(codeScrollPane, BorderLayout.CENTER);
 //        topPanel.add(compileButton, BorderLayout.SOUTH);
         topPanel.add(cleanButton, BorderLayout.SOUTH);
-        buttonsPanel.add(compileButton);
+        buttonsPanel.add(lexicButton);
+        buttonsPanel.add(syntacticButton);
         buttonsPanel.add(cleanButton);
         topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
@@ -84,8 +92,8 @@ public class CompilerInterface extends JFrame {
         return codeTextArea;
     }
 
-    public JButton getCompileButton() {
-        return compileButton;
+    public JButton getLexicButton() {
+        return lexicButton;
     }
 
     public JTextArea getOutputTextArea() {
@@ -102,5 +110,9 @@ public class CompilerInterface extends JFrame {
 
     public JButton getCleanButton(){
         return cleanButton;
+    }
+
+    public JButton getSyntacticButton() {
+        return syntacticButton;
     }
 }

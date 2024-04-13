@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejemplo.jflex;
+package compiler;
+
+import java.util.Arrays;
 
 /**
  *
- * @author itt
+ * @author Merce
  */
-class MiToken{
-    
+class MiToken extends java_cup.runtime.Symbol{
+
     public final String nombre;
     public final int linea;
     public final int columna;
@@ -28,7 +30,8 @@ class MiToken{
         this(nombre, linea, columna, null);
     }
 
-    MiToken (String nombre, int linea, int columna, Object valor){
+    MiToken (String nombre, int linea, int columna, Object valor) {
+        super(Arrays.asList(ParserSym.terminalNames).indexOf(nombre), linea, columna, valor);
         this.nombre = nombre;
         this.valor = valor;
         this.linea = linea;
