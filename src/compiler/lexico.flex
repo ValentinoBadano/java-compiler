@@ -60,8 +60,8 @@ comentario_unilinea = \#.*
 /*OPERADORES ARITMÉTICOS*/
 	"+"            	{ return token("MAS"); }
 	"-"            	{ return token("MENOS");}
-	"*"            	{ return token("MULTIPLICACION");}
-	"/"            	{ return token("DIVISION");}
+	"*"            	{ return token("MULT");}
+	"/"            	{ return token("DIV");}
 
 
 /*OPERADORES DE COMPARACIÓN*/
@@ -101,10 +101,10 @@ comentario_unilinea = \#.*
 	input_float   	        {return token("PR_INPUT_FLOAT");}
 	input_bool   	        {return token("PR_INPUT_BOOL");}
 	input_duple   	        {return token("PR_INPUT_DUPLE");}
-	declare.section         {return token("PR_DECLARE.SECTION");}
-	enddeclare.section   	{return token("PR_ENDDECLARE.SECTION");}
-	program.section         {return token("PR_PROGRAM.SECTION");}
-	endprogram.section      {return token("PR_ENDPROGRAM.SECTION");}
+	declare.section         {return token("PR_DECLARE_SECTION");}
+	enddeclare.section   	{return token("PR_ENDDECLARE_SECTION");}
+	program.section         {return token("PR_PROGRAM_SECTION");}
+	endprogram.section      {return token("PR_ENDPROGRAM_SECTION");}
 
 
 
@@ -116,7 +116,7 @@ comentario_unilinea = \#.*
     duple                  	{return token("PR_DUPLE");}
 
     {constante_flotante}  	{ return token ("FLOAT",Float.parseFloat(yytext())); }
-    {constante_entera}	        { return token("INTEGER", Integer.parseInt(yytext())); }
+    {constante_entera}	        { return token("ENTERO", yytext()); }
     {dupla}	                { return token("DUPLE", yytext()); }
     {constante_booleana}        { return token("BOOLEAN", yytext()); }
     {identificador}   	        { return token("IDENTIFICADOR", yytext()); }

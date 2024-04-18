@@ -39,19 +39,28 @@ public class CompilerInterface extends JFrame {
         outputTextArea.setEditable(false);
         outputTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
         JScrollPane outputScrollPane = new JScrollPane(outputTextArea);
-        outputScrollPane.setPreferredSize(new Dimension(600, 200));
+        outputScrollPane.setPreferredSize(new Dimension(600, 250));
 
         // menú
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Archivo");
+        JMenu helpMenu = new JMenu("Ayuda");
+        JMenu toolsMenu = new JMenu("Herramientas");
+
         JMenuItem loadMenuItem = new JMenuItem("Cargar Archivo");
-        loadMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadFile();
-            }
-        });
+        JMenuItem symbolTableItem = new JMenuItem("Generar tabla de símbolos");
+        JMenuItem instructionsItem = new JMenuItem("Instrucciones");
+
+        instructionsItem.addActionListener(e -> showHelpFile());
+        loadMenuItem.addActionListener(e -> loadFile());
+
         fileMenu.add(loadMenuItem);
+        toolsMenu.add(symbolTableItem);
+        helpMenu.add(instructionsItem);
+
         menuBar.add(fileMenu);
+        menuBar.add(toolsMenu);
+        menuBar.add(helpMenu);
         setJMenuBar(menuBar);
 
         setLayout(new BorderLayout());
@@ -68,6 +77,18 @@ public class CompilerInterface extends JFrame {
         add(topPanel, BorderLayout.CENTER);
         add(outputScrollPane, BorderLayout.SOUTH);
     }
+
+    private void showHelpFile() {
+        try {
+            // Replace "help.html" with the actual file name and path
+            File helpFile = new File("src/help.txt");
+            Desktop.getDesktop().open(helpFile);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al abrir el archivo de ayuda.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
     private void loadFile() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);

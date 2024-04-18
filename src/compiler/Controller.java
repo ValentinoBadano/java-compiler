@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,17 +59,22 @@ public class Controller implements ActionListener {
 
     public void doSyntacticAnalysis() {
         view.clearOutput();
+        List<String> output = new ArrayList<>();
 
         try {
             String code = view.getCodeTextArea().getText();
             MiLexico lexico = new MiLexico(new StringReader(code));
             Parser parser = new Parser(lexico);
             parser.parse();
+            output = parser.action_obj.output;
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        view.appendTextOutput("Análisis sintáctico finalizado con éxito.");
+        for (String line: output
+             ) {
+            view.appendTextOutput(line + "\n");
+        }
     }
 
     public void clean(){

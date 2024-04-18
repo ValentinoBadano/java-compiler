@@ -8,29 +8,107 @@ package compiler;
 /** CUP generated class containing symbol constants. */
 public class ParserSym {
   /* terminals */
-  public static final int MENOS = 3;
-  public static final int MULT = 4;
-  public static final int ENTERO = 10;
-  public static final int MENOS_UNARIO = 8;
-  public static final int PAR_CIERRA = 7;
+  public static final int DISTINTO = 27;
+  public static final int PR_FIBONACCI = 23;
+  public static final int MULT = 32;
+  public static final int C_ABRE = 36;
+  public static final int PR_BREAK = 8;
+  public static final int PR_INPUT_INT = 19;
+  public static final int ENTERO = 46;
+  public static final int PR_INTEGER = 15;
+  public static final int DOS_PUNTOS = 41;
+  public static final int PR_ELSE = 12;
+  public static final int MENOS_UNARIO = 34;
+  public static final int IDENTIFICADOR = 49;
+  public static final int NOT = 44;
+  public static final int AND = 42;
+  public static final int PR_FLOAT = 16;
+  public static final int PR_INPUT_BOOL = 21;
+  public static final int PR_THEN = 11;
+  public static final int OR = 43;
+  public static final int IGUALDAD = 26;
+  public static final int DIV = 33;
+  public static final int C_CIERRA = 37;
+  public static final int PR_BOOLEAN = 14;
+  public static final int BOOLEAN = 48;
+  public static final int DUPLE = 47;
+  public static final int P_CIERRA = 39;
   public static final int EOF = 0;
-  public static final int MAS = 2;
-  public static final int PAR_ABRE = 6;
-  public static final int DIV = 5;
+  public static final int PR_UNLESS = 10;
   public static final int error = 1;
-  public static final int IDENTIFICADOR = 9;
+  public static final int COMA = 40;
+  public static final int PR_INPUT_DUPLE = 22;
+  public static final int PR_SHOW = 18;
+  public static final int MENOS = 31;
+  public static final int MENOR = 24;
+  public static final int PR_CONTINUE = 9;
+  public static final int PR_ENDPROGRAM_SECTION = 3;
+  public static final int ASIGNACION = 35;
+  public static final int MAYOR = 25;
+  public static final int PR_END = 13;
+  public static final int PR_ENDDECLARE_SECTION = 5;
+  public static final int MAYOR_IGUAL = 29;
+  public static final int FLOAT = 45;
+  public static final int PR_PROGRAM_SECTION = 2;
+  public static final int P_ABRE = 38;
+  public static final int PR_INPUT_FLOAT = 20;
+  public static final int MENOR_IGUAL = 28;
+  public static final int PR_UNTIL = 7;
+  public static final int PR_REPEAT = 6;
+  public static final int PR_DECLARE_SECTION = 4;
+  public static final int PR_DUPLE = 17;
+  public static final int MAS = 30;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
+  "PR_PROGRAM_SECTION",
+  "PR_ENDPROGRAM_SECTION",
+  "PR_DECLARE_SECTION",
+  "PR_ENDDECLARE_SECTION",
+  "PR_REPEAT",
+  "PR_UNTIL",
+  "PR_BREAK",
+  "PR_CONTINUE",
+  "PR_UNLESS",
+  "PR_THEN",
+  "PR_ELSE",
+  "PR_END",
+  "PR_BOOLEAN",
+  "PR_INTEGER",
+  "PR_FLOAT",
+  "PR_DUPLE",
+  "PR_SHOW",
+  "PR_INPUT_INT",
+  "PR_INPUT_FLOAT",
+  "PR_INPUT_BOOL",
+  "PR_INPUT_DUPLE",
+  "PR_FIBONACCI",
+  "MENOR",
+  "MAYOR",
+  "IGUALDAD",
+  "DISTINTO",
+  "MENOR_IGUAL",
+  "MAYOR_IGUAL",
   "MAS",
   "MENOS",
   "MULT",
   "DIV",
-  "PAR_ABRE",
-  "PAR_CIERRA",
   "MENOS_UNARIO",
-  "IDENTIFICADOR",
-  "ENTERO"
+  "ASIGNACION",
+  "C_ABRE",
+  "C_CIERRA",
+  "P_ABRE",
+  "P_CIERRA",
+  "COMA",
+  "DOS_PUNTOS",
+  "AND",
+  "OR",
+  "NOT",
+  "FLOAT",
+  "ENTERO",
+  "DUPLE",
+  "BOOLEAN",
+  "IDENTIFICADOR"
   };
 }
 

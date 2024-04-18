@@ -12,6 +12,7 @@ class Parser;
 
 action code {:
     Hashtable table = new Hashtable();
+    List<String> output = new ArrayList<>();
 :};
 
 parser code
@@ -28,68 +29,171 @@ parser code
 
 :};
 
+terminal PR_PROGRAM_SECTION, PR_ENDPROGRAM_SECTION, PR_DECLARE_SECTION, PR_ENDDECLARE_SECTION;
+terminal PR_REPEAT, PR_UNTIL, PR_BREAK, PR_CONTINUE, PR_UNLESS, PR_THEN, PR_ELSE, PR_END;
+terminal PR_BOOLEAN, PR_INTEGER, PR_FLOAT, PR_DUPLE;
+terminal PR_SHOW, PR_INPUT_INT, PR_INPUT_FLOAT, PR_INPUT_BOOL, PR_INPUT_DUPLE, PR_FIBONACCI;
+terminal MENOR, MAYOR, IGUALDAD, DISTINTO, MENOR_IGUAL, MAYOR_IGUAL;
+terminal MAS, MENOS, MULT, DIV, MENOS_UNARIO;
+terminal ASIGNACION, C_ABRE, C_CIERRA, P_ABRE, P_CIERRA, COMA, DOS_PUNTOS;
+terminal AND, OR, NOT;
+terminal String FLOAT, ENTERO, DUPLE, BOOLEAN, IDENTIFICADOR;
 
-terminal MAS, MENOS, MULT, DIV, PAR_ABRE, PAR_CIERRA, MENOS_UNARIO;
-terminal String IDENTIFICADOR, ENTERO;
+nonterminal main, programa, variables, bloque_variables, lista_de_variables, tipo_de_variable, variable;
+nonterminal bloque_sentencias, sentencias, sentencia;
+nonterminal sentenciaREPEAT, sentenciaUNLESS, sentenciaSHOW, sentenciaFIBONACCI;
+nonterminal condicion, expresion_logica, expresion_AND, expresion_simple, comparacion;
+nonterminal asignacion, termino, factor, factor_sin_signo, expresion_booleana;
 
-nonterminal String expression, expr;
+nonterminal String expresion, expr;
 
 precedence left MAS, MENOS;
 precedence left MULT, DIV;
 precedence left MENOS_UNARIO;
+precedence left IGUALDAD, DISTINTO, MENOR_IGUAL, MAYOR_IGUAL, MENOR, MAYOR;
+precedence left OR, AND, NOT;
 
-start with expression;
+start with main;
 
-expression ::= expr:e {:
-            System.out.println("REGLA 0: expression -> expr");
-            System.out.printf("REGLA 0: expression -> %s%n%n", e);
+main ::=    programa:p {:
+                output.add("REGLA 0: main ->  programa ");
+                RESULT = p;
+                :};
+
+programa ::=    PR_PROGRAM_SECTION variables:vs bloque_sentencias:bs PR_ENDPROGRAM_SECTION{:
+                output.add("REGLA 1: programa ->  PROGRAM.SECTION variables sentencias ENDPROGRAM.SECTION");
+                RESULT = "PROGRAM.SECTION" + vs + bs + "ENDPROGRAM.SECTION";
+                :};
+
+variables ::= PR_DECLARE_SECTION bloque_variables:bvs PR_ENDDECLARE_SECTION {:
+                output.add("REGLA 2: variables -> variables ENDDECLARE.SECTION");
+				RESULT = "DECLARE.SECTION" + bvs + "ENDDECLARE.SECTION";
+                :};
+
+bloque_variables ::= tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:ldv  {:
+		        output.add("REGLA 3: bloque_variables->Tipo_de_variable : lista_de_variables");
+		        RESULT = tdv + ":" +  ldv; :};
+
+/* Lista de variables */
+lista_de_variables ::= variable:v {:
+                            // Acciones semánticas
+                        :}
+                      | lista_de_variables:lv COMA variable:v {:
+                            // Acciones semánticas
+                        :};
+
+/* Variable */
+variable ::= IDENTIFICADOR:id {:
+                RESULT = id;
+            :};
+
+/* Sentencias */
+bloque_sentencias ::= sentencia:s {:
+                        // Acciones semánticas
+                    :}
+                    | bloque_sentencias:bs sentencia:s {:
+                        // Acciones semánticas
+                    :};
+
+sentencia ::= sentenciaREPEAT:sr {:
+                    // Acciones semánticas
+               :}
+             | sentenciaUNLESS:su {:
+                    // Acciones semánticas
+               :}
+             | sentenciaSHOW:ss {:
+                    // Acciones semánticas
+               :}
+             | sentenciaFIBONACCI:sf {:
+                    // Acciones semánticas
+               :}
+             | asignacion:a {:
+                    // Acciones semánticas
+               :};
+
+/* Sentencia REPEAT */
+sentenciaREPEAT ::= PR_REPEAT bloque_sentencias:bs PR_UNTIL condicion:c {:
+                        // Acciones semánticas
+                   :};
+
+/* Sentencia UNLESS */
+sentenciaUNLESS ::= PR_UNLESS expresion_booleana:eb PR_THEN bloque_sentencias:bs1 PR_ELSE bloque_sentencias:bs2 PR_END {:
+                        // Acciones semánticas
+                   :};
+
+/* Sentencia SHOW */
+sentenciaSHOW ::= PR_SHOW expresion:e {:
+                        // Acciones semánticas
+                  :};
+
+/* Sentencia FIBONACCI */
+sentenciaFIBONACCI ::= PR_FIBONACCI P_ABRE ENTERO:ent P_CIERRA {:
+                            output.add("Regla XX sentenciaFIBONACCI PR_FIBONACCI P_ABRE ENTERO P_CIERRA");
+                            output.add("Regla XX fibonacci(" + ent + ")");
+                            RESULT = "fibonacci(" + ent + ")";
+                      :};
+
+/* Asignación */
+asignacion ::= IDENTIFICADOR:id ASIGNACION expresion:e {:
+                    // Acciones semánticas
+               :};
+
+expresion ::= expr:e {:
+            output.add("REGLA 0: expresion -> expr");
+            output.add("REGLA 0: expresion -> " + e);
             RESULT = e;
         :};
 
 expr ::= expr:e1 MAS expr:e2 {:
-            System.out.println("REGLA 1.1: expr -> expr MAS expr");
-            System.out.printf("REGLA 1.1: expr -> %s MAS %s%n%n", e1, e2);
+            output.add("REGLA 1.1: expr -> expr MAS expr");
+            output.add(String.format("REGLA 1.1: expr -> %s MAS %s%n%n", e1, e2));
             RESULT = e1+"+"+e2;
         :};
 
 expr ::= expr:e1 MENOS expr:e2 {:
-            System.out.println("REGLA 1.2: expr -> expr MENOS expr");
-            System.out.printf("REGLA 1.2: expr -> %s MENOS %s%n%n", e1, e2);
+            output.add("REGLA 1.2: expr -> expr MENOS expr");
+            output.add(String.format("REGLA 1.2: expr -> %s MENOS %s%n%n", e1, e2));
             RESULT = e1+"-"+e2;
         :};
 
 expr ::= expr:e1 MULT expr:e2 {:
-            System.out.println("REGLA 1.3: expr -> expr MULT expr");
-            System.out.printf("REGLA 1.3: expr -> %s MULT %s%n%n", e1, e2);
+            output.add("REGLA 1.3: expr -> expr MULT expr");
+            output.add(String.format("REGLA 1.3: expr -> %s MULT %s%n%n", e1, e2));
             RESULT = e1+"*"+e2;
         :};
 
 expr ::= expr:e1 DIV expr:e2 {:
-            System.out.println("REGLA 1.4: expr -> expr DIV expr");
-            System.out.printf("REGLA 1.4: expr -> %s DIV %s%n%n", e1, e2);
+            output.add("REGLA 1.4: expr -> expr DIV expr");
+            output.add(String.format("REGLA 1.4: expr -> %s DIV %s%n%n", e1, e2));
             RESULT = e1+"*"+e2;
         :};
 
-expr ::= PAR_ABRE expr:e PAR_CIERRA {:
-            System.out.println("REGLA 1.5: expr -> ( expr )");
-            System.out.printf("REGLA 1.5: expr -> ( %s )%n%n", e);
+expr ::= P_ABRE expr:e P_CIERRA {:
+            output.add("REGLA 1.5: expr -> ( expr )");
+            output.add(String.format("REGLA 1.5: expr -> ( %s )%n%n", e));
             RESULT = "("+e+")";
         :};
 
 expr ::= IDENTIFICADOR:id {:
-            System.out.println("REGLA 1.6: expr -> IDENTIFICADOR");
-            System.out.printf("REGLA 1.6: expr -> %s%n%n", id);
+            output.add("REGLA 1.6: expr -> IDENTIFICADOR");
+            output.add(String.format("REGLA 1.6: expr -> %s%n%n", id));
             RESULT = id;
         :};
 
 expr ::= ENTERO:ent {:
-            System.out.println("REGLA 1.6: expr -> ENTERO");
-            System.out.printf("REGLA 1.6: expr -> %s%n%n", ent);
+            output.add("REGLA 1.6: expr -> ENTERO");
+            output.add(String.format("REGLA 1.6: expr -> %s%n%n", ent));
             RESULT = ent;
         :};
 
 expr ::= MENOS expr:e{:
-            System.out.println("REGLA 1.7: expr -> MENOS expr");
-            System.out.printf("REGLA 1.7: expr -> - %s%n%n", e);
+            output.add("REGLA 1.7: expr -> MENOS expr");
+            output.add(String.format("REGLA 1.7: expr -> - %s%n%n", e));
             RESULT = "-"+e;
         :} %prec MENOS_UNARIO;
+
+tipo_de_variable ::= PR_FLOAT
+                   | PR_INTEGER
+                   | PR_BOOLEAN {:
+                        // Acciones semánticas
+                    :};
