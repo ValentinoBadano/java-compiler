@@ -1200,7 +1200,7 @@ public class MiLexico implements java_cup.runtime.Scanner {
           // fall through
           case 66: break;
           case 6:
-            { return token("MULTIPLICACION");
+            { return token("MULT");
             }
           // fall through
           case 67: break;
@@ -1220,12 +1220,12 @@ public class MiLexico implements java_cup.runtime.Scanner {
           // fall through
           case 70: break;
           case 10:
-            { return token("DIVISION");
+            { return token("DIV");
             }
           // fall through
           case 71: break;
           case 11:
-            { return token("INTEGER", Integer.parseInt(yytext()));
+            { return token("ENTERO", yytext());
             }
           // fall through
           case 72: break;
@@ -1468,22 +1468,22 @@ public class MiLexico implements java_cup.runtime.Scanner {
           // fall through
           case 118: break;
           case 58:
-            { return token("PR_DECLARE.SECTION");
+            { return token("PR_DECLARE_SECTION");
             }
           // fall through
           case 119: break;
           case 59:
-            { return token("PR_PROGRAM.SECTION");
+            { return token("PR_PROGRAM_SECTION");
             }
           // fall through
           case 120: break;
           case 60:
-            { return token("PR_ENDDECLARE.SECTION");
+            { return token("PR_ENDDECLARE_SECTION");
             }
           // fall through
           case 121: break;
           case 61:
-            { return token("PR_ENDPROGRAM.SECTION");
+            { return token("PR_ENDPROGRAM_SECTION");
             }
           // fall through
           case 122: break;

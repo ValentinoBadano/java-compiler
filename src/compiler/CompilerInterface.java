@@ -12,6 +12,7 @@ public class CompilerInterface extends JFrame {
     private JButton syntacticButton;
     private JTextArea outputTextArea;
     private JButton cleanButton;
+    private JMenuItem symbolTableItem;
 
     public CompilerInterface() {
         setTitle("Compilador");
@@ -47,8 +48,9 @@ public class CompilerInterface extends JFrame {
         JMenu helpMenu = new JMenu("Ayuda");
         JMenu toolsMenu = new JMenu("Herramientas");
 
+        symbolTableItem = new JMenuItem("Generar tabla de símbolos");
+        symbolTableItem.setActionCommand("table");
         JMenuItem loadMenuItem = new JMenuItem("Cargar Archivo");
-        JMenuItem symbolTableItem = new JMenuItem("Generar tabla de símbolos");
         JMenuItem instructionsItem = new JMenuItem("Instrucciones");
 
         instructionsItem.addActionListener(e -> showHelpFile());
@@ -135,5 +137,9 @@ public class CompilerInterface extends JFrame {
 
     public JButton getSyntacticButton() {
         return syntacticButton;
+    }
+
+    public JMenuItem getSymbolTableItem() {
+        return symbolTableItem;
     }
 }

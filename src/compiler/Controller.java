@@ -2,11 +2,15 @@ package compiler;
 
 import java_cup.runtime.Symbol;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -24,6 +28,7 @@ public class Controller implements ActionListener {
         view.getLexicButton().addActionListener(this);
         view.getCleanButton().addActionListener(this);
         view.getSyntacticButton().addActionListener(this);
+        view.getSymbolTableItem().addActionListener(this);
         view.setVisible(true);
     }
 
@@ -32,6 +37,7 @@ public class Controller implements ActionListener {
         switch (e.getActionCommand()) {
             case "lexico" -> this.doLexicalAnalysis();
             case "syntactic" -> this.doSyntacticAnalysis();
+            case "table" -> this.generateSymbolTableFile();
             case "Borrar" -> this.clean();
         }
     }
@@ -60,6 +66,7 @@ public class Controller implements ActionListener {
     public void doSyntacticAnalysis() {
         view.clearOutput();
         List<String> output = new ArrayList<>();
+        Hashtable<String, Simbolo> table = new Hashtable<>();
 
         try {
             String code = view.getCodeTextArea().getText();
@@ -67,6 +74,7 @@ public class Controller implements ActionListener {
             Parser parser = new Parser(lexico);
             parser.parse();
             output = parser.action_obj.output;
+            table = parser.action_obj.table;
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -75,10 +83,43 @@ public class Controller implements ActionListener {
              ) {
             view.appendTextOutput(line + "\n");
         }
+
+
     }
 
     public void clean(){
         view.clearOutput();
         view.getCodeTextArea().setText("");
+    }
+
+    public void generateSymbolTableFile() {
+        Hashtable<String, Simbolo> table = new Hashtable<>();
+        String path = "src/ts.txt";
+
+        try {
+            String code = view.getCodeTextArea().getText();
+            MiLexico lexico = new MiLexico(new StringReader(code));
+            Parser parser = new Parser(lexico);
+            parser.parse();
+            table = parser.action_obj.table;
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            FileWriter writer = new FileWriter(path);
+            for (Simbolo symbol: table.values()
+            ) {
+                writer.write(symbol.toString() + "\n");
+            }
+            writer.close();
+            // abrimos la tabla de símbolos una vez se escribió
+            File file = new File(path);
+            Desktop.getDesktop().open(file);
+        } catch (IOException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+
+
     }
 }
