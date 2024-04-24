@@ -39,10 +39,10 @@ terminal String ASIGNACION, P_ABRE, P_CIERRA, COMA, DOS_PUNTOS;
 terminal String AND, OR, NOT;
 terminal String FLOAT, ENTERO, DUPLE, BOOLEAN, IDENTIFICADOR, STRING_LITERAL;
 
-nonterminal String main, programa, bloque_declaraciones, lista_declaraciones, tipo_declaracion, lista_de_variables, tipo_de_variable, variable, seccion_declaraciones, seccion_programa;
-nonterminal String bloque_sentencias, sentencias, sentencia, instruccion_repeat, bloque_sentencias_repeat;
+nonterminal String main, programa, lista_declaraciones, tipo_declaracion, lista_de_variables, tipo_de_variable, variable, seccion_declaraciones, seccion_programa;
+nonterminal String bloque_sentencias, sentencia, instruccion_repeat, bloque_sentencias_repeat;
 nonterminal String sentenciaREPEAT, sentenciaUNLESS, sentenciaSHOW, sentenciaFIBONACCI;
-nonterminal String condicion, expresion, expresion_logica, expresion_AND, expresion_simple, comparacion;
+nonterminal String expresion, expresion_logica, expresion_AND, expresion_simple, comparacion, entrada;
 nonterminal String asignacion, termino, factor, factor_sin_signo, constante_booleana;
 
 
@@ -55,38 +55,43 @@ precedence left OR, AND, NOT;
 start with main;
 
 main ::=    programa:p {:
-       		 output.add("REGLA 0: main ->  programa");
-       		 RESULT = p;
+       		    output.add("REGLA 0.0: main ->  programa");
+       		    RESULT = p;
        		 :};
 
 programa ::=   seccion_declaraciones :sd seccion_programa:sp{:
-       		    output.add("REGLA 1.1: programa -> SeccionDeclaraciones SeccionPrograma");
-       		 RESULT = sd + sp;
- :};
+                output.add("REGLA 1.1: programa -> seccion_declaraciones seccion_programa");
+       		    RESULT = sd + sp;
+             :};
 
 
 
-seccion_declaraciones  ::= PR_DECLARE_SECTION lista_declaraciones:bvs PR_ENDDECLARE_SECTION {:
-       output.add("REGLA 2.1: variables -> variables ENDDECLARE.SECTION");
-        RESULT = "DECLARE.SECTION" + bvs + "ENDDECLARE.SECTION";
-  :}| /* No hay variables declaradas */{:
-                	output.add("REGLA 2.2: No hay variables declaradas");
-                	RESULT = "null";
-             	:};
+seccion_declaraciones  ::= PR_DECLARE_SECTION lista_declaraciones:lds PR_ENDDECLARE_SECTION {:
+                            output.add("REGLA 2.1: seccion_declaraciones -> DECLARE.SECTION lista_declaraciones ENDDECLARE.SECTION");
+                            output.add(String.format("REGLA 2.1: seccion_declaraciones -> DECLARE.SECTION %s ENDDECLARE.SECTION%n", lds));
+                            RESULT = "DECLARE.SECTION" + lds + "ENDDECLARE.SECTION";
+                    :}| /* No hay variables declaradas */
+                    {:
+                	        output.add("REGLA 2.2: No hay variables declaradas\n");
+                	        RESULT = "null";
+             	    :};
 
 lista_declaraciones ::=
-        	lista_declaraciones:prev tipo_declaracion:curr {:
-            	output.add("REGLA 3.1: lista_declaraciones -> lista_declaraciones tipo_declaracion");
-            	RESULT = prev + " " + curr;
-        	:}
-    	| tipo_declaracion:td {:
-            	output.add("REGLA 3.2: lista_declaraciones -> tipo_declaracion");
-            	RESULT = td;
-        	:};
+                        lista_declaraciones:prev tipo_declaracion:curr {:
+                            output.add("REGLA 3.1: lista_declaraciones -> lista_declaraciones tipo_declaracion");
+                            output.add(String.format("REGLA 3.1: lista_declaraciones -> %s %s%n", prev, curr));
+                            RESULT = prev + " " + curr;
+                    :}|
+                        tipo_declaracion:td {:
+                            output.add("REGLA 3.2: lista_declaraciones -> tipo_declaracion");
+                            output.add(String.format("REGLA 3.2: lista_declaraciones -> %s%n", td));
+                            RESULT = td;
+                    :};
 
 tipo_declaracion ::=
         	tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:lv {:
             	output.add("REGLA 3.3: tipo_declaracion -> tipo_de_variable : lista_de_variables");
+            	output.add(String.format("REGLA 3.3: tipo_declaracion -> %s : %s%n", tdv, lv));
             	RESULT = tdv + " : " + lv;
             	this.table.add_symbols(tdv, lv);
         	:};
@@ -95,30 +100,34 @@ tipo_declaracion ::=
 /* Lista de variables */
 lista_de_variables ::= variable:v {:
                         	output.add("REGLA 4.1: lista_de_variables -> variable");
+                        	output.add(String.format("REGLA 4.1: lista_de_variables -> %s%n", v));
                         	RESULT = v;
                     	:}
                   	| lista_de_variables:lv COMA variable:v {:
                         	output.add("REGLA 4.2: lista_de_variables -> lista_de_variables COMA variable");
+                        	output.add(String.format("REGLA 4.1: lista_de_variables -> %s, %s%n", lv, v));
                         	RESULT = lv + ", " + v;
                     	:};
 
 
 /* Variable */
 variable ::= IDENTIFICADOR:id {:
-       		 RESULT = id;
+                    output.add(String.format("REGLA 5.0: variable -> %s%n", id));
+       		        RESULT = id;
    		 :};
 
 seccion_programa::=  PR_PROGRAM_SECTION bloque_sentencias:bs PR_ENDPROGRAM_SECTION{:
-       	 output.add("REGLA 6: programa ->  PROGRAM.SECTION sentencias ENDPROGRAM.SECTION");
-          RESULT = "PROGRAM.SECTION" + bs + "ENDPROGRAM.SECTION";
+       	            output.add("REGLA 6.0: sección_programa ->  PROGRAM.SECTION sentencias ENDPROGRAM.SECTION\n");
+                    RESULT = "PROGRAM.SECTION" + bs + "ENDPROGRAM.SECTION";
          :}| /* No hay sección de programa declarada */{:
-                    output.add("REGLA 6: No hay sección de programa declarado");
+                    output.add("REGLA 6.0: No hay sección de programa declarado");
                     RESULT = " ";
  :};
 
 /* Sentencias */
 bloque_sentencias ::= sentencia:s {:
                     	output.add("REGLA 7.1: bloque_sentencias -> sentencia");
+                    	output.add(String.format("REGLA 7.1: bloque_sentencias -> %s%n", s));
                     	RESULT = s;
                 	:}
                 	| bloque_sentencias:bs sentencia:s {:
@@ -128,52 +137,49 @@ bloque_sentencias ::= sentencia:s {:
 
 // Bloque instrucciones para REPEAT
 
-bloque_sentencias_repeat ::= instruccion_repeat:s {:
+bloque_sentencias_repeat ::= instruccion_repeat:is {:
                     	output.add("REGLA 8.1: bloque_sentencias_repeat -> instruccion_repeat");
-                    	RESULT = s;
+                    	output.add("REGLA 8.1: bloque_sentencias_repeat ->" + is);
+                    	RESULT = is;
                 	:}
-                	| bloque_sentencias_repeat:bs instruccion_repeat:s {:
+                	| bloque_sentencias_repeat:bsr instruccion_repeat:is {:
                     	output.add("REGLA 8.2: bloque_sentencias -> bloque_sentencias instruccion_repeat");
-                    	RESULT = bs + " " + s;
+                    	RESULT = bsr + " " + is;
                 	:};
 
-instruccion_repeat::= sentencia {:
-
-:} | PR_BREAK:b {:
-output.add("REGLA 8.3: sentencia -> PR_BREAK");
-	output.add(String.format("REGLA 8.3: sentencia->BREAK %s",b));
-                RESULT = b;
-
-:}| PR_CONTINUE:c {:
-           output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
-	  output.add(String.format("REGLA 8.4: sentencia->CONTINUE %s",c));
-                RESULT = c;
-:};
+instruccion_repeat::= sentencia:s {:
+                output.add("REGLA 8.25: instruccion_repeat -> sentencia");
+                output.add(String.format("REGLA 8.3: instruccion_repeat-> %s%n",s));
+                RESULT = s;
+        :} | PR_BREAK:b {:
+                output.add("REGLA 8.3: sentencia -> PR_BREAK");
+                output.add(String.format("REGLA 8.3: sentencia->BREAK %s%n",b));
+                RESULT = "BREAK";
+        :}| PR_CONTINUE:c {:
+                output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
+                output.add(String.format("REGLA 8.4: sentencia->CONTINUE %s%n",c));
+                RESULT = "CONTINUE";
+        :};
 
 
 sentencia ::= sentenciaREPEAT:sr {:
-                output.add("REGLA 9.1: sentencia -> sentenciaREPEAT");
-	       output.add(String.format("REGLA 9.1: sentencia->REPEAT %s",sr));
-                RESULT = sr;
-         :}|
-        sentenciaUNLESS:su {:
+                    output.add("REGLA 9.1: sentencia -> sentenciaREPEAT");
+                    output.add(String.format("REGLA 9.1: sentencia->%s%n",sr));
+                    RESULT = sr;
+            :}|
+            sentenciaUNLESS:su {:
                 	output.add("REGLA 9.2: sentencia -> sentenciaUNLESS");
-                	output.add(String.format("REGLA 9.2: sentencia->UNLESS %s",su));
-                   RESULT = su;
-       :}|
-          sentenciaSHOW:ss {:
+                	output.add(String.format("REGLA 9.2: sentencia->UNLESS %s%n",su));
+                    RESULT = su;
+            :}|
+              sentenciaSHOW:ss {:
                 	output.add("REGLA 9.3: sentencia -> sentenciaSHOW");
-                	output.add(String.format("REGLA 9.3: sentencia->SHOW %s",ss));
-RESULT = ss;
-           :}|
-         	sentenciaFIBONACCI:sf {:
-                	output.add("REGLA 9.4: sentencia -> sentenciaFIBONACCI");
-                	output.add(String.format("REGLA 9.4: sentencia->Fibonnaci %s",sf));
-RESULT = sf;
+                	output.add(String.format("REGLA 9.3: sentencia->%s%n",ss));
+                    RESULT = ss;
            :}|
          	asignacion:a {:
                 	output.add("REGLA 9.5: sentencia -> asignación");
-		output.add(String.format("REGLA 9.5: sentencia->Asignación %s",a));
+		            output.add(String.format("REGLA 9.5: sentencia-> %s%n",a));
                 	RESULT = a;
            	:};
 
@@ -200,14 +206,16 @@ sentenciaUNLESS ::= PR_UNLESS expresion_logica:explog PR_THEN bloque_sentencias:
 
 /* Sentencia SHOW */
 sentenciaSHOW ::= PR_SHOW P_ABRE expresion:e P_CIERRA{:
-                    	output.add("REGLA 11.1: sentenciaSHOW -> PR_SHOW expresion");
+                    	output.add("REGLA 11.1: sentenciaSHOW -> PR_SHOW P_ABRE expresion P_CIERRA");
                     	output.add(String.format("REGLA 11.1: sentenciaSHOW -> SHOW(%s)%n",e));
                     	RESULT = "SHOW(" + e + ")";
+
               	:}| PR_SHOW P_ABRE STRING_LITERAL:sl P_CIERRA {:
-                    	output.add("REGLA 11.2: sentenciaSHOW -> PR_SHOW STRING_LITERAL");
-                    	output.add(String.format("REGLA 11.2: sentenciaSHOW -> SHOW(%s)%n",sl));
-                    	RESULT = "SHOW(" + sl + ")";
-              	:};
+                        output.add("REGLA 11.3: sentenciaSHOW -> PR_SHOW P_ABRE STRING_LITERAL P_CIERRA");
+                        output.add(String.format("REGLA 11.3: sentenciaSHOW -> SHOW(%s)%n",sl));
+                        RESULT = "SHOW(" + sl + ")";
+                        this.table.add_string_const(sl);
+                    :};
 
 /* Sentencia FIBONACCI */
 sentenciaFIBONACCI ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
@@ -222,62 +230,41 @@ asignacion ::= IDENTIFICADOR:id ASIGNACION expresion:e {:
                 	output.add("REGLA 13.1: asignacion -> IDENTIFICADOR ASIGNACION expresion");
                 	output.add(String.format("REGLA 13.1: asignacion -> %s := %s%n", id, e));
                 	RESULT = id + ":= " + e;
-            	:}|
-            	IDENTIFICADOR:id ASIGNACION constante_booleana:cb {:
-                	output.add("REGLA 13.2: asignacion -> IDENTIFICADOR ASIGNACION constante_booleana");
-                	output.add(String.format("REGLA 13.2: asignacion -> %s := %s%n", id, cb));
-                	RESULT = id + ":= " + cb;
-           	:}| IDENTIFICADOR:id ASIGNACION PR_INPUT_INT P_ABRE P_CIERRA {:
-                	output.add("REGLA 13.3: asignacion -> IDENTIFICADOR ASIGNACION PR_INPUT_INT");
-                	output.add(String.format("REGLA 13.3: asignacion -> %s:= INPUT_INT()%n",id));
-                	RESULT = id + " := INPUT_INT()";
-           	:}| IDENTIFICADOR:id ASIGNACION PR_INPUT_FLOAT P_ABRE P_CIERRA {:
-                	output.add("REGLA 13.4: asignacion -> IDENTIFICADOR ASIGNACION PR_INPUT_FLOAT");
-                	output.add(String.format("REGLA 13.4: asignacion -> %s:= INPUT_FLOAT()%n",id));
-                	RESULT = id + " := PR_INPUT_FLOAT()";
-           	:} | IDENTIFICADOR:id ASIGNACION PR_INPUT_BOOL P_ABRE P_CIERRA {:
-                	output.add("REGLA 13.5: asignacion -> IDENTIFICADOR ASIGNACION PR_INPUT_BOOL");
-                	output.add(String.format("REGLA 13.5: asignacion -> %s:= INPUT_BOOL()%n",id));
-                	RESULT = id + " := INPUT_BOOL()";
-           	:}| IDENTIFICADOR:id ASIGNACION PR_INPUT_DUPLE P_ABRE P_CIERRA {:
-                	output.add("REGLA 13.6: asignacion -> IDENTIFICADOR ASIGNACION PR_INPUT_DUPLE");
-                	output.add(String.format("REGLA 13.6: asignacion -> %s:= INPUT_DUPLE()%n",id));
-                	RESULT = id + ":= INPUT_DUPLE()";
-           	:};
+            :};
 
 expresion_logica ::= expresion_logica:explog OR expresion_AND:expand {:
-                    	output.add("REGLA 14.1: expresion_logica -> expresion_logica OR expresion_AND");
-                     	output.add(String.format("REGLA 14.1: expresion_logica -> %s or %s%n", explog, expand));
-   		 RESULT = explog + "OR" + expand;
-                 	:}| expresion_AND:expand {:
+                    output.add("REGLA 14.1: expresion_logica -> expresion_logica OR expresion_AND");
+                    output.add(String.format("REGLA 14.1: expresion_logica -> %s or %s%n", explog, expand));
+   		            RESULT = explog + "OR" + expand;
+                :}| expresion_AND:expand {:
                    	output.add("REGLA 14.2: expresion_logica -> expresion_AND");
                    	output.add(String.format("REGLA 14.2: expresion_logica -> %s%n",expand));
-   	    	RESULT = expand;
-                	:};
+   	    	        RESULT = expand;
+                :};
 
 expresion_AND ::=   expresion_AND:expand AND expresion_simple:expsim {:
                     	output.add("REGLA 15.1: expresion_AND -> expresion_AND AND expresion_simple");
                     	output.add(String.format("REGLA 15.1: expresion_AND -> %s and %s%n", expand, expsim));
-   	     	RESULT = expand + "AND" + expsim;
-                	:}| expresion_simple:expsim {:
-   	     	output.add("REGLA 15.2: expresion_AND -> expresion_simple");
-                    	output.add(String.format("REGLA 15.2: expresion_AND -> %s%n",expsim));
-                    	RESULT = expsim;
+   	     	            RESULT = expand + "AND" + expsim;
+                :}| expresion_simple:expsim {:
+   	     	            output.add("REGLA 15.2: expresion_AND -> expresion_simple");
+                        output.add(String.format("REGLA 15.2: expresion_AND -> %s%n",expsim));
+                        RESULT = expsim;
                	:};
 
-expresion_simple ::=	NOT expresion_simple:expsim {:
+expresion_simple ::=NOT expresion_simple:expsim {:
                        	output.add("REGLA 16.1: expresion_simple -> NOT expresion_simple");
                        	output.add(String.format("REGLA 16.1: expresion_simple -> not %s%n",expsim));
                        	RESULT = "NOT" + expsim;
-                    	:}| comparacion:comp {:
+                  :}| comparacion:comp {:
                       	output.add("REGLA 16.2: expresion_simple -> comparacion");
                       	output.add(String.format("REGLA 16.2: expresion_simple -> %s%n",comp));
                       	RESULT = comp;
-                    	:}| P_ABRE expresion_simple:expsim P_CIERRA {:
-                         	output.add("REGLA 16.3: expresion -> P_ABRE expresion_simpre P_CIERRA");
-   		          	output.add(String.format("REGLA 16.3: expresion -> (%s)%n", expsim));
-                        	RESULT = "(" + expsim + ")";
-                    	:};
+                  :}| constante_booleana:cb {:
+                        output.add("REGLA 16.3: expresion_simple -> constante_booleana");
+                        output.add(String.format("REGLA 16.3: expresion_simple -> %s",cb));
+                        RESULT = cb;
+                  :};
 
 /* Comparación */
 comparacion ::= expresion:e1 IGUALDAD expresion:e2 {:
@@ -299,12 +286,12 @@ comparacion ::= expresion:e1 IGUALDAD expresion:e2 {:
                 	output.add("REGLA 17.4: comparacion -> expresion MAYOR expresion");
                  	output.add(String.format("REGLA 17.4: expresion -> %s > %s%n", e1, e2));
                 	RESULT = e1 + ">" + e2;
-            	:}|
+            :}|
            	expresion:e1 MENOR_IGUAL expresion:e2 {:
                 	output.add("REGLA 17.5: comparacion -> expresion MENOR_IGUAL expresion");
                 	output.add(String.format("REGLA 17.5 : expresion -> %s <= %s%n", e1, e2));
                 	RESULT = e1 + "<=" + e2;
-            	:}|
+            :}|
            	expresion:e1 MAYOR_IGUAL expresion:e2 {:
                 	output.add("REGLA 17.6: comparacion -> expresion MAYOR_IGUAL expresion");
                 	output.add(String.format("REGLA 17.6: expresion -> %s >= %s%n", e1, e2));
@@ -312,84 +299,100 @@ comparacion ::= expresion:e1 IGUALDAD expresion:e2 {:
            	:};
 
 expresion ::= expresion:e MAS termino:t {:
-   		 output.add("REGLA 18.1: expresion -> expresion MAS termino");
-   		 output.add(String.format("REGLA 18.1: expresion -> %s + %s%n", e, t));
-   		 RESULT = e+"+"+t;
-   	 :} |
-      	expresion:e MENOS termino:t {:
-   		 output.add("REGLA 18.2: expresion -> expresion MENOS termino");
-   		 output.add(String.format("REGLA 18.2: expr -> %s - %s%n", e, t));
-   		 RESULT = e+"-"+t;
-   	 :} | termino:t {:
-            	output.add("REGLA 18.3: expresion -> termino");
-   		 output.add(String.format("REGLA 18.3: expresion -> %s%n", t));
-            	RESULT = t;
-     	:}| P_ABRE expresion:e P_CIERRA {:
-             	output.add("REGLA 18.4: expresion -> P_ABRE expresion P_CIERRA");
-   		  output.add(String.format("REGLA 18.4: expresion -> (%s)%n", e));
-             	RESULT = "(" + e + ")";
-     	:};
+                 output.add("REGLA 18.1: expresion -> expresion MAS termino");
+                 output.add(String.format("REGLA 18.1: expresion -> %s + %s%n", e, t));
+                 RESULT = e+" + "+t;
+   	    :}|
+            expresion:e MENOS termino:t {:
+                 output.add("REGLA 18.2: expresion -> expresion MENOS termino");
+                 output.add(String.format("REGLA 18.2: expr -> %s - %s%n", e, t));
+                 RESULT = e+" - "+t;
+        :}|
+            termino:t {:
+                output.add("REGLA 18.3: expresion -> termino");
+                output.add(String.format("REGLA 18.3: expresion -> %s%n", t));
+                RESULT = t;
+        :};
 
 termino ::= 	termino:t MULT factor:f {:
-              	output.add("REGLA 19.1: termino -> termino MULT factor");
-   		   output.add(String.format("REGLA 19.1: termino -> %s * %s%n", t, f));
-   		   RESULT = t+"*"+f;
-            	:}|
+                    output.add("REGLA 19.1: termino -> termino MULT factor");
+                    output.add(String.format("REGLA 19.1: termino -> %s * %s%n", t, f));
+                    RESULT = t+" * "+f;
+                :}|
             	termino:t DIV factor:f {:
-                	output.add("REGLA 19.2: termino -> termino DIV factor");
-   		 	output.add(String.format("REGLA 19.2: termino -> %s / %s%n", t, f));
-   		   RESULT = t+"/"+f;
+                    output.add("REGLA 19.2: termino -> termino DIV factor");
+   		 	        output.add(String.format("REGLA 19.2: termino -> %s / %s%n", t, f));
+   		            RESULT = t+" / "+f;
             	:}|
             	factor:f {:
-              	output.add("REGLA 19.3: termino -> factor");
-   		   output.add(String.format("REGLA 19.3: termino -> %s%n", f));
-              	RESULT = f;
+              	    output.add("REGLA 19.3: termino -> factor");
+   		            output.add(String.format("REGLA 19.3: termino -> %s%n", f));
+              	    RESULT = f;
             	:};
 
 factor ::=  MENOS factor:f {:
-              	output.add("REGLA 20.1: factor -> MENOS factor_sin_signo");
-   		   output.add(String.format("REGLA 20.1: factor -> - %s%n", f));
-   		   RESULT = "-"+f;
-   	   :} %prec MENOS_UNARIO |
-        	factor_sin_signo:fss {:
-               	output.add("REGLA 20.2: factor -> factor_sin_signo");
-   			output.add(String.format("REGLA 20.2: factor ->  %s%n", fss));
-               	RESULT = fss;
-        	:};
+              	    output.add("REGLA 20.1: factor -> MENOS factor_sin_signo");
+   		            output.add(String.format("REGLA 20.1: factor -> - %s%n", f));
+   		            RESULT = "-"+f;
+   	            :} %prec MENOS_UNARIO
+   	            |
+                P_ABRE expresion:e P_CIERRA {:
+                    output.add("REGLA 20.2: factor -> P_ABRE expresion P_CIERRA");
+                    output.add(String.format("REGLA 20.2: factor -> (%s)%n", e));
+                    RESULT = "(" + e + ")";
+               :} |
+                factor_sin_signo:fss {:
+                    output.add("REGLA 20.2: factor -> factor_sin_signo");
+                    output.add(String.format("REGLA 20.2: factor ->  %s%n", fss));
+                    RESULT = fss;
+        	    :} |
+        	    sentenciaFIBONACCI:sf {:
+                    output.add("REGLA 20.4: factor -> sentenciaFIBONACCI");
+                    output.add(String.format("REGLA 20.4: factor-> %s",sf));
+                    RESULT = sf;
+                :}|
+                entrada:en {:
+                      output.add("REGLA 20.5: factor -> entrada");
+                      output.add(String.format("REGLA 20.4: factor-> %s",en));
+                      RESULT = en;
+                  :};
 
 factor_sin_signo ::=  IDENTIFICADOR:id {:
-   		              	output.add("REGLA 21.1: factor_sin_signo -> IDENTIFICADOR");
-   		              	output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
-   		              	RESULT = id;
-   	 :}| ENTERO:ent{:
-   		               	output.add("REGLA 21.2: factor_sin_signo -> ENTERO");
-   		               	output.add(String.format("REGLA 21.2: factor_sin_signo -> %s%n", ent));
-   		               	RESULT = ent;
-   	 :}| FLOAT:fl{:
-   		               	output.add("REGLA 21.3: factor_sin_signo -> FLOAT");
-   		               	output.add(String.format("REGLA 21.3: factor_sin_signo -> %s%n", fl));
-   		               	RESULT = fl;
-   	 :}| DUPLE:dp{:
-   		              	output.add("REGLA 21.4: factor_sin_signo-> DUPLA");
-   		              	output.add(String.format("REGLA 21.4: factor_sin_signo-> %s%n", dp));
-   		              	RESULT = dp;
+                    output.add("REGLA 21.1: factor_sin_signo -> IDENTIFICADOR");
+                    output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
+                    RESULT = id;
+   	            :}|
+   	            ENTERO:ent{:
+                    output.add("REGLA 21.2: factor_sin_signo -> ENTERO");
+                    output.add(String.format("REGLA 21.2: factor_sin_signo -> %s%n", ent));
+                    RESULT = ent;
+   	            :}|
+   	            FLOAT:fl{:
+                    output.add("REGLA 21.3: factor_sin_signo -> FLOAT");
+                    output.add(String.format("REGLA 21.3: factor_sin_signo -> %s%n", fl));
+                    RESULT = fl;
+                :}|
+                DUPLE:dp{:
+                    output.add("REGLA 21.4: factor_sin_signo-> DUPLA");
+                    output.add(String.format("REGLA 21.4: factor_sin_signo-> %s%n", dp));
+                    RESULT = dp;
    	 :};
 
 constante_booleana ::= BOOLEAN:bool {:
-   		  output.add ("REGLA 22: constante_booleana -> BOOLEANO");
+   		                output.add ("REGLA 22: constante_booleana -> BOOLEANO");
                      	output.add( String.format("REGLA 22: constante_booleana -> %s%n", bool));
-   	      	RESULT = bool;
+   	      	            RESULT = bool;
             	:};
 
 tipo_de_variable ::= PR_FLOAT {:
                     	output.add("REGLA 23.1: tipo_de_variable -> PR_FLOAT");
                     	RESULT = "float";
                 	:}
-               	| PR_INTEGER {:
+               	    | PR_INTEGER {:
                     	output.add("REGLA 23.2: tipo_de_variable -> PR_INTEGER");
                     	RESULT = "integer";
                 	:}
-               	| PR_BOOLEAN {:
+               	    | PR_BOOLEAN {:
                     	output.add("REGLA 23.3: tipo_de_variable -> PR_BOOLEAN");
                     	RESULT = "boolean";
                 	:}
@@ -398,10 +401,22 @@ tipo_de_variable ::= PR_FLOAT {:
                     	RESULT = "duple";
                 	:};
 
-
-
-
-
+entrada ::= PR_INPUT_INT P_ABRE P_CIERRA {:
+                	output.add("REGLA 24.1: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+                	RESULT = "INPUT_INT()";
+           	:} |
+           	PR_INPUT_FLOAT P_ABRE P_CIERRA {:
+                	output.add("REGLA 24.2: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+                    RESULT = "INPUT_FLOAT()";
+           	:} |
+           	PR_INPUT_BOOL P_ABRE P_CIERRA {:
+                    output.add("REGLA 24.3: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+                    RESULT = "INPUT_BOOL()";
+           	:}|
+           	PR_INPUT_DUPLE P_ABRE P_CIERRA {:
+                	output.add("REGLA 24.4: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+                    RESULT = "INPUT_DUPLE()";
+           	:};
 
 
 
