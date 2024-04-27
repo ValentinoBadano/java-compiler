@@ -9,34 +9,33 @@ package compiler;
 public class ParserSym {
   /* terminals */
   public static final int DISTINTO = 27;
+  public static final int STRING_LITERAL = 48;
   public static final int PR_FIBONACCI = 23;
   public static final int MULT = 32;
-  public static final int C_ABRE = 36;
   public static final int PR_BREAK = 8;
   public static final int PR_INPUT_INT = 19;
-  public static final int ENTERO = 46;
+  public static final int ENTERO = 44;
   public static final int PR_INTEGER = 15;
-  public static final int DOS_PUNTOS = 41;
+  public static final int DOS_PUNTOS = 39;
   public static final int PR_ELSE = 12;
   public static final int MENOS_UNARIO = 34;
-  public static final int IDENTIFICADOR = 49;
-  public static final int NOT = 44;
-  public static final int AND = 42;
+  public static final int IDENTIFICADOR = 47;
+  public static final int NOT = 42;
+  public static final int AND = 40;
   public static final int PR_FLOAT = 16;
   public static final int PR_INPUT_BOOL = 21;
   public static final int PR_THEN = 11;
-  public static final int OR = 43;
+  public static final int OR = 41;
   public static final int IGUALDAD = 26;
   public static final int DIV = 33;
-  public static final int C_CIERRA = 37;
   public static final int PR_BOOLEAN = 14;
-  public static final int BOOLEAN = 48;
-  public static final int DUPLE = 47;
-  public static final int P_CIERRA = 39;
+  public static final int BOOLEAN = 46;
+  public static final int DUPLE = 45;
+  public static final int P_CIERRA = 37;
   public static final int EOF = 0;
   public static final int PR_UNLESS = 10;
   public static final int error = 1;
-  public static final int COMA = 40;
+  public static final int COMA = 38;
   public static final int PR_INPUT_DUPLE = 22;
   public static final int PR_SHOW = 18;
   public static final int MENOS = 31;
@@ -48,9 +47,9 @@ public class ParserSym {
   public static final int PR_END = 13;
   public static final int PR_ENDDECLARE_SECTION = 5;
   public static final int MAYOR_IGUAL = 29;
-  public static final int FLOAT = 45;
+  public static final int FLOAT = 43;
   public static final int PR_PROGRAM_SECTION = 2;
-  public static final int P_ABRE = 38;
+  public static final int P_ABRE = 36;
   public static final int PR_INPUT_FLOAT = 20;
   public static final int MENOR_IGUAL = 28;
   public static final int PR_UNTIL = 7;
@@ -95,8 +94,6 @@ public class ParserSym {
   "DIV",
   "MENOS_UNARIO",
   "ASIGNACION",
-  "C_ABRE",
-  "C_CIERRA",
   "P_ABRE",
   "P_CIERRA",
   "COMA",
@@ -108,7 +105,8 @@ public class ParserSym {
   "ENTERO",
   "DUPLE",
   "BOOLEAN",
-  "IDENTIFICADOR"
+  "IDENTIFICADOR",
+  "STRING_LITERAL"
   };
 }
 

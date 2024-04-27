@@ -11,7 +11,6 @@ import java_cup.sym;
 %public
 %class MiLexico
 %unicode
-%type MiToken
 %line
 %column
 %cup

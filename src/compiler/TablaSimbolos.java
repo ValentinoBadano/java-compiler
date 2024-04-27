@@ -18,4 +18,9 @@ public class TablaSimbolos extends Hashtable<String, Simbolo> {
         }
     }
 
+    public void add_string_const(String str) {
+        Simbolo symbol = new Simbolo("", "CTE_STR", "", str, str.length());
+        this.put(str, symbol);
+    }
+
 }
