@@ -43,7 +43,7 @@ terminal PR_SHOW, PR_INPUT_INT, PR_INPUT_FLOAT, PR_INPUT_BOOL, PR_INPUT_DUPLE, P
 terminal MENOR, MAYOR, IGUALDAD, DISTINTO, MENOR_IGUAL, MAYOR_IGUAL;
 terminal MAS, MENOS, MULT, DIV, MENOS_UNARIO;
 terminal ASIGNACION, P_ABRE, P_CIERRA, DOS_PUNTOS;
-terminal String COMA;
+terminal COMA;
 terminal AND, OR, NOT;
 terminal FLOAT, ENTERO, DUPLE, BOOLEAN, STRING_LITERAL;
 
@@ -56,7 +56,7 @@ nonterminal List<Declaracion>  seccion_declaraciones;
 nonterminal List<Declaracion>  lista_declaraciones;
 nonterminal Declaracion tipo_declaracion;
 
-nonterminal List <String> lista_de_variables; 
+nonterminal List<Identificador> lista_de_variables; 
 nonterminal TipoDato tipo_de_variable;
 nonterminal Identificador variable;
  
@@ -134,17 +134,16 @@ tipo_declaracion ::= tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:lv {:
 
 
 /* Lista de variables */
-lista_de_variables ::=  variable:v COMA:c lista_de_variables:lv  {:
+lista_de_variables ::=  variable:v COMA lista_de_variables:lv  {:
               			  output.add("REGLA 5.2: lista_de_variables ->  variable COMA lista_de_variables");
               			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s, %s%n", lv, v));
-                                  output.add(String.format ("REGLA 4.1: lista_de_variables -> %s%n", c));
-              			  lv.add(0,v.getNombre());
+              			  lv.add(0,v);
                                   RESULT = lv;
           	        :}| variable:v {:
               			  output.add("REGLA 5.1: lista_de_variables -> variable");
               			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s%n", v));
                                   RESULT = new ArrayList();
-                                  RESULT.add(0,v.getNombre());
+                                  RESULT.add(0,v);
                                   
           	        :};
 
@@ -339,7 +338,7 @@ comparacion ::= expresion:e1 IGUALDAD expresion:e2 {:
       			  output.add("REGLA 20.6: comparacion -> expresion MAYOR_IGUAL expresion");
       			  output.add(String.format("REGLA 20.6: expresion -> %s >= %s%n", e1, e2));
       			  RESULT =  new MayorIgual(e1,e2);
- 			  :}|
+ 	        :}|
  			  expresion:e {:
  			 	output.add("REGLA 20.7: comparacion -> expresion");
              	                output.add(String.format("REGLA 20.7: expresion -> %s%n", e));
@@ -384,20 +383,11 @@ factor ::=  MENOS factor:f {:
      	     		 RESULT = new MenosUnario(f);
           		 :} %prec MENOS_UNARIO |
 
-            P_ABRE expresion_logica:expsim P_CIERRA {:
-                         output.add("REGLA 23.2: expresion_logica -> P_ABRE expresion_logica P_ABRE");
-                         output.add(String.format("REGLA 23.2: expresion_logica -> %s%n",expsim));
-                         RESULT = expsim;
-       	    :} | 
             factor_sin_signo:fss {:
            		 output.add("REGLA 23.3: factor -> factor_sin_signo");
            		 output.add(String.format("REGLA 20.2: factor ->  %s%n", fss));
            		 RESULT = fss;
-  	    :}| fibonacci:sf {:
-           		 output.add("REGLA 23.4: factor -> sentenciaFIBONACCI");
-           		 output.add(String.format("REGLA 20.4: factor-> %s",sf));
-           		 RESULT = sf;
-       	     :};
+  	    :};
 
 factor_sin_signo ::=    IDENTIFICADOR:id {:
            		   output.add("REGLA 24.1: factor_sin_signo -> IDENTIFICADOR");
@@ -428,7 +418,16 @@ factor_sin_signo ::=    IDENTIFICADOR:id {:
              		       output.add("REGLA 24.6: factor -> entrada");
              		       output.add(String.format("REGLA 20.4: factor-> %s",en));
              		     RESULT = en;
-                        :};
+                        :}| fibonacci:sf {:
+           		     output.add("REGLA 23.4: factor -> sentenciaFIBONACCI");
+           		     output.add(String.format("REGLA 20.4: factor-> %s",sf));
+           		     RESULT = sf;
+       	                :}| P_ABRE expresion_logica:expsim P_CIERRA {:
+                            output.add("REGLA 23.2: expresion_logica -> P_ABRE expresion_logica P_ABRE");
+                            output.add(String.format("REGLA 23.2: expresion_logica -> %s%n",expsim));
+                            RESULT = expsim;
+       	                :}; 
+                      
 
 tipo_de_variable ::=    PR_FLOAT {:
           	            output.add("REGLA 25.1: tipo_de_variable -> PR_FLOAT\n");

@@ -14,10 +14,10 @@ import java.util.List;
 public class Declaracion extends Expresion {
     
     private TipoDato tipoDato;
-    private List<String> listaIdentificador;
+    private List<Identificador> listaIdentificador;
   
 
-    public Declaracion(TipoDato tipoDato, List<String> listaIdentificador) {
+    public Declaracion(TipoDato tipoDato, List<Identificador> listaIdentificador) {
         this.tipoDato = tipoDato;
         this.listaIdentificador = listaIdentificador;
     }
@@ -30,11 +30,11 @@ public class Declaracion extends Expresion {
         this.tipoDato = tipoDato;
     }
 
-    public List<String> getListaIdentificador() {
+    public List<Identificador> getListaIdentificador() {
         return listaIdentificador;
     }
 
-    public void setListaIdentificador(List<String> listaIdentificador) {
+    public void setListaIdentificador(List<Identificador> listaIdentificador) {
         this.listaIdentificador = listaIdentificador;
     }
     
@@ -56,12 +56,8 @@ public class Declaracion extends Expresion {
         
         
         if (listaIdentificador.size() > 1) {
-            for (int i = 0; i < listaIdentificador.size(); i++) {
-                Identificador identificador = new Identificador(listaIdentificador.get(i));
-                
-               
-               
-               graficoLista +=  new Identificador(listaIdentificador.get(i)).graficar(miId);
+            for (Identificador identificador: listaIdentificador) {
+             graficoLista +=  identificador.graficar(miId);
               
             }  
         }

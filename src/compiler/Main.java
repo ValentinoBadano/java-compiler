@@ -6,6 +6,8 @@
 package compiler;
 
 import compiler.sintactico.Controller;
+
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -20,6 +22,13 @@ public class Main {
      */
     
     public static void main(String[] args) throws IOException {
+
+        try {
+            // Establece el L&F deseado
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         
         // TODO code application logic here
 

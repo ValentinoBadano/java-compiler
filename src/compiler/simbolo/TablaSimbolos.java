@@ -1,6 +1,7 @@
 package compiler.simbolo;
 
-import java.util.Arrays;
+import compiler.ast.Identificador;
+
 import java.util.Hashtable;
 import java.util.List;
 
@@ -9,9 +10,9 @@ public class TablaSimbolos extends Hashtable<String, Simbolo> {
 
 
     // agrega varios simbolos a la tabla dada una string tipo "INT" y "a, b, c"
-    public void add_symbols(String type, List<String> identifiers) {
-        for (String name : identifiers) {
-            name = name.trim(); // quitar espacios en blanco
+    public void add_symbols(String type, List<Identificador> identifiers) {
+        for (Identificador id : identifiers) {
+            String name = id.getNombre(); // quitar espacios en blanco
             Simbolo symbol = new Simbolo(name, "ID", type, "", 0); // longitud nula
 
             this.put(name, symbol);
