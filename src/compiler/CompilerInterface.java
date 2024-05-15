@@ -10,6 +10,7 @@ public class CompilerInterface extends JFrame {
     private JTextArea codeTextArea;
     private JButton lexicButton;
     private JButton syntacticButton;
+    private JButton astButton;
     private JTextArea outputTextArea;
     private JButton cleanButton;
     private JMenuItem symbolTableItem;
@@ -34,6 +35,9 @@ public class CompilerInterface extends JFrame {
 
         syntacticButton = new JButton("Análisis Sintáctico"); //
         this.syntacticButton.setActionCommand("syntactic");
+        
+        astButton = new JButton("AST"); //
+        this.astButton.setActionCommand("ast");
 
         // área de texto para la salida
         outputTextArea = new JTextArea();
@@ -74,6 +78,7 @@ public class CompilerInterface extends JFrame {
         topPanel.add(cleanButton, BorderLayout.SOUTH);
         buttonsPanel.add(lexicButton);
         buttonsPanel.add(syntacticButton);
+        buttonsPanel.add(astButton);
         buttonsPanel.add(cleanButton);
         topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
@@ -137,6 +142,10 @@ public class CompilerInterface extends JFrame {
 
     public JButton getSyntacticButton() {
         return syntacticButton;
+    }
+    
+    public JButton getAstButton() {
+        return astButton;
     }
 
     public JMenuItem getSymbolTableItem() {

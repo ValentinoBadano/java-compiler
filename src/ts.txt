@@ -1,0 +1,4 @@
+Simbolo{NOMBRE='b', TOKEN='ID', TIPO='integer', VALOR='', LONG=0}
+Simbolo{NOMBRE='a', TOKEN='ID', TIPO='integer', VALOR='', LONG=0}
+Simbolo{NOMBRE='q', TOKEN='ID', TIPO='boolean', VALOR='', LONG=0}
+Simbolo{NOMBRE='c', TOKEN='ID', TIPO='integer', VALOR='', LONG=0}

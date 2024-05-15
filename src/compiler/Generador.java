@@ -15,15 +15,15 @@ public class Generador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String path = "./src/compiler/lexico.flex";
+        String path = "./src/compiler/lexico/lexico.flex";
         generarLexer(path);
 
         String[] param = new String[5];
         param[0] = "-destdir";
-        param[1] = "./src/compiler/";
+        param[1] = "./src/compiler/sintactico/";
         param[2] = "-parser";
         param[3] = "Parser";
-        param[4] = "./src/compiler/parser.cup";
+        param[4] = "./src/compiler/sintactico/parser.cup";
         generarParser(param);
     }
     

@@ -1,0 +1,474 @@
+package compiler.sintactico;
+
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Hashtable;
+import compiler.simbolo.*;
+import compiler.ast.*;
+
+class Parser;
+
+action code {:
+    TablaSimbolos table = new TablaSimbolos();
+    List<String> output = new ArrayList<>();
+:};
+
+parser code
+{:
+    static GeneracionCodigo gc;
+    static Programa program;
+    static SentenciaUnless sentenciaUnless;
+    static SentenciaRepeat sentenciaRepeat;
+    static ConstanteString cte_string;
+
+    public void syntax_error(Symbol s){
+        action_obj.output.add("Error en la linea "+ (s.left+1)+ " Columna "+ s.right+ ". Valor simbolo '"
+        +s.value+"' . Simbolo n° "+s.sym+ " no reconocido." );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        action_obj.output.add("Error en la linea "+ (s.left+1)+ " Columna "+ s.right+ ". Valor simbolo '"
+        +s.value+"' . Simbolo n° "+s.sym+ " no reconocido." );
+    }
+:};
+
+terminal PR_PROGRAM_SECTION, PR_ENDPROGRAM_SECTION, PR_DECLARE_SECTION, PR_ENDDECLARE_SECTION;
+terminal PR_REPEAT, PR_UNTIL, PR_BREAK, PR_CONTINUE, PR_UNLESS, PR_THEN, PR_ELSE, PR_END;
+terminal PR_BOOLEAN, PR_INTEGER, PR_FLOAT, PR_DUPLE;
+terminal PR_SHOW, PR_INPUT_INT, PR_INPUT_FLOAT, PR_INPUT_BOOL, PR_INPUT_DUPLE, PR_FIBONACCI;
+terminal MENOR, MAYOR, IGUALDAD, DISTINTO, MENOR_IGUAL, MAYOR_IGUAL;
+terminal MAS, MENOS, MULT, DIV, MENOS_UNARIO;
+terminal ASIGNACION, P_ABRE, P_CIERRA, DOS_PUNTOS;
+terminal String COMA;
+terminal AND, OR, NOT;
+terminal FLOAT, ENTERO, DUPLE, BOOLEAN, STRING_LITERAL;
+
+terminal Identificador IDENTIFICADOR;
+
+nonterminal GeneracionCodigo main;
+nonterminal Programa programa;
+
+nonterminal List<Declaracion>  seccion_declaraciones;
+nonterminal List<Declaracion>  lista_declaraciones;
+nonterminal Declaracion tipo_declaracion;
+
+nonterminal List <String> lista_de_variables; 
+nonterminal TipoDato tipo_de_variable;
+nonterminal Identificador variable;
+ 
+nonterminal List<Sentencia> seccion_programa;
+nonterminal List<Sentencia> bloque_sentencias;
+nonterminal Sentencia sentencia;
+
+nonterminal List<Sentencia> bloque_sentencias_repeat;
+nonterminal Sentencia instruccion_repeat;
+nonterminal Sentencia sentenciaREPEAT; 
+
+nonterminal Sentencia sentenciaUNLESS; 
+nonterminal Sentencia sentenciaSHOW; 
+
+nonterminal Asignacion asignacion;
+
+nonterminal ExpresionLogica expresion_logica, expresion_AND, expresion_simple, comparacion;
+nonterminal ExpresionLogica expresion, termino, factor, factor_sin_signo, fibonacci;
+
+nonterminal TipoEntrada entrada;
+
+
+precedence left MAS, MENOS;
+precedence left MULT, DIV;
+precedence left MENOS_UNARIO;
+precedence left IGUALDAD, DISTINTO, MENOR_IGUAL, MAYOR_IGUAL, MENOR, MAYOR;
+precedence left OR, AND, NOT;
+
+start with main;
+
+
+
+main ::=    programa:p {:;
+                gc = new GeneracionCodigo (program);
+                RESULT = gc;
+            :};
+
+programa ::=   seccion_declaraciones :sd seccion_programa:sp{:
+       		 output.add("REGLA 1.1: programa -> seccion_declaraciones seccion_programa");
+     		    program = new Programa (sd,sp);  
+                    RESULT = program;
+    	        :};
+
+
+
+seccion_declaraciones  ::= PR_DECLARE_SECTION lista_declaraciones:lds PR_ENDDECLARE_SECTION {:
+                   		 output.add("REGLA 2.1: seccion_declaraciones -> DECLARE.SECTION lista_declaraciones ENDDECLARE.SECTION");
+                   		 output.add(String.format("REGLA 2.1: seccion_declaraciones -> DECLARE.SECTION %s ENDDECLARE.SECTION%n", lds));
+                   		 RESULT = lds;
+           		 :}| /* No hay variables declaradas */
+           		 {:
+      			        output.add("REGLA 2.2: No hay variables declaradas\n");
+      			 	RESULT = null;
+   			 :};
+
+lista_declaraciones ::= tipo_declaracion:td {:
+                   		 output.add("REGLA 3.1: lista_declaraciones -> tipo_declaracion");
+                   		 output.add(String.format("REGLA 3.1: lista_declaraciones -> %s%n", td));
+                   		 RESULT = new ArrayList();
+                                 RESULT.add(td);
+           		 :}|
+               		 tipo_declaracion:td lista_declaraciones:lds {:
+                   		 output.add("REGLA 3.2: lista_declaraciones -> lista_declaraciones tipo_declaracion");
+                   		 output.add(String.format("REGLA 3.2: lista_declaraciones -> %s %s%n", lds, td));
+                   		 lds.add(0,td);
+                                 RESULT = lds;
+           		 :};
+
+tipo_declaracion ::= tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:lv {:
+  			  output.add("REGLA 4.1: tipo_declaracion -> tipo_de_variable : lista_de_variables");
+  			  output.add(String.format("REGLA 3.3: tipo_declaracion -> %s : %s%n", tdv, lv));
+  			  RESULT = new Declaracion(tdv,lv);
+  			  this.table.add_symbols(tdv.getOperador().toString(),lv);
+  		  :};
+
+
+/* Lista de variables */
+lista_de_variables ::=  variable:v COMA:c lista_de_variables:lv  {:
+              			  output.add("REGLA 5.2: lista_de_variables ->  variable COMA lista_de_variables");
+              			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s, %s%n", lv, v));
+                                  output.add(String.format ("REGLA 4.1: lista_de_variables -> %s%n", c));
+              			  lv.add(0,v.getNombre());
+                                  RESULT = lv;
+          	        :}| variable:v {:
+              			  output.add("REGLA 5.1: lista_de_variables -> variable");
+              			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s%n", v));
+                                  RESULT = new ArrayList();
+                                  RESULT.add(0,v.getNombre());
+                                  
+          	        :};
+
+
+/* Variable */
+variable ::= IDENTIFICADOR:id {:
+             output.add(String.format("REGLA 6.0: variable -> %s%n", id));
+     	     RESULT = id;
+     	   :};
+
+seccion_programa::=  PR_PROGRAM_SECTION bloque_sentencias:bs PR_ENDPROGRAM_SECTION{:
+     	     		 output.add("REGLA 7.1: sección_programa ->  PROGRAM.SECTION sentencias ENDPROGRAM.SECTION\n");
+           		 RESULT = bs;
+		 :}| /* No hay sección de programa declarada */{:
+           		 output.add("REGLA 7.2: No hay sección de programa declarado");
+           		 RESULT = null;
+ :};
+
+/* Sentencias */
+bloque_sentencias ::= sentencia:s {:
+          			  output.add("REGLA 8.1: bloque_sentencias -> sentencia");
+          			  output.add(String.format("REGLA 7.1: bloque_sentencias -> %s%n", s));
+          			  RESULT = new ArrayList();
+                                  RESULT.add(s);
+      			  :}
+      			  |  sentencia:s bloque_sentencias:bs {:
+          			  output.add("REGLA 8.2: bloque_sentencias -> sentencia bloque_sentencias");
+          			  bs.add(0,s);
+                                  RESULT = bs;
+      			  :};
+
+// Bloque instrucciones para REPEAT
+
+bloque_sentencias_repeat ::= instruccion_repeat:is {:
+          			  output.add("REGLA 9.1: bloque_sentencias_repeat -> instruccion_repeat");
+          			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is);
+                                  RESULT = new ArrayList();
+                                  RESULT.add(is);
+      			  :}
+      			  | instruccion_repeat:is bloque_sentencias_repeat:bsr {:
+          			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias ");
+          			  bsr.add(0,is);
+                                  RESULT = bsr;
+      			  :};
+
+instruccion_repeat::= sentencia:s {:
+       		 output.add("REGLA 8.25: instruccion_repeat -> sentencia");
+       		 output.add(String.format("REGLA 10.1: instruccion_repeat-> %s%n",s));
+       		 RESULT = s;
+   	 :} | PR_BREAK {:
+       		 output.add("REGLA 8.3: sentencia -> PR_BREAK");
+       		 RESULT = new SentenciaBreak(TipoPR.PR_BREAK);
+                 
+   	 :}| PR_CONTINUE {:
+       		 output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
+       		 RESULT = new SentenciaContinue(TipoPR.PR_CONTINUE);
+   	 :};
+
+
+sentencia ::= sentenciaREPEAT:sr {:
+           		 output.add("REGLA 11.1: sentencia -> sentenciaREPEAT");
+           		 output.add(String.format("REGLA 11.1: sentencia->%s%n",sr));
+           		 RESULT = sr;
+   		 :}|
+   		 sentenciaUNLESS:su {:
+      			  output.add("REGLA 11.2: sentencia -> sentenciaUNLESS");
+      			  output.add(String.format("REGLA 11.2: sentencia->UNLESS %s%n",su));
+           		 RESULT = su;
+   		 :}|
+     		 sentenciaSHOW:ss {:
+      			  output.add("REGLA 11.3: sentencia -> sentenciaSHOW");
+      			  output.add(String.format("REGLA 11.3: sentencia->%s%n",ss));
+           		 RESULT = ss;
+  		 :}|
+   		  asignacion:a {:
+      			  output.add("REGLA 11.4: sentencia -> asignación");
+  	     		 output.add(String.format("REGLA 11.4: sentencia-> %s%n",a));
+      			  RESULT = a;
+ 		 :};
+
+
+/* Sentencia REPEAT */
+sentenciaREPEAT ::= PR_REPEAT bloque_sentencias_repeat:bsr PR_UNTIL expresion_logica:explog {:
+          		 output.add("REGLA 12.1: sentenciaREPEAT -> PR_REPEAT bloque_sentencias PR_UNTIL expresion_logica");
+           		 output.add(String.format("REGLA 12.1: sentenciaREPEAT -> REPEAT %s UNTIL %s",bsr,explog));
+           		 sentenciaRepeat = new SentenciaRepeat(bsr,explog);
+                         RESULT = sentenciaRepeat;
+     	            :};
+
+/* Sentencia UNLESS */
+sentenciaUNLESS ::= PR_UNLESS expresion_logica:explog PR_THEN bloque_sentencias:bs1 PR_ELSE bloque_sentencias:bs2 PR_END {:
+          			  output.add("REGLA 13.1: sentenciaUNLESS -> PR_UNLESS expresion_logica PR_THEN bloque_sentencias PR_ELSE bloque_sentencias PR_END");
+          			  output.add(String.format("REGLA 13.1: sentenciaUNLESS -> UNLESS %s THEN %s ELSE %s END %n",explog,bs1,bs2));
+          			  sentenciaUnless = new SentenciaUnless(explog,bs1,bs2);
+                                  RESULT = sentenciaUnless;
+     			  :};
+
+sentenciaUNLESS ::= PR_UNLESS expresion_logica:explog PR_THEN bloque_sentencias:bs1 PR_END {:
+          			  output.add("REGLA 13.2: sentenciaUNLESS -> PR_UNLESS expresion_logica PR_THEN bloque_sentencias PR_END");
+          			  output.add(String.format("REGLA 13.2: sentenciaUNLESS -> UNLESS %s THEN %s END %n",explog,bs1));
+          			  sentenciaUnless = new SentenciaUnless(explog,bs1);
+                                  RESULT = sentenciaUnless;
+     			  :};
+
+/* Sentencia SHOW */
+sentenciaSHOW ::=   PR_SHOW P_ABRE expresion_logica:e P_CIERRA{:
+          			  output.add("REGLA 14.1: sentenciaSHOW -> PR_SHOW P_ABRE expresion_general P_CIERRA");
+          			  output.add(String.format("REGLA 14.1: sentenciaSHOW -> SHOW(%s)%n",e));
+          			  RESULT = new SentenciaShow(e);
+
+    	            :}| PR_SHOW P_ABRE STRING_LITERAL:sl P_CIERRA {:
+               		        output.add("REGLA 14.2: sentenciaSHOW -> PR_SHOW P_ABRE STRING_LITERAL P_CIERRA");
+               		        output.add(String.format("REGLA 14.2: sentenciaSHOW -> SHOW(%s)%n",sl));
+                                cte_string = new ConstanteString(sl);
+               		        RESULT = new SentenciaShow(cte_string); 
+               		        this.table.add_string_const(sl.toString());
+           		 :};
+
+/* Sentencia FIBONACCI */
+fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
+          			  output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
+          			  output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
+          			  RESULT = new Fibonacci(e);
+        			  :};
+
+
+/* Asignación */
+asignacion ::= IDENTIFICADOR:id ASIGNACION expresion_logica:e {:
+      			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
+      			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
+      			  RESULT = new Asignacion(id,e);
+   		 :};
+
+expresion_logica ::= expresion_logica:explog OR expresion_AND:expand {:
+           		 output.add("REGLA 17.1: expresion_logica -> expresion_logica OR expresion_AND");
+           		 output.add(String.format("REGLA 17.1: expresion_logica -> %s or %s%n", explog, expand));
+     	     		 RESULT = new ExpresionOR(explog,expand);
+       		 :}| expresion_AND:expand {:
+         	        output.add("REGLA 17.2: expresion_logica -> expresion_AND");
+         	        output.add(String.format("REGLA 17.2: expresion_logica -> %s%n",expand));
+     		        RESULT = expand;
+       		 :};
+
+expresion_AND ::=   expresion_AND:expand AND expresion_simple:expsim {:
+          			  output.add("REGLA 18.1: expresion_AND -> expresion_AND AND expresion_simple");
+          			  output.add(String.format("REGLA 18.1: expresion_AND -> %s and %s%n", expand, expsim));
+          	     		 RESULT = new ExpresionAND (expand,expsim);
+       		 :}| expresion_simple:expsim {:
+          	     		 output.add("REGLA 18.2: expresion_AND -> expresion_simple");
+               		         output.add(String.format("REGLA 18.2: expresion_AND -> %s%n",expsim));
+               		 RESULT = expsim;
+     			  :};
+
+expresion_simple ::=NOT expresion_simple:expsim {:
+             			  output.add("REGLA 19.1: expresion_simple -> NOT expresion_simple");
+             			  output.add(String.format("REGLA 19.1: expresion_simple -> not %s%n",expsim));
+             			  RESULT =  new ExpresionNOT(expsim);
+         		 :}| comparacion:comp {:
+            			  output.add("REGLA 19.2: expresion_simple -> comparacion");
+            			  output.add(String.format("REGLA 19.2: expresion_simple -> %s%n",comp));
+            			  RESULT = comp;
+         		 :};
+         		
+
+/* Comparación */
+comparacion ::= expresion:e1 IGUALDAD expresion:e2 {:
+    			  output.add("REGLA 20.1: comparacion -> expresion IGUALDAD expresion");
+    			  output.add(String.format("REGLA 20.1: expresion -> %s == %s%n", e1, e2));
+    			  RESULT = new Igualdad(e1,e2);;
+ 			  :}|
+ 			  expresion:e1 DISTINTO expresion:e2 {:
+       			  output.add("REGLA 20.2: comparacion -> expresion DISTINTO expresion");
+       			  output.add(String.format("REGLA 20.2: expresion -> %s != %s%n", e1, e2));
+       			  RESULT = new Distinto(e1,e2);;
+  			  :}|
+ 			  expresion:e1 MENOR expresion:e2 {:
+      			  output.add("REGLA 20.3: comparacion -> expresion MENOR expresion");
+      			  output.add(String.format("REGLA 20.3: expresion -> %s < %s%n", e1, e2));
+      			  RESULT = new Menor(e1,e2);;
+ 			  :}|
+ 			  expresion:e1 MAYOR expresion:e2 {:
+      			  output.add("REGLA 20.4: comparacion -> expresion MAYOR expresion");
+       			  output.add(String.format("REGLA 20.4: expresion -> %s > %s%n", e1, e2));
+      			  RESULT = new Mayor(e1,e2);
+   		 :}|
+ 			  expresion:e1 MENOR_IGUAL expresion:e2 {:
+      			  output.add("REGLA 20.5: comparacion -> expresion MENOR_IGUAL expresion");
+      			  output.add(String.format("REGLA 20.5 : expresion -> %s <= %s%n", e1, e2));
+      			  RESULT = new MenorIgual(e1,e2);
+   		 :}|
+ 			  expresion:e1 MAYOR_IGUAL expresion:e2 {:
+      			  output.add("REGLA 20.6: comparacion -> expresion MAYOR_IGUAL expresion");
+      			  output.add(String.format("REGLA 20.6: expresion -> %s >= %s%n", e1, e2));
+      			  RESULT =  new MayorIgual(e1,e2);
+ 			  :}|
+ 			  expresion:e {:
+ 			 	output.add("REGLA 20.7: comparacion -> expresion");
+             	                output.add(String.format("REGLA 20.7: expresion -> %s%n", e));
+             	                RESULT = e;
+ 			  :};
+
+expresion ::= expresion:e MAS termino:t {:
+        		 output.add("REGLA 21.1: expresion -> expresion MAS termino");
+        		 output.add(String.format("REGLA 21.1: expresion -> %s + %s%n", e, t));
+        		 RESULT = new Suma(e,t);
+           :}|
+   		 expresion:e MENOS termino:t {:
+        		 output.add("REGLA 21.2: expresion -> expresion MENOS termino");
+        		 output.add(String.format("REGLA 21.2: expr -> %s - %s%n", e, t));
+        		 RESULT = new Resta(e,t);
+   	 :}|
+   		 termino:t {:
+       		 output.add("REGLA 21.3: expresion -> termino");
+       		 output.add(String.format("REGLA 21.3: expresion -> %s%n", t));
+       		 RESULT = t;
+   	 :};
+ 
+termino ::= 	termino:t MULT factor:f {:
+           		 output.add("REGLA 22.1: termino -> termino MULT factor");
+           		 output.add(String.format("REGLA 22.1: termino -> %s * %s%n", t, f));
+           		 RESULT = new Multiplicacion(t,f);
+       		 :}|
+  	        termino:t DIV factor:f {:
+           		 output.add("REGLA 22.2: termino -> termino DIV factor");
+     	      		 output.add(String.format("REGLA 22.2: termino -> %s / %s%n", t, f));
+     	                 RESULT = new Division(t,f);
+  	        :}|
+  	        factor:f {:
+    			 output.add("REGLA 22.3: termino -> factor");
+     	     		 output.add(String.format("REGLA 22.3: termino -> %s%n", f));
+    			 RESULT = f;
+  	        :};
+
+factor ::=  MENOS factor:f {:
+    			 output.add("REGLA 23.1: factor -> MENOS factor_sin_signo");
+     	     		 output.add(String.format("REGLA 23.1: factor -> - %s%n", f));
+     	     		 RESULT = new MenosUnario(f);
+          		 :} %prec MENOS_UNARIO |
+
+            P_ABRE expresion_logica:expsim P_CIERRA {:
+                         output.add("REGLA 23.2: expresion_logica -> P_ABRE expresion_logica P_ABRE");
+                         output.add(String.format("REGLA 23.2: expresion_logica -> %s%n",expsim));
+                         RESULT = expsim;
+       	    :} | 
+            factor_sin_signo:fss {:
+           		 output.add("REGLA 23.3: factor -> factor_sin_signo");
+           		 output.add(String.format("REGLA 20.2: factor ->  %s%n", fss));
+           		 RESULT = fss;
+  	    :}| fibonacci:sf {:
+           		 output.add("REGLA 23.4: factor -> sentenciaFIBONACCI");
+           		 output.add(String.format("REGLA 20.4: factor-> %s",sf));
+           		 RESULT = sf;
+       	     :};
+
+factor_sin_signo ::=    IDENTIFICADOR:id {:
+           		   output.add("REGLA 24.1: factor_sin_signo -> IDENTIFICADOR");
+           		   output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
+           		   RESULT = id;
+          		 :}|
+          	        ENTERO:ent{:
+           		    output.add("REGLA 24.2: factor_sin_signo -> ENTERO");
+           		    output.add(String.format("REGLA 21.2: factor_sin_signo -> %s%n", ent));
+           		    RESULT = new ConstanteEntera(ent);
+          		 :}|
+          		FLOAT:fl{:
+           		   output.add("REGLA 24.3: factor_sin_signo -> FLOAT");
+           		   output.add(String.format("REGLA 21.3: factor_sin_signo -> %s%n", fl));
+           		RESULT = new ConstanteReal(fl);
+       		        :}| 
+                        DUPLE:dp{:
+           		    output.add("REGLA 24.4: factor_sin_signo-> DUPLA");
+           		    output.add(String.format("REGLA 21.4: factor_sin_signo-> %s%n", dp));
+           		    RESULT = new ConstanteDupla(dp);
+              	        :}| 
+                        BOOLEAN:bool {:
+     	         	    output.add ("REGLA 24.5: constante_booleana -> BOOLEANO");
+           	            output.add( String.format("REGLA 22: constante_booleana -> %s%n", bool));
+       		            RESULT = new ConstanteBooleana(bool);
+  	                :}|
+       		        entrada:en {:
+             		       output.add("REGLA 24.6: factor -> entrada");
+             		       output.add(String.format("REGLA 20.4: factor-> %s",en));
+             		     RESULT = en;
+                        :};
+
+tipo_de_variable ::=    PR_FLOAT {:
+          	            output.add("REGLA 25.1: tipo_de_variable -> PR_FLOAT\n");
+          	            RESULT = new TipoDato(TipoPR.PR_FLOAT);
+      			:}| 
+                        PR_INTEGER {:
+          	            output.add("REGLA 25.2: tipo_de_variable -> PR_INTEGER\n");
+          	            RESULT = new TipoDato(TipoPR.PR_INTEGER);
+      			:}| 
+     			PR_BOOLEAN {:
+          		    output.add("REGLA 25.3: tipo_de_variable -> PR_BOOLEAN\n");
+          	            RESULT = new TipoDato(TipoPR.PR_BOOLEAN);
+      			:}| 
+                        PR_DUPLE {:
+          	            output.add("REGLA 25.4: tipo_de_variable -> PR_DUPLE\n");
+          	            RESULT = new TipoDato(TipoPR.PR_FLOAT);
+      			:};
+
+entrada ::= PR_INPUT_INT P_ABRE P_CIERRA {:
+      			  output.add("REGLA 26.1: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+      			  RESULT = new TipoEntrada(TipoPR.PR_INPUT_INT);
+ 	    :} |
+            PR_INPUT_FLOAT P_ABRE P_CIERRA {:
+      			  output.add("REGLA 26.2: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+           		  RESULT = new TipoEntrada(TipoPR.PR_INPUT_FLOAT);
+ 	    :}|
+ 	    PR_INPUT_BOOL P_ABRE P_CIERRA {:
+           		  output.add("REGLA 26.3: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+           		  RESULT = new TipoEntrada(TipoPR.PR_INPUT_BOOL);
+ 	    :}|
+ 	    PR_INPUT_DUPLE P_ABRE P_CIERRA {:
+      			  output.add("REGLA 26.4: entrada -> PR_INPUT_INT P_ABRE P_CIERRA");
+           		  RESULT = new TipoEntrada(TipoPR.PR_INPUT_DUPLE);
+ 	    :};
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,7 @@
  */
 package compiler;
 
+import compiler.sintactico.Controller;
 import java.io.IOException;
 
 /**
