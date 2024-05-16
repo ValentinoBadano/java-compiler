@@ -25,7 +25,7 @@ public class Main {
 
         try {
             // Establece el L&F deseado
-            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

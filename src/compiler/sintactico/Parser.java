@@ -573,7 +573,7 @@ class CUP$Parser$actions {
   			  output.add(String.format("REGLA 3.3: tipo_declaracion -> %s : %s%n", tdv, lv));
   			  RESULT = new Declaracion(tdv,lv);
   			  this.table.add_symbols(tdv.getOperador().toString(),lv);
-
+  		  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("tipo_declaracion",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
