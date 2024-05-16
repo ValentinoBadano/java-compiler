@@ -55,7 +55,7 @@ public class Declaracion extends Expresion {
         String graficoLista = super.graficar(idPadre) + td.graficar(miId);
         
         
-        if (listaIdentificador.size() > 1) {
+        if (listaIdentificador.size() >= 1) {
             for (Identificador identificador: listaIdentificador) {
              graficoLista +=  identificador.graficar(miId);
               
