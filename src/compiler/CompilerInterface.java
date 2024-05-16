@@ -2,7 +2,6 @@ package compiler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 
 public class CompilerInterface extends JFrame {
@@ -10,7 +9,7 @@ public class CompilerInterface extends JFrame {
     private JTextArea codeTextArea;
     private JButton lexicButton;
     private JButton syntacticButton;
-    private JButton astButton;
+    private JMenuItem astMenuItem;
     private JTextArea outputTextArea;
     private JButton cleanButton;
     private JMenuItem symbolTableItem;
@@ -33,11 +32,11 @@ public class CompilerInterface extends JFrame {
         // boton de limpiar
         cleanButton = new JButton("Borrar");
 
-        syntacticButton = new JButton("Análisis Sintáctico"); //
+        syntacticButton = new JButton("Análisis Sintáctico");
         this.syntacticButton.setActionCommand("syntactic");
         
-        astButton = new JButton("AST"); //
-        this.astButton.setActionCommand("ast");
+        astMenuItem = new JMenuItem("AST");
+        this.astMenuItem.setActionCommand("ast");
 
         // área de texto para la salida
         outputTextArea = new JTextArea();
@@ -51,9 +50,13 @@ public class CompilerInterface extends JFrame {
         JMenu fileMenu = new JMenu("Archivo");
         JMenu helpMenu = new JMenu("Ayuda");
         JMenu toolsMenu = new JMenu("Herramientas");
-
+        // boton para generar tabla de símbolos
         symbolTableItem = new JMenuItem("Generar tabla de símbolos");
         symbolTableItem.setActionCommand("table");
+        // boton para generar AST
+        astMenuItem = new JMenuItem("Generar AST");
+        this.astMenuItem.setActionCommand("ast");
+
         JMenuItem loadMenuItem = new JMenuItem("Cargar Archivo");
         JMenuItem instructionsItem = new JMenuItem("Instrucciones");
 
@@ -62,6 +65,7 @@ public class CompilerInterface extends JFrame {
 
         fileMenu.add(loadMenuItem);
         toolsMenu.add(symbolTableItem);
+        toolsMenu.add(astMenuItem);
         helpMenu.add(instructionsItem);
 
         menuBar.add(fileMenu);
@@ -78,7 +82,6 @@ public class CompilerInterface extends JFrame {
         topPanel.add(cleanButton, BorderLayout.SOUTH);
         buttonsPanel.add(lexicButton);
         buttonsPanel.add(syntacticButton);
-        buttonsPanel.add(astButton);
         buttonsPanel.add(cleanButton);
         topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
@@ -144,8 +147,8 @@ public class CompilerInterface extends JFrame {
         return syntacticButton;
     }
     
-    public JButton getAstButton() {
-        return astButton;
+    public JMenuItem getAstMenuItem() {
+        return astMenuItem;
     }
 
     public JMenuItem getSymbolTableItem() {

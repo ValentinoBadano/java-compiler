@@ -2,7 +2,6 @@ package compiler.sintactico;
 
 import compiler.CompilerInterface;
 import compiler.simbolo.*;
-import compiler.sintactico.*;
 import compiler.lexico.*;
 import compiler.ast.*;
 import java_cup.runtime.Symbol;
@@ -11,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +33,7 @@ public class Controller implements ActionListener {
         view.getLexicButton().addActionListener(this);
         view.getCleanButton().addActionListener(this);
         view.getSyntacticButton().addActionListener(this);
-        view.getAstButton().addActionListener(this);
+        view.getAstMenuItem().addActionListener(this);
         view.getSymbolTableItem().addActionListener(this);
         view.setVisible(true);
     }
@@ -98,6 +96,7 @@ public class Controller implements ActionListener {
     
     public void doAstAnalysis() {
         view.clearOutput();
+
         List<String> output = new ArrayList<>();
         Hashtable<String, Simbolo> table = new Hashtable<>();
     
@@ -124,8 +123,10 @@ public class Controller implements ActionListener {
 
             File tree = new File("./arbol.png");
             Desktop.getDesktop().open(tree);
+            view.appendTextOutput("Se ha guardado el AST en el archivo '/arbol.png'.\n");
         } catch (Exception e) {
             System.out.println(e);
+            view.appendTextOutput(e.getMessage());
         }
     }
 
@@ -136,7 +137,7 @@ public class Controller implements ActionListener {
 
     public void generateSymbolTableFile() {
         Hashtable<String, Simbolo> table = new Hashtable<>();
-        String path = "src/ts.txt";
+        String path = "./ts.txt";
 
         try {
             String code = view.getCodeTextArea().getText();
@@ -158,8 +159,10 @@ public class Controller implements ActionListener {
             // abrimos la tabla de símbolos una vez se escribió
             File file = new File(path);
             Desktop.getDesktop().open(file);
+            view.appendTextOutput("Se ha guardado la tabla de símbolos en el archivo '/ts.txt'.\n");
         } catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
+            view.appendTextOutput(e.getMessage());
         }
 
 
