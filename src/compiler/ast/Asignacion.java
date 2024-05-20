@@ -45,4 +45,8 @@ public class Asignacion extends Sentencia {
                 expresion.graficar(miId);
     }
 
+    @Override
+    public String toString() {
+        return identificador + ":= " + expresion;
+    }
 }

@@ -8,7 +8,7 @@ package compiler.ast;
  *
  * @author Mari
  */
-public class Suma extends ExpresionBinaria {
+public class    Suma extends ExpresionBinaria {
 
     public Suma(ExpresionLogica izquierda, ExpresionLogica derecha) {
         super(izquierda, derecha);

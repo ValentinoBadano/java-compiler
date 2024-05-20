@@ -19,7 +19,8 @@ public enum TipoPR {
     PR_INPUT_BOOL,
     PR_INPUT_DUPLE,
     PR_BREAK,
-    PR_CONTINUE;
+    PR_CONTINUE,
+    PR_UNTIL;
     
     
     
@@ -48,6 +49,8 @@ public enum TipoPR {
                 return "break";
             case PR_CONTINUE:
                 return "continue";
+            case PR_UNTIL:
+                return "until";
         }
         return "<null>";
     }

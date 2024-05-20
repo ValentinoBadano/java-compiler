@@ -4,7 +4,6 @@
  */
 package compiler.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,7 +46,12 @@ public class Declaracion extends Expresion {
     protected String getEtiqueta() {
         return ":";
     }
-    
+
+    @Override
+    public String toString() {
+        return tipoDato + ": " + listaIdentificador.toString();
+    }
+
     @Override
     public String graficar(String idPadre) {
         final String miId = this.getId();

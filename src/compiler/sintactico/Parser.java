@@ -423,6 +423,7 @@ class CUP$Parser$actions {
 
     TablaSimbolos table = new TablaSimbolos();
     List<String> output = new ArrayList<>();
+    List<Sentencia> sentenciasFibonacci = new ArrayList<>();
 
   private final Parser parser;
 
@@ -668,8 +669,16 @@ class CUP$Parser$actions {
 		
           			  output.add("REGLA 8.1: bloque_sentencias -> sentencia");
           			  output.add(String.format("REGLA 7.1: bloque_sentencias -> %s%n", s));
+
           			  RESULT = new ArrayList();
-                                  RESULT.add(s);
+
+          			   if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            RESULT.add(0,sf);
+          			        }
+                         }
+
+          			  RESULT.add(s);
       			  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("bloque_sentencias",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -703,7 +712,7 @@ class CUP$Parser$actions {
 		Sentencia is = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
           			  output.add("REGLA 9.1: bloque_sentencias_repeat -> instruccion_repeat");
-          			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is);
+          			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is + "\n");
                                   RESULT = new ArrayList();
                                   RESULT.add(is);
       			  
@@ -722,7 +731,7 @@ class CUP$Parser$actions {
 		int bsrright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		List<Sentencia> bsr = (List<Sentencia>)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-          			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias ");
+          			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias\n");
           			  bsr.add(0,is);
                                   RESULT = bsr;
       			  
@@ -739,7 +748,7 @@ class CUP$Parser$actions {
 		Sentencia s = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
        		 output.add("REGLA 8.25: instruccion_repeat -> sentencia");
-       		 output.add(String.format("REGLA 10.1: instruccion_repeat-> %s%n",s));
+       		 output.add(String.format("REGLA 10.1: instruccion_repeat -> %s%n",s));
        		 RESULT = s;
    	 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("instruccion_repeat",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -780,7 +789,7 @@ class CUP$Parser$actions {
 		Sentencia sr = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
            		 output.add("REGLA 11.1: sentencia -> sentenciaREPEAT");
-           		 output.add(String.format("REGLA 11.1: sentencia->%s%n",sr));
+           		 output.add(String.format("REGLA 11.1: sentencia -> %s%n",sr));
            		 RESULT = sr;
    		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentencia",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -796,7 +805,7 @@ class CUP$Parser$actions {
 		Sentencia su = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
       			  output.add("REGLA 11.2: sentencia -> sentenciaUNLESS");
-      			  output.add(String.format("REGLA 11.2: sentencia->UNLESS %s%n",su));
+      			  output.add(String.format("REGLA 11.2: sentencia -> UNLESS %s%n",su));
            		 RESULT = su;
    		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentencia",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -812,7 +821,7 @@ class CUP$Parser$actions {
 		Sentencia ss = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
       			  output.add("REGLA 11.3: sentencia -> sentenciaSHOW");
-      			  output.add(String.format("REGLA 11.3: sentencia->%s%n",ss));
+      			  output.add(String.format("REGLA 11.3: sentencia -> %s%n",ss));
            		 RESULT = ss;
   		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentencia",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -828,7 +837,7 @@ class CUP$Parser$actions {
 		Asignacion a = (Asignacion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
       			  output.add("REGLA 11.4: sentencia -> asignación");
-  	     		 output.add(String.format("REGLA 11.4: sentencia-> %s%n",a));
+  	     		 output.add(String.format("REGLA 11.4: sentencia -> %s%n",a));
       			  RESULT = a;
  		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentencia",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -847,9 +856,9 @@ class CUP$Parser$actions {
 		ExpresionLogica explog = (ExpresionLogica)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
           		 output.add("REGLA 12.1: sentenciaREPEAT -> PR_REPEAT bloque_sentencias PR_UNTIL expresion_logica");
-           		 output.add(String.format("REGLA 12.1: sentenciaREPEAT -> REPEAT %s UNTIL %s",bsr,explog));
+           		 output.add(String.format("REGLA 12.1: sentenciaREPEAT -> REPEAT %s UNTIL %s%n",bsr,explog));
            		 sentenciaRepeat = new SentenciaRepeat(bsr,explog);
-                         RESULT = sentenciaRepeat;
+                    RESULT = sentenciaRepeat;
      	            
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentenciaREPEAT",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -941,10 +950,44 @@ class CUP$Parser$actions {
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		ExpresionLogica e = (ExpresionLogica)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-          			  output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
-          			  output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
-          			  RESULT = new Fibonacci(e);
-        			  
+           output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
+           output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
+
+			Identificador input = new Identificador("_input");
+            Identificador ant= new Identificador("_ant");
+            Identificador sig = new Identificador("_sig");
+            Identificador suma = new Identificador("_suma");
+
+            Asignacion asig1 = new Asignacion(input,e);
+            Asignacion asig2 = new Asignacion(new Identificador("_ant"),new ConstanteEntera(0));
+            Asignacion asig3 = new Asignacion(new Identificador("_sig"),new ConstanteEntera(1));
+            Asignacion asig4 = new Asignacion(suma,new ConstanteEntera(0));
+
+            List<Sentencia> sentenciasRepeat = new ArrayList<>();
+			Sentencia sent1 = new Asignacion(new Identificador("_suma"), new Suma(new Identificador("_sig"), new Identificador("_ant")));
+            Sentencia sent2 = new Asignacion(new Identificador("_ant"), new Identificador("_sig"));
+            Sentencia sent3 = new Asignacion(new Identificador("_sig"), new Identificador("_suma"));
+            Sentencia sent4 = new Asignacion(new Identificador("_input"), new Resta(new Identificador("_input"), new ConstanteEntera(1)));
+
+            sentenciasRepeat.add(0,sent1);
+            sentenciasRepeat.add(1,sent2);
+            sentenciasRepeat.add(2,sent3);
+            sentenciasRepeat.add(3,sent4);
+
+			Igualdad until = new Igualdad(new Identificador("_input"), new ConstanteEntera(1));
+ 			SentenciaRepeat repeat = new SentenciaRepeat(sentenciasRepeat, until);
+			List<Sentencia> sentenciasUnless = new ArrayList<>();
+			sentenciasUnless.add(repeat);
+			SentenciaUnless unless = new SentenciaUnless(new MenorIgual(new Identificador("_input"), new ConstanteEntera(1)), sentenciasUnless);
+
+            sentenciasFibonacci.add(0,asig1);
+            sentenciasFibonacci.add(0,asig2);
+            sentenciasFibonacci.add(0,asig3);
+            sentenciasFibonacci.add(0,asig4);
+            sentenciasFibonacci.add(0,unless);
+
+            RESULT = new Identificador("_sig");
+		   
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("fibonacci",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

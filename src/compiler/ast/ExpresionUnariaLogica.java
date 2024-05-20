@@ -30,4 +30,9 @@ public abstract class  ExpresionUnariaLogica extends ExpresionLogica {
         return super.graficar(idPadre) +
                 derecha.graficar(miId);
     }
+
+    @Override
+    public String toString() {
+        return this.getNombreOperacion() + " " + derecha;
+    }
 }

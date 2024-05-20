@@ -32,5 +32,9 @@ public abstract class ExpresionBinariaLogica extends ExpresionLogica {
                 izquierda.graficar(miId) +
                 derecha.graficar(miId);
     }
-    
+
+    @Override
+    public String toString() {
+        return izquierda + " " + this.getNombreOperacion() + " " + derecha;
+    }
 }

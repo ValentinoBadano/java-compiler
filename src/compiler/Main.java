@@ -29,8 +29,6 @@ public class Main {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
-        // TODO code application logic here
 
         CompilerInterface v = new CompilerInterface();
         Controller c = new Controller(v);

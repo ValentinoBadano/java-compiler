@@ -57,5 +57,12 @@ public class SentenciaShow extends Sentencia{
             return super.graficar(idPadre) + getConstanteString().graficar(miId);
         }        
     }
-    
+
+    @Override
+    public String toString() {
+         if (expresion == null) {
+             return "show(" + constanteString.toString() + ")";
+        }
+        return "show(" + expresion + ")";
+    }
 }

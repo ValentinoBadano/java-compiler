@@ -23,5 +23,9 @@ public abstract class Constante extends Expresion {
     protected String getEtiqueta() {
         return String.format(String.format("Const %s", getValor()));
     }
-    
+
+    @Override
+    public String toString() {
+        return valor.toString();
+    }
 }

@@ -37,7 +37,7 @@ public class SentenciaRepeat extends Sentencia{
     }
     
      protected String getNombreOperacion() {
-        return "Repeat";
+        return "repeat";
     }
     
     @Override
@@ -62,5 +62,9 @@ public class SentenciaRepeat extends Sentencia{
         
         return super.graficar(idPadre) + graf + getExpresion().graficar(miId);
     }
-    
+
+    @Override
+    public String toString() {
+        return "repeat " + sentenciasRepeat.toString() + " until " + expresion.toString();
+    }
 }

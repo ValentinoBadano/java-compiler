@@ -64,5 +64,9 @@ public class TipoDato extends Expresion {
         return null;
 
     }
-    
+
+    @Override
+    public String toString() {
+        return operador.toString();
+    }
 }

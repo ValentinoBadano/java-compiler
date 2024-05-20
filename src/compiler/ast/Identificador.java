@@ -39,5 +39,9 @@ public class Identificador extends Expresion{
     protected String getId() {
         return "identificador_" + this.hashCode();
     }
-    
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
