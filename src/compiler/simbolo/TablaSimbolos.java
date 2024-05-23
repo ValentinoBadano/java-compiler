@@ -28,4 +28,10 @@ public class TablaSimbolos extends Hashtable<String, Simbolo> {
         this.put(str, symbol);
     }
 
+    public boolean idExists(String id) {
+        return this.containsKey(id);
+    }
+
+
+
 }

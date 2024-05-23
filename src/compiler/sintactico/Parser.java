@@ -1038,6 +1038,9 @@ class CUP$Parser$actions {
 		
       			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
       			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
+      			  if (!this.table.idExists(id.getNombre())) {
+      			        throw new SimboloNoExisteException(id);
+      			  }
       			  RESULT = new Asignacion(id,e);
    		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("asignacion",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

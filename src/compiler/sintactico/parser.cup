@@ -343,6 +343,9 @@ fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
 asignacion ::= IDENTIFICADOR:id ASIGNACION expresion_logica:e {:
       			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
       			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
+      			  if (!this.table.idExists(id.getNombre())) {
+      			        throw new SimboloNoExisteException(id);
+      			  }
       			  RESULT = new Asignacion(id,e);
    		 :};
 

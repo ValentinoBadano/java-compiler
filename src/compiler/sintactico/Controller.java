@@ -85,6 +85,7 @@ public class Controller implements ActionListener {
             table = parser.action_obj.table;
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            output.add(ex.getMessage());
         }
 
         for (String line: output
@@ -124,7 +125,9 @@ public class Controller implements ActionListener {
             view.appendTextOutput("Se ha guardado el AST en el archivo '/arbol.png'.\n");
         } catch (Exception e) {
             System.out.println(e);
+            output.clear();
             view.appendTextOutput(e.getMessage());
+            return;
         }
 
         File tree = new File("./arbol.png");
