@@ -6,6 +6,7 @@ import compiler.lexico.*;
 import compiler.ast.*;
 import java_cup.runtime.Symbol;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -120,12 +121,16 @@ public class Controller implements ActionListener {
             String[] command = {cmdDot, "-Tpng", "arbol.dot", "-o", "arbol.png"};
             ProcessBuilder pb = new ProcessBuilder(command);
             pb.start();
-
-            File tree = new File("./arbol.png");
-            Desktop.getDesktop().open(tree);
             view.appendTextOutput("Se ha guardado el AST en el archivo '/arbol.png'.\n");
         } catch (Exception e) {
             System.out.println(e);
+            view.appendTextOutput(e.getMessage());
+        }
+
+        File tree = new File("./arbol.png");
+        try {
+            Desktop.getDesktop().open(tree);
+        } catch (IOException e) {
             view.appendTextOutput(e.getMessage());
         }
     }

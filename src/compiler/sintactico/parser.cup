@@ -3,10 +3,7 @@ package compiler.sintactico;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Hashtable;
+import java.util.Arrays;
 import compiler.simbolo.*;
 import compiler.ast.*;
 
@@ -16,6 +13,7 @@ action code {:
     TablaSimbolos table = new TablaSimbolos();
     List<String> output = new ArrayList<>();
     List<Sentencia> sentenciasFibonacci = new ArrayList<>();
+    int contadorFib = 0;
 :};
 
 parser code
@@ -24,6 +22,8 @@ parser code
     static Programa program;
     static SentenciaUnless sentenciaUnless;
     static SentenciaRepeat sentenciaRepeat;
+    static SentenciaUnlessThen sentenciaUnlessThen;
+    static SentenciaUnlessElse sentenciaUnlessElse;
     static ConstanteString cte_string;
 
     public void syntax_error(Symbol s){
@@ -128,8 +128,9 @@ lista_declaraciones ::= tipo_declaracion:td {:
 
 tipo_declaracion ::= tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:lv {:
   			  output.add("REGLA 4.1: tipo_declaracion -> tipo_de_variable : lista_de_variables");
-  			  output.add(String.format("REGLA 3.3: tipo_declaracion -> %s : %s%n", tdv, lv));
+  			  output.add(String.format("REGLA 4.1: tipo_declaracion -> %s : %s%n", tdv, lv));
   			  RESULT = new Declaracion(tdv,lv);
+
   			  this.table.add_symbols(tdv.getOperador().toString(),lv);
   		  :};
 
@@ -137,12 +138,12 @@ tipo_declaracion ::= tipo_de_variable:tdv DOS_PUNTOS lista_de_variables:lv {:
 /* Lista de variables */
 lista_de_variables ::=  variable:v COMA lista_de_variables:lv  {:
               			  output.add("REGLA 5.2: lista_de_variables ->  variable COMA lista_de_variables");
-              			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s, %s%n", lv, v));
+              			  output.add(String.format("REGLA 5.2: lista_de_variables -> %s, %s%n", lv, v));
               			  lv.add(0,v);
                                   RESULT = lv;
           	        :}| variable:v {:
               			  output.add("REGLA 5.1: lista_de_variables -> variable");
-              			  output.add(String.format("REGLA 4.1: lista_de_variables -> %s%n", v));
+              			  output.add(String.format("REGLA 5.1: lista_de_variables -> %s%n", v));
                                   RESULT = new ArrayList();
                                   RESULT.add(0,v);
                                   
@@ -172,16 +173,27 @@ bloque_sentencias ::= sentencia:s {:
 
           			   if (!sentenciasFibonacci.isEmpty()) {
           			        for (Sentencia sf : sentenciasFibonacci) {
-          			            RESULT.add(0,sf);
+          			            RESULT.add(sf);
           			        }
-                         }
+                                         sentenciasFibonacci.clear();
+                                    }
+                                    
 
           			  RESULT.add(s);
       			  :}
-      			  |  sentencia:s bloque_sentencias:bs {:
-          			  output.add("REGLA 8.2: bloque_sentencias -> sentencia bloque_sentencias");
-          			  bs.add(0,s);
-                                  RESULT = bs;
+      			  | bloque_sentencias:bs sentencia:s {:
+          		   output.add("REGLA 8.2: bloque_sentencias -> sentencia bloque_sentencias");
+                                  
+          			  
+
+                                    if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            bs.add(sf);
+          			        }
+                                           sentenciasFibonacci.clear();
+                                    }
+                                       bs.add(s);
+                                   RESULT = bs;
       			  :};
 
 // Bloque instrucciones para REPEAT
@@ -192,9 +204,9 @@ bloque_sentencias_repeat ::= instruccion_repeat:is {:
                                   RESULT = new ArrayList();
                                   RESULT.add(is);
       			  :}
-      			  | instruccion_repeat:is bloque_sentencias_repeat:bsr {:
+      			  | bloque_sentencias_repeat:bsr instruccion_repeat:is  {:
           			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias\n");
-          			  bsr.add(0,is);
+          			  bsr.add(is);
                                   RESULT = bsr;
       			  :};
 
@@ -238,7 +250,7 @@ sentencia ::= sentenciaREPEAT:sr {:
 sentenciaREPEAT ::= PR_REPEAT bloque_sentencias_repeat:bsr PR_UNTIL expresion_logica:explog {:
           		 output.add("REGLA 12.1: sentenciaREPEAT -> PR_REPEAT bloque_sentencias PR_UNTIL expresion_logica");
            		 output.add(String.format("REGLA 12.1: sentenciaREPEAT -> REPEAT %s UNTIL %s%n",bsr,explog));
-           		 sentenciaRepeat = new SentenciaRepeat(bsr,explog);
+           		 sentenciaRepeat = new SentenciaRepeat(bsr,new SentenciaUntil(explog));
                     RESULT = sentenciaRepeat;
      	            :};
 
@@ -246,14 +258,17 @@ sentenciaREPEAT ::= PR_REPEAT bloque_sentencias_repeat:bsr PR_UNTIL expresion_lo
 sentenciaUNLESS ::= PR_UNLESS expresion_logica:explog PR_THEN bloque_sentencias:bs1 PR_ELSE bloque_sentencias:bs2 PR_END {:
           			  output.add("REGLA 13.1: sentenciaUNLESS -> PR_UNLESS expresion_logica PR_THEN bloque_sentencias PR_ELSE bloque_sentencias PR_END");
           			  output.add(String.format("REGLA 13.1: sentenciaUNLESS -> UNLESS %s THEN %s ELSE %s END %n",explog,bs1,bs2));
-          			  sentenciaUnless = new SentenciaUnless(explog,bs1,bs2);
+                                  sentenciaUnlessThen = new SentenciaUnlessThen(bs1);
+                                  sentenciaUnlessElse = new SentenciaUnlessElse(bs2);
+                                  sentenciaUnless = new SentenciaUnless(explog,sentenciaUnlessThen,sentenciaUnlessElse);
                                   RESULT = sentenciaUnless;
      			  :};
 
 sentenciaUNLESS ::= PR_UNLESS expresion_logica:explog PR_THEN bloque_sentencias:bs1 PR_END {:
           			  output.add("REGLA 13.2: sentenciaUNLESS -> PR_UNLESS expresion_logica PR_THEN bloque_sentencias PR_END");
           			  output.add(String.format("REGLA 13.2: sentenciaUNLESS -> UNLESS %s THEN %s END %n",explog,bs1));
-          			  sentenciaUnless = new SentenciaUnless(explog,bs1);
+                                  sentenciaUnlessThen = new SentenciaUnlessThen(bs1);
+          			  sentenciaUnless = new SentenciaUnless(explog,sentenciaUnlessThen);
                                   RESULT = sentenciaUnless;
      			  :};
 
@@ -275,41 +290,52 @@ sentenciaSHOW ::=   PR_SHOW P_ABRE expresion_logica:e P_CIERRA{:
 fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
            output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
            output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
+           int n = this.contadorFib;
+           contadorFib++;
 
-			Identificador input = new Identificador("_input");
-            Identificador ant= new Identificador("_ant");
-            Identificador sig = new Identificador("_sig");
-            Identificador suma = new Identificador("_suma");
+	    Identificador input = new Identificador("_input" + n);
+            Identificador ant= new Identificador("_ant" + n);
+            Identificador sig = new Identificador("_sig" + n);
+            Identificador suma = new Identificador("_suma" + n);
+
+            this.table.add_symbols("integer", Arrays.asList(input, ant, sig, suma));
+
 
             Asignacion asig1 = new Asignacion(input,e);
-            Asignacion asig2 = new Asignacion(new Identificador("_ant"),new ConstanteEntera(0));
-            Asignacion asig3 = new Asignacion(new Identificador("_sig"),new ConstanteEntera(1));
+            Asignacion asig2 = new Asignacion(ant,new ConstanteEntera(0));
+            Asignacion asig3 = new Asignacion(sig,new ConstanteEntera(1));
             Asignacion asig4 = new Asignacion(suma,new ConstanteEntera(0));
 
             List<Sentencia> sentenciasRepeat = new ArrayList<>();
-			Sentencia sent1 = new Asignacion(new Identificador("_suma"), new Suma(new Identificador("_sig"), new Identificador("_ant")));
-            Sentencia sent2 = new Asignacion(new Identificador("_ant"), new Identificador("_sig"));
-            Sentencia sent3 = new Asignacion(new Identificador("_sig"), new Identificador("_suma"));
-            Sentencia sent4 = new Asignacion(new Identificador("_input"), new Resta(new Identificador("_input"), new ConstanteEntera(1)));
+	    Sentencia sent1 = new Asignacion(new Identificador("_suma"+n), new Suma(new Identificador("_sig"+n), new Identificador("_ant"+n)));
+            Sentencia sent2 = new Asignacion(new Identificador("_ant"+n), new Identificador("_sig"+n));
+            Sentencia sent3 = new Asignacion(new Identificador("_sig"+n), new Identificador("_suma"+n));
+            Sentencia sent4 = new Asignacion(new Identificador("_input"+n), new Resta(new Identificador("_input"+n), new ConstanteEntera(1)));
 
             sentenciasRepeat.add(0,sent1);
             sentenciasRepeat.add(1,sent2);
             sentenciasRepeat.add(2,sent3);
             sentenciasRepeat.add(3,sent4);
 
-			Igualdad until = new Igualdad(new Identificador("_input"), new ConstanteEntera(1));
- 			SentenciaRepeat repeat = new SentenciaRepeat(sentenciasRepeat, until);
-			List<Sentencia> sentenciasUnless = new ArrayList<>();
-			sentenciasUnless.add(repeat);
-			SentenciaUnless unless = new SentenciaUnless(new MenorIgual(new Identificador("_input"), new ConstanteEntera(1)), sentenciasUnless);
+			Igualdad until = new Igualdad(new Identificador("_input"+n), new ConstanteEntera(1));
+ 			SentenciaRepeat repeat = new SentenciaRepeat(sentenciasRepeat,new SentenciaUntil(until));
+            List<Sentencia> sThen = new ArrayList<>();
+            List<Sentencia> sElse = new ArrayList<>();
 
-            sentenciasFibonacci.add(0,asig1);
-            sentenciasFibonacci.add(0,asig2);
-            sentenciasFibonacci.add(0,asig3);
-            sentenciasFibonacci.add(0,asig4);
-            sentenciasFibonacci.add(0,unless);
+            sThen.add(repeat);
+            sElse.add(new Asignacion(new Identificador("_sig"+n), new Identificador("_input"+n)));
 
-            RESULT = new Identificador("_sig");
+            SentenciaUnlessThen sentenciasThen = new SentenciaUnlessThen(sThen);
+            SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
+            SentenciaUnless unless = new SentenciaUnless(new MenorIgual(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
+
+            sentenciasFibonacci.add(asig1);
+            sentenciasFibonacci.add(asig2);
+            sentenciasFibonacci.add(asig3);
+            sentenciasFibonacci.add(asig4);
+            sentenciasFibonacci.add(unless);
+
+            RESULT = new Identificador("_sig"+n);
 		   :};
 
 

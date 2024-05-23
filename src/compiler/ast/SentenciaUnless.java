@@ -4,24 +4,22 @@
  */
 package compiler.ast;
 
-import java.util.List;
-
 /**
  *
  * @author Mari
  */
 public class SentenciaUnless extends Sentencia{
     private ExpresionLogica expresion;
-    private List<Sentencia> sentenciasThen;
-    private List<Sentencia> sentenciasElse;
+    private SentenciaUnlessThen sentenciasThen;
+    private SentenciaUnlessElse sentenciasElse;
     
     
-    public SentenciaUnless(ExpresionLogica expresion, List<Sentencia> sentenciasThen) {
+    public SentenciaUnless(ExpresionLogica expresion, SentenciaUnlessThen sentenciasThen) {
         this.expresion = expresion;
         this.sentenciasThen = sentenciasThen;
     }
     
-    public SentenciaUnless(ExpresionLogica expresion, List<Sentencia> sentenciasThen, List<Sentencia> sentenciasElse ) {
+    public SentenciaUnless(ExpresionLogica expresion, SentenciaUnlessThen sentenciasThen, SentenciaUnlessElse sentenciasElse ) {
         this.expresion = expresion;
         this.sentenciasThen = sentenciasThen;
         this.sentenciasElse = sentenciasElse;
@@ -35,21 +33,24 @@ public class SentenciaUnless extends Sentencia{
         this.expresion = expresion;
     }
 
-    public List<Sentencia> getSentenciasThen() {
+    public SentenciaUnlessThen getSentenciasThen() {
         return sentenciasThen;
     }
 
-    public void setSentenciasThen(List<Sentencia> sentenciasThen) {
+    public void setSentenciasThen(SentenciaUnlessThen sentenciasThen) {
         this.sentenciasThen = sentenciasThen;
     }
 
-    public List<Sentencia> getSentenciasElse() {
+    public SentenciaUnlessElse getSentenciasElse() {
         return sentenciasElse;
     }
 
-    public void setSentenciasElse(List<Sentencia> sentenciasElse) {
+    public void setSentenciasElse(SentenciaUnlessElse sentenciasElse) {
         this.sentenciasElse = sentenciasElse;
     }
+
+ 
+
     
     protected String getNombreOperacion() {
         return "unless";
@@ -71,18 +72,22 @@ public class SentenciaUnless extends Sentencia{
         
         String graf = "";
         if(sentenciasThen != null){
-              for(Sentencia sentenciaThen: sentenciasThen){
-                  graf += sentenciaThen.graficar(miId);
-            }
+                  graf += sentenciasThen.graficar(miId);
+           
         }
         if(sentenciasElse != null){
-              for(Sentencia sentenciaElse : sentenciasElse){
-                  graf += sentenciaElse.graficar(miId);
-            }
+               graf += sentenciasElse.graficar(miId);
+           
         }
         
         return super.graficar(idPadre) + getExpresion().graficar(miId)  + graf;
     }
+
+    public String toString() {
+        return "unless " + expresion.toString() + " then " + sentenciasThen.toString() + " else " + sentenciasElse.toString() + " end";
+    }
+    
+    
     
     
     

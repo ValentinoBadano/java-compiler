@@ -15,6 +15,10 @@ public class TablaSimbolos extends Hashtable<String, Simbolo> {
             String name = id.getNombre(); // quitar espacios en blanco
             Simbolo symbol = new Simbolo(name, "ID", type, "", 0); // longitud nula
 
+            if (this.containsKey(name)) {
+                throw new SimboloExistenteError(name);
+            };
+
             this.put(name, symbol);
         }
     }

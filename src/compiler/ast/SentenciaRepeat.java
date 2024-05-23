@@ -13,20 +13,16 @@ import java.util.List;
 public class SentenciaRepeat extends Sentencia{
     
      private List<Sentencia> sentenciasRepeat;
-     private ExpresionLogica expresion;
+     private SentenciaUntil until;
 
-    public SentenciaRepeat (List<Sentencia> sentenciasRepeat, ExpresionLogica expresion) {
+    public SentenciaRepeat(List<Sentencia> sentenciasRepeat, SentenciaUntil until) {
         this.sentenciasRepeat = sentenciasRepeat;
-        this.expresion = expresion;
+        this.until = until;
     }
 
-    public ExpresionLogica getExpresion() {
-        return expresion;
-    }
+   
 
-    public void setExpresion(ExpresionLogica expresion) {
-        this.expresion = expresion;
-    }
+
 
     public List<Sentencia> getSentenciasRepeat() {
         return sentenciasRepeat;
@@ -60,11 +56,11 @@ public class SentenciaRepeat extends Sentencia{
             }
         }
         
-        return super.graficar(idPadre) + graf + getExpresion().graficar(miId);
+        return super.graficar(idPadre) + graf + until.graficar(miId);
     }
 
     @Override
     public String toString() {
-        return "repeat " + sentenciasRepeat.toString() + " until " + expresion.toString();
+        return "repeat " + sentenciasRepeat.toString() + until.toString();
     }
 }
