@@ -16,10 +16,10 @@ public abstract class ExpresionBinaria extends Expresion{
     protected ExpresionLogica izquierda;
     protected ExpresionLogica derecha;
 
-    public ExpresionBinaria(ExpresionLogica izquierda, ExpresionLogica derecha) {
+    public ExpresionBinaria(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         this.izquierda = izquierda;
         this.derecha = derecha;
-        this.getTipo();
+        this.validarTipo();
     }
 
 
@@ -43,18 +43,24 @@ public abstract class ExpresionBinaria extends Expresion{
         return izquierda + " " + this.getNombreOperacion() + " " + derecha;
     }
 
+    @Override
     public TipoDato getTipo() {
-        if (izquierda.getTipo().getOperador() == derecha.getTipo().getOperador()) {
-            this.tipo = izquierda.getTipo();
-        } else if (izquierda.getTipo().getOperador() == TipoPR.PR_FLOAT) {
-            this.tipo = izquierda.getTipo();
-            // castear derecha a float
-            this.derecha = new EnteroAFloat(derecha);
-        } else if (derecha.getTipo().getOperador() == TipoPR.PR_FLOAT) {
-            this.tipo = derecha.getTipo();
-            // castear izquierda a float
-            this.izquierda = new EnteroAFloat(izquierda);
-        }
         return tipo;
+    }
+
+    public void validarTipo() throws Exception {
+        TipoPR tipoIzq = izquierda.getTipo().getOperador();
+        TipoPR tipoDer = derecha.getTipo().getOperador();
+        if (tipoDer == tipoIzq) {
+            this.tipo = izquierda.getTipo();
+        } else if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_INTEGER) {
+            this.tipo = izquierda.getTipo();
+            this.derecha = new EnteroAFloat(derecha); // castea derecha a float
+        } else if (tipoIzq == TipoPR.PR_INTEGER && tipoDer == TipoPR.PR_FLOAT) {
+            this.tipo = derecha.getTipo();
+            this.izquierda = new EnteroAFloat(izquierda); // castea izquierda a float
+        } else {
+            throw new Exception(String.format("ERROR: Incompatibilidad de tipos en la operación %s %s %s%n", izquierda, getNombreOperacion(), derecha));
+        }
     }
 }

@@ -13,7 +13,7 @@ import compiler.ast.expresion.ExpresionLogica;
  */
 public class Division extends ExpresionBinaria {
 
-    public Division(ExpresionLogica izquierda, ExpresionLogica derecha) {
+    public Division(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
     

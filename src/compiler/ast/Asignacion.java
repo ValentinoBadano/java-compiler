@@ -20,7 +20,7 @@ public class Asignacion extends Sentencia {
     private final Identificador identificador;
     private final ExpresionLogica expresion;
 
-    public Asignacion(Identificador identificador, ExpresionLogica expresion) throws Exception {
+    public Asignacion(Identificador identificador, ExpresionLogica expresion) throws AsignacionTiposException {
         ExpresionLogica expresion1;
         this.identificador = identificador;
         expresion1 = expresion;
@@ -32,20 +32,20 @@ public class Asignacion extends Sentencia {
             case PR_INTEGER:
             case PR_BOOLEAN:
                 if (tipoExpresion.operador != tipoDeclarado.operador) {
-                    throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                    throw new AsignacionTiposException(tipoDeclarado, tipoExpresion, identificador);
                 }
                 break;
             case PR_FLOAT:
                 if (tipoExpresion.operador == TipoPR.PR_INTEGER ) {
                     expresion1 = new EnteroAFloat(expresion); break;
                 } else if (tipoExpresion.operador != TipoPR.PR_FLOAT) {
-                    throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                    throw new AsignacionTiposException(tipoDeclarado, tipoExpresion, identificador);
                 }
                 break;
             case PR_DUPLE:
                 switch (tipoExpresion.operador) {
                     case PR_BOOLEAN:
-                        throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                        throw new AsignacionTiposException(tipoDeclarado, tipoExpresion, identificador);
                     case PR_INTEGER:
                         expresion1 = new EnteroADupla(expresion1);
                         break;

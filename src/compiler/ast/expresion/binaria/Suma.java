@@ -13,7 +13,7 @@ import compiler.ast.expresion.ExpresionLogica;
  */
 public class Suma extends ExpresionBinaria {
 
-    public Suma(ExpresionLogica izquierda, ExpresionLogica derecha) {
+    public Suma(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
     

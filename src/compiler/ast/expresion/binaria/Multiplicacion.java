@@ -13,7 +13,7 @@ import compiler.ast.expresion.ExpresionLogica;
  */
 public class Multiplicacion extends ExpresionBinaria {
 
-    public Multiplicacion(ExpresionLogica izquierda, ExpresionLogica derecha) {
+    public Multiplicacion(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
     

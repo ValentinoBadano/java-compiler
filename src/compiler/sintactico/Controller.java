@@ -111,8 +111,7 @@ public class Controller implements ActionListener {
             MiLexico lexico = new MiLexico(new StringReader(code));
             Parser parser = new Parser(lexico);
             final GeneracionCodigo gc = (GeneracionCodigo) parser.parse().value;
-          
-     
+
             parser.parse();
             output = parser.action_obj.output;
 
@@ -128,6 +127,7 @@ public class Controller implements ActionListener {
         } catch (Exception e) {
             System.out.println(e);
             output.clear();
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
             view.appendTextOutput(e.getMessage());
             return;
         }

@@ -6,6 +6,7 @@ package compiler.ast.expresion;
 
 import compiler.ast.Nodo;
 import compiler.ast.TipoDato;
+import compiler.ast.TipoPR;
 
 /**
  *
@@ -18,7 +19,7 @@ public abstract class ExpresionLogica extends Nodo {
     }
 
     public TipoDato getTipo() {
-        return tipo;
+        return new TipoDato(TipoPR.PR_BOOLEAN);
     }
 
     public void setTipo(TipoDato tipo) {

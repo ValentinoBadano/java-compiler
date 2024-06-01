@@ -13,7 +13,7 @@ import compiler.ast.expresion.ExpresionLogica;
  */
 public class Resta extends ExpresionBinaria {
 
-    public Resta(ExpresionLogica izquierda, ExpresionLogica derecha) {
+    public Resta(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
     
