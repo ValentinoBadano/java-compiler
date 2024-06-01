@@ -4,11 +4,15 @@
  */
 package compiler.ast;
 
+import compiler.ast.expresion.Expresion;
+import compiler.simbolo.SimboloNoExisteException;
+import compiler.simbolo.TablaSimbolos;
+
 /**
  *
  * @author Mari
  */
-public class Identificador extends Expresion{
+public class Identificador extends Expresion {
      private String nombre;
 
     public Identificador() {
@@ -43,5 +47,9 @@ public class Identificador extends Expresion{
     @Override
     public String toString() {
         return nombre;
+    }
+
+    public TipoDato getTipo() {
+        return TablaSimbolos.getTipo(getNombre());
     }
 }

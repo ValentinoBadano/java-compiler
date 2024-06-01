@@ -23,8 +23,10 @@ public class GeneracionCodigo extends Nodo{
         // Como la GeneracionCodigo no tiene padre, se inicia pasando null.  
         StringBuilder resultado = new StringBuilder();
         resultado.append("graph G {");
+        // acomodar estos graficar
         resultado.append(this.programa.graficar(null));
         resultado.append(this.programa.graficar());
+
         resultado.append("}");
         return resultado.toString();
     }

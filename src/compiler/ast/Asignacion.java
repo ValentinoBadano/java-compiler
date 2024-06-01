@@ -4,6 +4,13 @@
  */
 package compiler.ast;
 
+import compiler.ast.casteo.EnteroADupla;
+import compiler.ast.casteo.EnteroAFloat;
+import compiler.ast.casteo.FloatADupla;
+import compiler.ast.expresion.ExpresionLogica;
+import compiler.ast.sentencia.Sentencia;
+import compiler.simbolo.TablaSimbolos;
+
 /**
  *
  * @author Mari
@@ -13,9 +20,43 @@ public class Asignacion extends Sentencia {
     private final Identificador identificador;
     private final ExpresionLogica expresion;
 
-    public Asignacion(Identificador identificador, ExpresionLogica expresion) {
+    public Asignacion(Identificador identificador, ExpresionLogica expresion) throws Exception {
+        ExpresionLogica expresion1;
         this.identificador = identificador;
-        this.expresion = expresion;
+        expresion1 = expresion;
+
+        TipoDato tipoDeclarado = TablaSimbolos.getTipo(identificador.getNombre());
+        TipoDato tipoExpresion = expresion.getTipo();
+
+        switch (tipoDeclarado.operador) {
+            case PR_INTEGER:
+            case PR_BOOLEAN:
+                if (tipoExpresion.operador != tipoDeclarado.operador) {
+                    throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                }
+                break;
+            case PR_FLOAT:
+                if (tipoExpresion.operador == TipoPR.PR_INTEGER ) {
+                    expresion1 = new EnteroAFloat(expresion); break;
+                } else if (tipoExpresion.operador != TipoPR.PR_FLOAT) {
+                    throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                }
+                break;
+            case PR_DUPLE:
+                switch (tipoExpresion.operador) {
+                    case PR_BOOLEAN:
+                        throw new Exception(String.format("ERROR: asignación de la variable de tipo %s a una de tipo %s", tipoDeclarado, tipoExpresion));
+                    case PR_INTEGER:
+                        expresion1 = new EnteroADupla(expresion1);
+                        break;
+                    case PR_FLOAT:
+                        expresion1 = new FloatADupla(expresion1); break;
+                }
+                break;
+        }
+
+
+        this.expresion = expresion1;
     }
 
     public Identificador getIdentificador() {
@@ -25,6 +66,8 @@ public class Asignacion extends Sentencia {
     public ExpresionLogica getExpresion() {
         return expresion;
     }
+
+
 
     
     @Override
@@ -38,7 +81,7 @@ public class Asignacion extends Sentencia {
     }
     
     @Override
-    protected String graficar(String idPadre) {
+    public String graficar(String idPadre) {
         final String miId = this.getId();
         return super.graficar(idPadre) +
                 identificador.graficar(miId) +
@@ -49,4 +92,6 @@ public class Asignacion extends Sentencia {
     public String toString() {
         return identificador + ":= " + expresion;
     }
+
+
 }

@@ -8,6 +8,6 @@ public class SimboloExistenteError extends Error {
 
     @Override
     public String getMessage() {
-        return "El símbolo \"" + name + "\" ya ha sido definido";
+        return "ERROR: El símbolo \"" + name + "\" ya ha sido definido";
     }
 }

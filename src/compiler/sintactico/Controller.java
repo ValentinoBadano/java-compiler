@@ -74,7 +74,8 @@ public class Controller implements ActionListener {
     public void doSyntacticAnalysis() {
         view.clearOutput();
         List<String> output = new ArrayList<>();
-        Hashtable<String, Simbolo> table = new Hashtable<>();
+        TablaSimbolos.reset();
+
 
         try {
             String code = view.getCodeTextArea().getText();
@@ -82,7 +83,7 @@ public class Controller implements ActionListener {
             Parser parser = new Parser(lexico);
             parser.parse();
             output = parser.action_obj.output;
-            table = parser.action_obj.table;
+
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             output.add(ex.getMessage());
@@ -98,9 +99,10 @@ public class Controller implements ActionListener {
     
     public void doAstAnalysis() {
         view.clearOutput();
+        TablaSimbolos.reset();
 
         List<String> output = new ArrayList<>();
-        Hashtable<String, Simbolo> table = new Hashtable<>();
+
     
       
       
@@ -113,7 +115,7 @@ public class Controller implements ActionListener {
      
             parser.parse();
             output = parser.action_obj.output;
-            table = parser.action_obj.table;
+
             PrintWriter grafico = new PrintWriter(new FileWriter("arbol.dot"));
             grafico.println(gc.graficar());
             grafico.close();
@@ -144,7 +146,8 @@ public class Controller implements ActionListener {
     }
 
     public void generateSymbolTableFile() {
-        Hashtable<String, Simbolo> table = new Hashtable<>();
+        TablaSimbolos.reset();
+        Hashtable<String, Simbolo> table = TablaSimbolos.ts;
         String path = "./ts.txt";
 
         try {
@@ -152,7 +155,7 @@ public class Controller implements ActionListener {
             MiLexico lexico = new MiLexico(new StringReader(code));
             Parser parser = new Parser(lexico);
             parser.parse();
-            table = parser.action_obj.table;
+
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }

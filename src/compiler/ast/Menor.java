@@ -4,11 +4,14 @@
  */
 package compiler.ast;
 
+import compiler.ast.expresion.ExpresionBinariaLogica;
+import compiler.ast.expresion.ExpresionLogica;
+
 /**
  *
  * @author Mari
  */
-public class Menor extends ExpresionBinariaLogica{
+public class Menor extends ExpresionBinariaLogica {
 
     public Menor(ExpresionLogica izquierda, ExpresionLogica derecha) {
         super(izquierda, derecha);

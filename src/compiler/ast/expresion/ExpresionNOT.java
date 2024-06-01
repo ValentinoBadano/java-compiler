@@ -2,31 +2,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package compiler.ast;
-
-import compiler.ast.expresion.ExpresionLogica;
-import compiler.ast.expresion.ExpresionUnaria;
+package compiler.ast.expresion;
 
 /**
  *
  * @author Mari
  */
-public class MenosUnario extends ExpresionUnaria {
-
-    public MenosUnario(ExpresionLogica derecha) {
+public class ExpresionNOT extends ExpresionUnariaLogica{
+    
+    public ExpresionNOT(ExpresionLogica derecha) {
         super(derecha);
     }
-
-   
     
     @Override
      protected String getNombreOperacion() {
-            return "menosUnario_";
+            return "not";
           
     }
-    
+     
     @Override
     protected String getId() {
-        return "menosUnario_" + this.hashCode();
+        return "exp_not_" + this.hashCode();
     }
 }

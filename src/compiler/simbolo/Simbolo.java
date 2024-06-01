@@ -1,15 +1,17 @@
 package compiler.simbolo;
 
+import compiler.ast.TipoDato;
+
 public class Simbolo {
     // Atributos del símbolo
     private String name;  // Nombre del identificador
     private String token; // Token asociado
-    private String type;  // Tipo de dato
+    private TipoDato type;  // Tipo de dato
     private String value; // Valor del identificador (puede ser cualquier cosa)
     private int length;   // Longitud (por ejemplo, para cadenas o arreglos)
 
     // Constructor para inicializar el símbolo
-    public Simbolo(String name, String token, String type, String value, int length) {
+    public Simbolo(String name, String token, TipoDato type, String value, int length) {
         this.name = name;
         this.token = token;
         this.type = type;
@@ -26,7 +28,7 @@ public class Simbolo {
         return token;
     }
 
-    public String getType() {
+    public TipoDato getType() {
         return type;
     }
 

@@ -4,11 +4,14 @@
  */
 package compiler.ast;
 
+import compiler.ast.expresion.ExpresionBinariaLogica;
+import compiler.ast.expresion.ExpresionLogica;
+
 /**
  *
  * @author Mari
  */
-public class Distinto extends ExpresionBinariaLogica{
+public class Distinto extends ExpresionBinariaLogica {
 
     public Distinto(ExpresionLogica izquierda, ExpresionLogica derecha) {
         super(izquierda, derecha);

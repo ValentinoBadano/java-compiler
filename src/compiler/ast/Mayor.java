@@ -4,11 +4,14 @@
  */
 package compiler.ast;
 
+import compiler.ast.expresion.ExpresionBinariaLogica;
+import compiler.ast.expresion.ExpresionLogica;
+
 /**
  *
  * @author Mari
  */
-public class Mayor extends ExpresionBinariaLogica{
+public class Mayor extends ExpresionBinariaLogica {
 
     public Mayor(ExpresionLogica izquierda, ExpresionLogica derecha) {
         super(izquierda, derecha);

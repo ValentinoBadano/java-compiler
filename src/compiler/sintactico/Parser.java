@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Arrays;
 import compiler.simbolo.*;
 import compiler.ast.*;
+import compiler.ast.casteo.*;
+import compiler.ast.expresion.*;
+import compiler.ast.sentencia.*;
+import compiler.ast.constante.*;
+import compiler.ast.expresion.binaria.*;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -427,7 +432,6 @@ public class Parser extends java_cup.runtime.lr_parser {
 class CUP$Parser$actions {
 
 
-    TablaSimbolos table = new TablaSimbolos();
     List<String> output = new ArrayList<>();
     List<Sentencia> sentenciasFibonacci = new ArrayList<>();
     int contadorFib = 0;
@@ -581,7 +585,7 @@ class CUP$Parser$actions {
   			  output.add(String.format("REGLA 4.1: tipo_declaracion -> %s : %s%n", tdv, lv));
   			  RESULT = new Declaracion(tdv,lv);
 
-  			  this.table.add_symbols(tdv.getOperador().toString(),lv);
+  			  TablaSimbolos.add_symbols(tdv,lv);
   		  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("tipo_declaracion",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -958,7 +962,7 @@ class CUP$Parser$actions {
                		        output.add(String.format("REGLA 14.2: sentenciaSHOW -> SHOW(%s)%n",sl));
                                 cte_string = new ConstanteString(sl);
                		        RESULT = new SentenciaShow(cte_string); 
-               		        this.table.add_string_const(sl.toString());
+               		        TablaSimbolos.add_string_const(sl.toString());
            		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentenciaSHOW",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -982,7 +986,7 @@ class CUP$Parser$actions {
             Identificador sig = new Identificador("_sig" + n);
             Identificador suma = new Identificador("_suma" + n);
 
-            this.table.add_symbols("integer", Arrays.asList(input, ant, sig, suma));
+            TablaSimbolos.add_symbols(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(input, ant, sig, suma));
 
 
             Asignacion asig1 = new Asignacion(input,e);
@@ -1038,7 +1042,7 @@ class CUP$Parser$actions {
 		
       			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
       			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
-      			  if (!this.table.idExists(id.getNombre())) {
+      			  if (!TablaSimbolos.idExists(id.getNombre())) {
       			        throw new SimboloNoExisteException(id);
       			  }
       			  RESULT = new Asignacion(id,e);
@@ -1429,6 +1433,9 @@ class CUP$Parser$actions {
 		
            		   output.add("REGLA 24.1: factor_sin_signo -> IDENTIFICADOR");
            		   output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
+           		   if (!TablaSimbolos.idExists(id.getNombre())) {
+           		        throw new SimboloNoExisteException(id);
+                      }
            		   RESULT = id;
           		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor_sin_signo",24, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1589,7 +1596,7 @@ class CUP$Parser$actions {
               TipoDato RESULT =null;
 		
           	            output.add("REGLA 25.4: tipo_de_variable -> PR_DUPLE\n");
-          	            RESULT = new TipoDato(TipoPR.PR_FLOAT);
+          	            RESULT = new TipoDato(TipoPR.PR_DUPLE);
       			
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("tipo_de_variable",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

@@ -1,35 +1,43 @@
 package compiler.simbolo;
 
 import compiler.ast.Identificador;
+import compiler.ast.TipoDato;
 
 import java.util.Hashtable;
 import java.util.List;
 
-public class TablaSimbolos extends Hashtable<String, Simbolo> {
+public class TablaSimbolos {
 
-
+    public static Hashtable<String, Simbolo> ts = new Hashtable<>();
 
     // agrega varios simbolos a la tabla dada una string tipo "INT" y "a, b, c"
-    public void add_symbols(String type, List<Identificador> identifiers) {
+    public static void add_symbols(TipoDato type, List<Identificador> identifiers) {
         for (Identificador id : identifiers) {
             String name = id.getNombre(); // quitar espacios en blanco
             Simbolo symbol = new Simbolo(name, "ID", type, "", 0); // longitud nula
 
-            if (this.containsKey(name)) {
+            if (ts.containsKey(name)) {
                 throw new SimboloExistenteError(name);
             };
-
-            this.put(name, symbol);
+            ts.put(name, symbol);
         }
     }
 
-    public void add_string_const(String str) {
-        Simbolo symbol = new Simbolo("", "CTE_STR", "", str, str.length());
-        this.put(str, symbol);
+    public static void add_string_const(String str) {
+        Simbolo symbol = new Simbolo("", "CTE_STR", null, str, str.length());
+        ts.put(str, symbol);
     }
 
-    public boolean idExists(String id) {
-        return this.containsKey(id);
+    public static boolean idExists(String id) {
+        return ts.containsKey(id);
+    }
+
+    public static void reset() {
+        ts.clear();
+    }
+
+    public static TipoDato getTipo(String id) {
+        return ts.get(id).getType();
     }
 
 

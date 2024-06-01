@@ -5,6 +5,8 @@
 package compiler.ast;
 
 
+import compiler.ast.expresion.Expresion;
+
 /**
  *
  * @author Mari
@@ -37,7 +39,7 @@ public class TipoDato extends Expresion {
     }
     
     @Override
-    protected String graficar(String idPadre) {
+    public String graficar(String idPadre) {
         return super.graficar(idPadre);
         
     }
