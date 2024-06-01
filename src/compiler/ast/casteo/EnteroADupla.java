@@ -7,6 +7,7 @@ import compiler.ast.expresion.ExpresionLogica;
 public class EnteroADupla extends ExpresionLogica {
     private final ExpresionLogica expresion;
 
+
     public EnteroADupla (ExpresionLogica e) {
         this.expresion = e;
     }
@@ -28,7 +29,7 @@ public class EnteroADupla extends ExpresionLogica {
 
     @Override
     public String toString() {
-        return "duple";
+        return "(duple) " + expresion.toString();
     }
 
     public String getEtiqueta() {

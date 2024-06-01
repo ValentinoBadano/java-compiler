@@ -9,6 +9,7 @@ import compiler.ast.expresion.ExpresionLogica;
 public class EnteroAFloat extends ExpresionLogica {
     private final ExpresionLogica expresion;
 
+
     public EnteroAFloat(ExpresionLogica e) {
         this.expresion = e;
     }
@@ -29,7 +30,7 @@ public class EnteroAFloat extends ExpresionLogica {
 
     @Override
     public String toString() {
-        return "float";
+        return "(float) " + expresion.toString();
     }
 
     public String getEtiqueta() {

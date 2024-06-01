@@ -28,7 +28,7 @@ public class FloatADupla extends ExpresionLogica{
 
     @Override
     public String toString() {
-        return "duple";
+        return "(duple) "  + expresion.toString();
     }
 
     public String getEtiqueta() {
