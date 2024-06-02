@@ -26,4 +26,9 @@ public class Resta extends ExpresionBinaria {
     protected String getId() {
         return "resta_" + this.hashCode();
     }
+
+    @Override
+    public String get_llvm_op_code() {
+        return "sub";
+    }
 }

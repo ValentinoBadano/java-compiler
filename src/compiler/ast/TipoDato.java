@@ -61,10 +61,28 @@ public class TipoDato extends Expresion {
                  
             case STRING_LITERAL:
                  return "string_" + this.hashCode();
-                 
         }
         return null;
+    }
 
+    public String getTipoLLVM() {
+        switch (this.operador){
+            case PR_FLOAT:
+                return "double";
+
+            case PR_INTEGER:
+                return "i32";
+
+            case PR_BOOLEAN:
+                return "i1";
+
+            case PR_DUPLE:
+                return "%struct.Tuple";
+
+            case STRING_LITERAL:
+                return "string";
+        }
+        return null;
     }
 
     @Override

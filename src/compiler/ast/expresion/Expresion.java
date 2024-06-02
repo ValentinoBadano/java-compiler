@@ -6,6 +6,7 @@ package compiler.ast.expresion;
 
 import compiler.ast.TipoDato;
 import compiler.ast.expresion.ExpresionLogica;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -13,10 +14,11 @@ import compiler.ast.expresion.ExpresionLogica;
  */
 public abstract class Expresion extends ExpresionLogica
 {
-    protected TipoDato tipo;
-
-    public Expresion() {
+    @Override
+    public String generarCodigo(){
+        StringBuilder resultado = new StringBuilder();
+        resultado.append("hola");
+        return resultado.toString();
     }
-    
-    
+
 }

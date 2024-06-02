@@ -38,4 +38,8 @@ public abstract class  Nodo {
         return grafico.toString();
     }
 
+    public String generarCodigo() {
+        return "null";
+    };
+
 }

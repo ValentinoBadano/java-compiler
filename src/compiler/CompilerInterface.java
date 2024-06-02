@@ -9,6 +9,7 @@ public class CompilerInterface extends JFrame {
     private JTextArea codeTextArea;
     private JButton lexicButton;
     private JButton syntacticButton;
+    private JButton llvmButton;
     private JMenuItem astMenuItem;
     private JTextArea outputTextArea;
     private JButton cleanButton;
@@ -25,15 +26,20 @@ public class CompilerInterface extends JFrame {
         codeTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
         JScrollPane codeScrollPane = new JScrollPane(codeTextArea);
 
-        // botón de compilación
+        // botón de lexico
         lexicButton = new JButton("Análisis Léxico");
         this.lexicButton.setActionCommand("lexico");
 
         // boton de limpiar
         cleanButton = new JButton("Borrar");
 
+        // botón para análisis sintáctico
         syntacticButton = new JButton("Análisis Sintáctico");
         this.syntacticButton.setActionCommand("syntactic");
+
+        // botón para generar código intermedio
+        llvmButton = new JButton("Generar código IR");
+        this.llvmButton.setActionCommand("llvm");
         
         astMenuItem = new JMenuItem("AST");
         this.astMenuItem.setActionCommand("ast");
@@ -50,6 +56,7 @@ public class CompilerInterface extends JFrame {
         JMenu fileMenu = new JMenu("Archivo");
         JMenu helpMenu = new JMenu("Ayuda");
         JMenu toolsMenu = new JMenu("Herramientas");
+
         // boton para generar tabla de símbolos
         symbolTableItem = new JMenuItem("Generar tabla de símbolos");
         symbolTableItem.setActionCommand("table");
@@ -83,6 +90,7 @@ public class CompilerInterface extends JFrame {
         buttonsPanel.add(lexicButton);
         buttonsPanel.add(syntacticButton);
         buttonsPanel.add(cleanButton);
+        buttonsPanel.add(llvmButton);
         topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
         add(outputScrollPane, BorderLayout.SOUTH);
@@ -153,5 +161,9 @@ public class CompilerInterface extends JFrame {
 
     public JMenuItem getSymbolTableItem() {
         return symbolTableItem;
+    }
+
+    public JButton getLlvmButton() {
+        return llvmButton;
     }
 }

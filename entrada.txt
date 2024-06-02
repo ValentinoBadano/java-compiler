@@ -1,1 +1,9 @@
-var =  9 + var
+declare.section
+    integer: a, b, c
+enddeclare.section
+
+program.section
+    a := 2
+    b := 3
+    c := a + b
+endprogram.section

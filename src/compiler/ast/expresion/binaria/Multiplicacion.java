@@ -16,7 +16,12 @@ public class Multiplicacion extends ExpresionBinaria {
     public Multiplicacion(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
-    
+
+    @Override
+    public String get_llvm_op_code() {
+        return "mul";
+    }
+
     @Override
     protected String getNombreOperacion() {
         return "*";

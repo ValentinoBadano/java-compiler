@@ -16,7 +16,12 @@ public class Division extends ExpresionBinaria {
     public Division(ExpresionLogica izquierda, ExpresionLogica derecha) throws Exception {
         super(izquierda, derecha);
     }
-    
+
+    @Override
+    public String get_llvm_op_code() {
+        return "sdiv";
+    }
+
     @Override
     protected String getNombreOperacion() {
         return "/";

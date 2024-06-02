@@ -6,6 +6,7 @@ package compiler.ast.constante;
 
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -30,6 +31,14 @@ public class ConstanteEntera extends Constante {
 
     public TipoDato getTipo() {
         return new TipoDato(TipoPR.PR_INTEGER);
+    }
+
+    @Override
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        this.setIr_ref(CodeGeneratorHelper.getNewPointer());
+        resultado.append(String.format("%1$s = add i32 0, %2$s\n", this.getIr_ref(), this.getValor()));
+        return resultado.toString();
     }
     
 }

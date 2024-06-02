@@ -5,6 +5,7 @@
 package compiler.ast;
 
 import compiler.ast.expresion.Expresion;
+import compiler.llvm.CodeGeneratorHelper;
 import compiler.simbolo.SimboloNoExisteException;
 import compiler.simbolo.TablaSimbolos;
 
@@ -51,5 +52,17 @@ public class Identificador extends Expresion {
 
     public TipoDato getTipo() {
         return TablaSimbolos.getTipo(getNombre());
+    }
+
+    @Override
+    public String generarCodigo() {
+        TipoDato tipo = TablaSimbolos.getTipo(getNombre());
+        this.setIr_ref(CodeGeneratorHelper.getNewPointer());
+        StringBuilder resultado = new StringBuilder();
+        resultado.append("\n");
+
+        resultado.append(String.format("%3$s = load %1$s, %1$s* %2$s", tipo.getTipoLLVM(), "%" + getNombre(), this.getIr_ref()));
+
+        return resultado.toString();
     }
 }

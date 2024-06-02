@@ -10,11 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -36,6 +32,7 @@ public class Controller implements ActionListener {
         view.getSyntacticButton().addActionListener(this);
         view.getAstMenuItem().addActionListener(this);
         view.getSymbolTableItem().addActionListener(this);
+        view.getLlvmButton().addActionListener(this);
         view.setVisible(true);
     }
 
@@ -45,6 +42,7 @@ public class Controller implements ActionListener {
             case "lexico":this.doLexicalAnalysis(); break;
             case "syntactic": this.doSyntacticAnalysis(); break;
             case "ast":this.doAstAnalysis();break;
+            case "llvm":this.doCompilation();break;
             case "table":this.generateSymbolTableFile();break;
             case "Borrar": this.clean();
         }
@@ -103,9 +101,6 @@ public class Controller implements ActionListener {
 
         List<String> output = new ArrayList<>();
 
-    
-      
-      
         try {
             String code = view.getCodeTextArea().getText();
             MiLexico lexico = new MiLexico(new StringReader(code));
@@ -136,6 +131,65 @@ public class Controller implements ActionListener {
         try {
             Desktop.getDesktop().open(tree);
         } catch (IOException e) {
+            view.appendTextOutput(e.getMessage());
+        }
+    }
+
+    private void doCompilation() {
+        System.out.println("Compilando..");
+
+        final FileReader entrada;
+        GeneracionCodigo gc = null;
+
+        try {
+            entrada = new FileReader("./entrada.txt");
+            final MiLexico lexico = new MiLexico(entrada);
+            final Parser sintactico = new Parser(lexico);
+            gc = (GeneracionCodigo) sintactico.parse().value;
+        } catch (Exception e) {
+            System.out.println("Error al parsear el código");
+            view.appendTextOutput(e.getMessage());
+        }
+
+
+        try {
+            //generar codigo IR para el LLVM
+            PrintWriter pw = new PrintWriter(new FileWriter("programa.ll"));
+            pw.println(gc.generarCodigo());
+            pw.close();
+            System.out.println("Código generado");
+            view.appendTextOutput("Código generado y guardado en /programa.ll\n");
+        } catch (Exception e){
+            System.out.println("Error con el llvm");
+            view.appendTextOutput(e.getMessage());
+        }
+
+        try {
+            // genera el archivo objeto -> programa.o
+            Process process = Runtime.getRuntime().exec("clang -c -o programa.o programa.ll");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println("Archivo objeto generado");
+        } catch (Exception e){
+            System.out.println("Error con el llvm");
+            view.appendTextOutput(e.getMessage());
+        }
+
+        try {
+            // genera el .exe
+            Process process2 = Runtime.getRuntime().exec("clang -o programa.exe programa.o");
+            BufferedReader reader2 = new BufferedReader(new InputStreamReader(process2.getInputStream()));
+            String line2;
+            while ((line2 = reader2.readLine()) != null) {
+                System.out.println(line2);
+            }
+            System.out.println("Ejecutable generado");
+
+        } catch (Exception e) {
+            System.out.println("Error con el clang");
             view.appendTextOutput(e.getMessage());
         }
     }

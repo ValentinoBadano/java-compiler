@@ -7,6 +7,7 @@ package compiler.ast.constante;
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
 import compiler.ast.expresion.Expresion;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -32,4 +33,6 @@ public abstract class Constante extends Expresion {
     public String toString() {
         return valor.toString();
     }
+
+
 }

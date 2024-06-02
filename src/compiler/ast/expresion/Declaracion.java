@@ -7,6 +7,7 @@ package compiler.ast.expresion;
 import compiler.ast.Identificador;
 import compiler.ast.TipoDato;
 import compiler.ast.expresion.Expresion;
+import compiler.llvm.CodeGeneratorHelper;
 
 import java.util.List;
 
@@ -70,6 +71,15 @@ public class Declaracion extends Expresion {
             }  
         }
          return graficoLista;
+    }
+
+    @Override
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        for (Identificador id: listaIdentificador) {
+            resultado.append("%" + String.format("%1$s = alloca %2$s\n", id.getNombre(), getTipoDato().getTipoLLVM()));
+        }
+        return resultado.toString();
     }
     
 }
