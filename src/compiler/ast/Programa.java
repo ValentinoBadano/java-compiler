@@ -7,6 +7,8 @@ package compiler.ast;
 import compiler.ast.expresion.Declaracion;
 import compiler.ast.sentencia.Sentencia;
 import compiler.simbolo.Simbolo;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,8 @@ import java.util.Map;
  */
 public class Programa extends Nodo {
     
-    List<Declaracion> declaraciones;
-    List<Sentencia> sentencias;
+    List<Declaracion> declaraciones = new ArrayList<>();
+    List<Sentencia> sentencias = new ArrayList<>();
     
     public static Map<String, Simbolo> tablaDeSimbolos = new HashMap<>();
     

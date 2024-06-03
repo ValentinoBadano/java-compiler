@@ -100,6 +100,7 @@ public class Asignacion extends Sentencia {
         resultado.append(expresion.generarCodigo() + "\n");
 
         resultado.append(String.format("store %1$s %2$s, %1$s* %3$s", tipo.getTipoLLVM(), expresion.getIr_ref(), "%" + identificador.getNombre()));
+        resultado.append("\n");
 
         return resultado.toString();
     }

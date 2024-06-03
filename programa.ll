@@ -10,16 +10,24 @@ declare i32 @printf(i8*, ...)
 define i32 @main(i32, i8**) {
 	%a = alloca i32
 	%b = alloca i32
-	%c = alloca i32
 	
-	%ptro.1 = add i32 0, 2
+	%ptro.1 = add i32 0, 30
 	
-	store i32 %ptro.1, i32* %a%ptro.2 = add i32 0, 3
+	%ptro.2 = add i32 0, 4
 	
-	store i32 %ptro.2, i32* %b
-	%ptro.3 = load i32, i32* %a
-	%ptro.4 = load i32, i32* %b%ptro.5 = add i32 %ptro.3, %ptro.4
-	store i32 %ptro.5, i32* %c
+	%ptro.3 = add i32 %ptro.1, %ptro.2
+	
+	store i32 %ptro.3, i32* %a
+	
+	%ptro.4 = load i32, i32* %a
+	%ptro.5 = add i32 0, 35
+	
+	%ptro.6 = add i32 %ptro.4, %ptro.5
+	
+	store i32 %ptro.6, i32* %b
+	
+	%ptro.7 = load i32, i32* %b%ptro.8 = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.integer, i32 0, i32 0), i32 %ptro.7)
+	
 	ret i32 0
 }
 

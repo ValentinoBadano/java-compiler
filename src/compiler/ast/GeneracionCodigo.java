@@ -8,6 +8,8 @@ import compiler.ast.expresion.Declaracion;
 import compiler.ast.sentencia.Sentencia;
 import compiler.llvm.CodeGeneratorHelper;
 
+import java.util.Iterator;
+
 /**
  *
  * @author Mari
@@ -50,23 +52,32 @@ public class GeneracionCodigo extends Nodo{
 
         StringBuilder resultado_programa = new StringBuilder();
 
-        for (Declaracion d: programa.declaraciones) {
-            resultado_programa.append(d.generarCodigo());
+        try {
+            // si no hay declaraciones el foreach lanza una NullPointerException y esto no debería detener la compilación
+            for (Declaracion d : programa.declaraciones) {
+                resultado_programa.append(d.generarCodigo());
+                resultado_programa.append("\n");
+            }
+        } catch (NullPointerException ignored) {
+            System.out.println("Declaraciones vacías");
         }
 
-        resultado_programa.append("\n");
-
-        for (Sentencia s: programa.sentencias) {
-            resultado_programa.append(s.generarCodigo());
+        try {
+            for (Sentencia s: programa.sentencias) {
+                resultado_programa.append(s.generarCodigo());
+                resultado_programa.append("\n");
+            }
+        } catch (NullPointerException ignored) {
+            System.out.println("Programa vacío");
         }
+
 
         resultado.append(resultado_programa.toString().replaceAll("\n", "\n\t"));
 
-        resultado.append("\n\tret i32 0\n");
+        resultado.append("ret i32 0\n");
         resultado.append("}\n\n");
-
 
         return resultado.toString();
     }
-    
+
 }

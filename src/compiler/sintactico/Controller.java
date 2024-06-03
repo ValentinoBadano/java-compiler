@@ -6,7 +6,6 @@ import compiler.lexico.*;
 import compiler.ast.*;
 import java_cup.runtime.Symbol;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +31,7 @@ public class Controller implements ActionListener {
         view.getSyntacticButton().addActionListener(this);
         view.getAstMenuItem().addActionListener(this);
         view.getSymbolTableItem().addActionListener(this);
-        view.getLlvmButton().addActionListener(this);
+        view.getExecuteButton().addActionListener(this);
         view.setVisible(true);
     }
 
@@ -137,13 +136,12 @@ public class Controller implements ActionListener {
 
     private void doCompilation() {
         System.out.println("Compilando..");
-
-        final FileReader entrada;
+        TablaSimbolos.reset(); view.clearOutput();
         GeneracionCodigo gc = null;
 
         try {
-            entrada = new FileReader("./entrada.txt");
-            final MiLexico lexico = new MiLexico(entrada);
+            String code = view.getCodeTextArea().getText();
+            MiLexico lexico = new MiLexico(new StringReader(code));
             final Parser sintactico = new Parser(lexico);
             gc = (GeneracionCodigo) sintactico.parse().value;
         } catch (Exception e) {
@@ -161,36 +159,52 @@ public class Controller implements ActionListener {
             view.appendTextOutput("Código generado y guardado en /programa.ll\n");
         } catch (Exception e){
             System.out.println("Error con el llvm");
-            view.appendTextOutput(e.getMessage());
+            view.appendTextOutput(e.getMessage()); return;
         }
 
         try {
             // genera el archivo objeto -> programa.o
             Process process = Runtime.getRuntime().exec("clang -c -o programa.o programa.ll");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
+            readProcess(process);
+
             System.out.println("Archivo objeto generado");
         } catch (Exception e){
             System.out.println("Error con el llvm");
-            view.appendTextOutput(e.getMessage());
+            view.appendTextOutput(e.getMessage()); return;
         }
 
         try {
-            // genera el .exe
-            Process process2 = Runtime.getRuntime().exec("clang -o programa.exe programa.o");
-            BufferedReader reader2 = new BufferedReader(new InputStreamReader(process2.getInputStream()));
-            String line2;
-            while ((line2 = reader2.readLine()) != null) {
-                System.out.println(line2);
-            }
+            Process process2 = Runtime.getRuntime().exec("gcc -o programa.exe programa.o");
+            readProcess(process2);
             System.out.println("Ejecutable generado");
-
+            executeProgram();
         } catch (Exception e) {
             System.out.println("Error con el clang");
             view.appendTextOutput(e.getMessage());
+        }
+
+
+    }
+
+    private void executeProgram() throws InterruptedException, IOException {
+            String command = "cmd /c start cmd.exe /k \"programa.exe\"";
+            Process process = Runtime.getRuntime().exec(command);
+            readProcess(process);
+            int exitCode = process.waitFor();
+            System.out.println("Proceso terminado con código: " + exitCode);
+    }
+
+    private void readProcess(Process process2) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process2.getInputStream()));
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process2.getErrorStream()));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+        while ((line = errorReader.readLine()) != null) {
+            System.err.println(line);
+            view.appendTextOutput(line);
         }
     }
 

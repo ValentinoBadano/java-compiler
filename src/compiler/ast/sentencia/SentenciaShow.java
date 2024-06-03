@@ -6,6 +6,7 @@ package compiler.ast.sentencia;
 
 import compiler.ast.constante.ConstanteString;
 import compiler.ast.expresion.ExpresionLogica;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -67,5 +68,20 @@ public class SentenciaShow extends Sentencia{
              return "show(" + constanteString.toString() + ")";
         }
         return "show(" + expresion + ")";
+    }
+
+    public ExpresionLogica getExpresion() {
+        return expresion;
+    }
+
+    @Override
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+
+        resultado.append(this.getExpresion().generarCodigo());
+
+        resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.integer, i32 0, i32 0), i32 %2$s)\n",
+                CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref()));
+        return resultado.toString();
     }
 }

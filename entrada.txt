@@ -1,9 +1,8 @@
 declare.section
-    integer: a, b, c
+    integer: a
 enddeclare.section
 
 program.section
     a := 2
-    b := 3
-    c := a + b
+    show(a)
 endprogram.section

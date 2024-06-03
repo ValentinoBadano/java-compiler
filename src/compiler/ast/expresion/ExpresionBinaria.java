@@ -75,9 +75,11 @@ public abstract class ExpresionBinaria extends Expresion{
     public String generarCodigo(){
         StringBuilder resultado = new StringBuilder();
         resultado.append(this.izquierda.generarCodigo());
+        resultado.append("\n");
         resultado.append(this.derecha.generarCodigo());
+        resultado.append("\n");
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
-        resultado.append(String.format("%1$s = %2$s i32 %3$s, %4$s", this.getIr_ref(),
+        resultado.append(String.format("%1$s = %2$s i32 %3$s, %4$s\n", this.getIr_ref(),
                 this.get_llvm_op_code(), this.izquierda.getIr_ref(),
                 this.derecha.getIr_ref()));
         return resultado.toString();

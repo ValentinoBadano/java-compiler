@@ -9,7 +9,7 @@ public class CompilerInterface extends JFrame {
     private JTextArea codeTextArea;
     private JButton lexicButton;
     private JButton syntacticButton;
-    private JButton llvmButton;
+    private JButton executeButton;
     private JMenuItem astMenuItem;
     private JTextArea outputTextArea;
     private JButton cleanButton;
@@ -38,8 +38,8 @@ public class CompilerInterface extends JFrame {
         this.syntacticButton.setActionCommand("syntactic");
 
         // botón para generar código intermedio
-        llvmButton = new JButton("Generar código IR");
-        this.llvmButton.setActionCommand("llvm");
+        executeButton = new JButton("Ejecutar");
+        this.executeButton.setActionCommand("llvm");
         
         astMenuItem = new JMenuItem("AST");
         this.astMenuItem.setActionCommand("ast");
@@ -90,7 +90,7 @@ public class CompilerInterface extends JFrame {
         buttonsPanel.add(lexicButton);
         buttonsPanel.add(syntacticButton);
         buttonsPanel.add(cleanButton);
-        buttonsPanel.add(llvmButton);
+        buttonsPanel.add(executeButton);
         topPanel.add(buttonsPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.CENTER);
         add(outputScrollPane, BorderLayout.SOUTH);
@@ -163,7 +163,7 @@ public class CompilerInterface extends JFrame {
         return symbolTableItem;
     }
 
-    public JButton getLlvmButton() {
-        return llvmButton;
+    public JButton getExecuteButton() {
+        return executeButton;
     }
 }
