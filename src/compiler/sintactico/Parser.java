@@ -976,18 +976,17 @@ class CUP$Parser$actions {
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		ExpresionLogica e = (ExpresionLogica)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-           output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
-           output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
-           int n = this.contadorFib;
-           contadorFib++;
+            output.add("REGLA 15.1: fibonacci -> PR_FIBONACCI P_ABRE expresion P_CIERRA");
+            output.add(String.format("REGLA 12: fibonacci -> Fibonacci(%s)%n",e));
+            int n = this.contadorFib;
+            contadorFib++;
 
-	    Identificador input = new Identificador("_input" + n);
+            Identificador input = new Identificador("_input" + n);
             Identificador ant= new Identificador("_ant" + n);
             Identificador sig = new Identificador("_sig" + n);
             Identificador suma = new Identificador("_suma" + n);
 
-            TablaSimbolos.add_symbols(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(input, ant, sig, suma));
-
+            TablaSimbolos.add_symbols(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(input, ant, sig, suma)); // agrega los enteros a la tabla de simbolos
 
             Asignacion asig1 = new Asignacion(input,e);
             Asignacion asig2 = new Asignacion(ant,new ConstanteEntera(0));
@@ -995,7 +994,7 @@ class CUP$Parser$actions {
             Asignacion asig4 = new Asignacion(suma,new ConstanteEntera(0));
 
             List<Sentencia> sentenciasRepeat = new ArrayList<>();
-	    Sentencia sent1 = new Asignacion(new Identificador("_suma"+n), new Suma(new Identificador("_sig"+n), new Identificador("_ant"+n)));
+            Sentencia sent1 = new Asignacion(new Identificador("_suma"+n), new Suma(new Identificador("_sig"+n), new Identificador("_ant"+n)));
             Sentencia sent2 = new Asignacion(new Identificador("_ant"+n), new Identificador("_sig"+n));
             Sentencia sent3 = new Asignacion(new Identificador("_sig"+n), new Identificador("_suma"+n));
             Sentencia sent4 = new Asignacion(new Identificador("_input"+n), new Resta(new Identificador("_input"+n), new ConstanteEntera(1)));
@@ -1005,17 +1004,19 @@ class CUP$Parser$actions {
             sentenciasRepeat.add(2,sent3);
             sentenciasRepeat.add(3,sent4);
 
-			Igualdad until = new Igualdad(new Identificador("_input"+n), new ConstanteEntera(1));
- 			SentenciaRepeat repeat = new SentenciaRepeat(sentenciasRepeat,new SentenciaUntil(until));
+            // until _input <= 1
+            MenorIgual until = new MenorIgual(new Identificador("_input"+n), new ConstanteEntera(1));
+            SentenciaRepeat repeat = new SentenciaRepeat(sentenciasRepeat,new SentenciaUntil(until));
             List<Sentencia> sThen = new ArrayList<>();
             List<Sentencia> sElse = new ArrayList<>();
 
+            // else _sig = 0
             sThen.add(repeat);
-            sElse.add(new Asignacion(new Identificador("_sig"+n), new Identificador("_input"+n)));
+            sElse.add(new Asignacion(new Identificador("_sig"+n), new ConstanteEntera(0)));
 
             SentenciaUnlessThen sentenciasThen = new SentenciaUnlessThen(sThen);
             SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
-            SentenciaUnless unless = new SentenciaUnless(new MenorIgual(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
+            SentenciaUnless unless = new SentenciaUnless(new Menor(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
 
             sentenciasFibonacci.add(asig1);
             sentenciasFibonacci.add(asig2);

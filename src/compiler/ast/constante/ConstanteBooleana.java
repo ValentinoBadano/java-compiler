@@ -35,6 +35,7 @@ public class ConstanteBooleana extends Constante {
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
+        // constante boolean -> i1 (1 bit)
         resultado.append(String.format("%1$s = add i1 0, %2$s\n", this.getIr_ref(), this.getValor()));
         return resultado.toString();
     }

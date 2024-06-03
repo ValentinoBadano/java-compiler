@@ -6,9 +6,12 @@ package compiler.ast;
 
 import compiler.ast.expresion.Declaracion;
 import compiler.ast.sentencia.Sentencia;
+import compiler.ast.sentencia.SentenciaShow;
 import compiler.llvm.CodeGeneratorHelper;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -39,16 +42,28 @@ public class GeneracionCodigo extends Nodo{
 
     @Override
     public String generarCodigo() {
+        List<String> sentenciasPrograma = getCodigoPrograma();
         StringBuilder resultado = new StringBuilder();
         resultado.append(";Programa: Prueba\n");
         resultado.append("source_filename = \"Prueba.txt\"\n");
         resultado.append("target datalayout = \"e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\n");
         resultado.append("target triple = \"x86_64-pc-windows-msvc19.33.0\"\n\n");
-        resultado.append("declare i32 @printf(i8*, ...)\n");
-        resultado.append("\n");
-        resultado.append("@.integer = private constant [4 x i8] c\"%d\\0A\\00\"\n");
-        resultado.append("\n");
-        resultado.append("define i32 @main(i32, i8**) {\n\t");
+
+        // --- sección de declaración ---
+        resultado.append("declare i32 @printf(i8*, ...)\n\n");
+        resultado.append("\t@.integer = private constant [4 x i8] c\"%d\\0A\\00\"\n"); // variable para imprimir enteros
+        // declara variables string globales aquí
+        Iterator<String> iterator = sentenciasPrograma.iterator();
+        while (iterator.hasNext()) {
+            String s = iterator.next();
+            if (s.startsWith("@")) {
+                resultado.append("\t").append(s).append("\n");
+                iterator.remove();
+            }
+        }
+
+        // --- sección de programa ---
+        resultado.append("\ndefine i32 @main(i32, i8**) {\n\t");
 
         StringBuilder resultado_programa = new StringBuilder();
 
@@ -62,13 +77,9 @@ public class GeneracionCodigo extends Nodo{
             System.out.println("Declaraciones vacías");
         }
 
-        try {
-            for (Sentencia s: programa.sentencias) {
-                resultado_programa.append(s.generarCodigo());
-                resultado_programa.append("\n");
-            }
-        } catch (NullPointerException ignored) {
-            System.out.println("Programa vacío");
+        for (String s: sentenciasPrograma) {
+            resultado_programa.append(s);
+            resultado_programa.append("\n");
         }
 
 
@@ -78,6 +89,29 @@ public class GeneracionCodigo extends Nodo{
         resultado.append("}\n\n");
 
         return resultado.toString();
+    }
+
+    private List<String> getCodigoPrograma() {
+        // retorna una lista con las sentencias del programa separadas por \n
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (Sentencia s: programa.sentencias) {
+                sb.append(s.generarCodigo());
+            }
+        } catch (NullPointerException ignored) {
+            System.out.println("Programa vacío");
+        }
+
+        String codigo = sb.toString();
+
+        String[] lineasArray = codigo.split("\n");
+        List<String> lineasList = new ArrayList<>();
+
+        for (String linea : lineasArray) {
+            lineasList.add(linea);
+        }
+
+        return lineasList;
     }
 
 }

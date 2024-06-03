@@ -35,6 +35,7 @@ public class ConstanteDupla extends Constante{
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
+        // TODO tipo de dato tupla
         resultado.append(String.format("%1$s = add i32 0, %2$s\n", this.getIr_ref(), this.getValor()));
         return resultado.toString();
     }

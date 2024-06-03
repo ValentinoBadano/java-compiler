@@ -4,6 +4,8 @@
  */
 package compiler.ast.constante;
 
+import compiler.ast.TipoDato;
+import compiler.ast.TipoPR;
 import compiler.llvm.CodeGeneratorHelper;
 
 /**
@@ -27,14 +29,18 @@ public class ConstanteString extends Constante{
     }
 
     public int getLength() {
-         return this.getValor().toString().length() + 1;
+        return this.getValor().toString().length() + 2;
+    }
+
+    public TipoDato getTipo() {
+        return new TipoDato(TipoPR.STRING_LITERAL);
     }
     @Override
     public String generarCodigo() {
-         // TODO: arreglar
+         // TODO: esto debe ir en la seccion de declaraciones
         StringBuilder resultado = new StringBuilder();
-        this.setIr_ref(CodeGeneratorHelper.getNewPointer());
-        resultado.append(String.format("%1$s = private constant [%3$s x i8] c\"%2$s\\00\"\n", this.getIr_ref(), this.getValor(), getLength()));
+        this.setIr_ref(CodeGeneratorHelper.getNewGlobalPointer());
+        resultado.append(String.format("%1$s = private constant [%3$s x i8] c\"%2$s\\0A\\00\"\n", this.getIr_ref(), this.getValor(), this.getLength()));
         return resultado.toString();
     }
     

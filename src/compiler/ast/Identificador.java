@@ -56,11 +56,12 @@ public class Identificador extends Expresion {
 
     @Override
     public String generarCodigo() {
+        // TODO: variables no inicializadas -> datos basura?
         TipoDato tipo = TablaSimbolos.getTipo(getNombre());
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
         StringBuilder resultado = new StringBuilder();
 
-        resultado.append(String.format("%3$s = load %1$s, %1$s* %2$s", tipo.getTipoLLVM(), "%" + getNombre(), this.getIr_ref()));
+        resultado.append(String.format("%3$s = load %1$s, %1$s* %2$s\n", tipo.getTipoLLVM(), "%" + getNombre(), this.getIr_ref()));
 
         return resultado.toString();
     }

@@ -145,7 +145,7 @@ public class Controller implements ActionListener {
             final Parser sintactico = new Parser(lexico);
             gc = (GeneracionCodigo) sintactico.parse().value;
         } catch (Exception e) {
-            System.out.println("Error al parsear el código");
+            view.appendTextOutput("Error al parsear el código\n");
             view.appendTextOutput(e.getMessage());
         }
 
@@ -153,13 +153,14 @@ public class Controller implements ActionListener {
         try {
             //generar codigo IR para el LLVM
             PrintWriter pw = new PrintWriter(new FileWriter("programa.ll"));
+            assert gc != null : "Algo muy malo ocurrió al parsear el código";
             pw.println(gc.generarCodigo());
             pw.close();
             System.out.println("Código generado");
             view.appendTextOutput("Código generado y guardado en /programa.ll\n");
         } catch (Exception e){
             System.out.println("Error con el llvm");
-            view.appendTextOutput(e.getMessage()); return;
+            view.appendTextOutput(e.toString()); return;
         }
 
         try {
@@ -191,7 +192,7 @@ public class Controller implements ActionListener {
             Process process = Runtime.getRuntime().exec(command);
             readProcess(process);
             int exitCode = process.waitFor();
-            System.out.println("Proceso terminado con código: " + exitCode);
+            System.out.println("Proceso terminado con código " + exitCode);
     }
 
     private void readProcess(Process process2) throws IOException {

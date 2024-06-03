@@ -4,6 +4,7 @@
  */
 package compiler.ast.sentencia;
 
+import compiler.ast.TipoPR;
 import compiler.ast.constante.ConstanteString;
 import compiler.ast.expresion.ExpresionLogica;
 import compiler.llvm.CodeGeneratorHelper;
@@ -22,6 +23,10 @@ public class SentenciaShow extends Sentencia{
 
     public SentenciaShow(ExpresionLogica expresion) {
         this.expresion = expresion;
+    }
+
+    public SentenciaShow(ConstanteString c) {
+        this.constanteString = c;
     }
 
     public ExpresionLogica getContenido() {
@@ -48,6 +53,10 @@ public class SentenciaShow extends Sentencia{
     @Override
      protected String getId() {
           return "show_" + this.hashCode();
+    }
+
+    public int getStrLength() {
+        return this.getConstanteString().getLength() + 1;
     }
     
     @Override
@@ -78,10 +87,17 @@ public class SentenciaShow extends Sentencia{
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
 
-        resultado.append(this.getExpresion().generarCodigo());
-
-        resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.integer, i32 0, i32 0), i32 %2$s)\n",
-                CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref()));
+        if (this.constanteString != null) {
+            // caso show(String)
+            resultado.append(this.getConstanteString().generarCodigo());
+            resultado.append(String.format("%1$s = call i32 @printf(i8* getelementptr ([%2$s x i8], [%2$s x i8]* %3$s, i32 0, i32 0))\n",
+                    CodeGeneratorHelper.getNewPointer(), getStrLength(), this.getConstanteString().getIr_ref()));
+        } else {
+            // caso show(expresion)
+            resultado.append(this.getExpresion().generarCodigo());
+            resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.integer, i32 0, i32 0), i32 %2$s)\n",
+                    CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref()));
+        }
         return resultado.toString();
     }
 }
