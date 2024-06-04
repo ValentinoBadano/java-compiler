@@ -21,4 +21,8 @@ public abstract class Expresion extends ExpresionLogica
         return resultado.toString();
     }
 
+
+
+
+
 }

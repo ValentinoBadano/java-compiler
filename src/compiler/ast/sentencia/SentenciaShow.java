@@ -95,8 +95,8 @@ public class SentenciaShow extends Sentencia{
         } else {
             // caso show(expresion)
             resultado.append(this.getExpresion().generarCodigo());
-            resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.integer, i32 0, i32 0), i32 %2$s)\n",
-                    CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref()));
+            resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.%4$s, i32 0, i32 0), %3$s %2$s)\n",
+                    CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref(), this.getExpresion().getTipo().getTipoLLVM(), this.getExpresion().getTipo().getOperador()));
         }
         return resultado.toString();
     }

@@ -20,7 +20,7 @@ public class ConstanteBooleana extends Constante {
     
     @Override
     protected String getEtiqueta() {
-        return String.format(String.format("Booleano %s", getValor()));
+        return String.format(String.format("bool %s", getValor()));
     }
     
     @Override

@@ -20,7 +20,7 @@ public class ConstanteDupla extends Constante{
 
     @Override
     protected String getEtiqueta() {
-        return String.format(String.format("Dupla %s", getValor()));
+        return String.format(String.format("duple %s", getValor()));
     }
     
     @Override

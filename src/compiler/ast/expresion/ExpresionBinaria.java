@@ -28,7 +28,7 @@ public abstract class ExpresionBinaria extends Expresion{
 
     @Override
     protected String getEtiqueta() {
-        return String.format("%s", this.getNombreOperacion());
+        return String.format("%s %s", getTipo().getOperador(), this.getNombreOperacion());
     }
 
     protected abstract String getNombreOperacion();
@@ -54,6 +54,7 @@ public abstract class ExpresionBinaria extends Expresion{
     public void validarTipo() throws Exception {
         TipoPR tipoIzq = izquierda.getTipo().getOperador();
         TipoPR tipoDer = derecha.getTipo().getOperador();
+
         if (tipoDer == tipoIzq) {
             // Caso mismo tipo
             this.tipo = izquierda.getTipo();
@@ -79,9 +80,16 @@ public abstract class ExpresionBinaria extends Expresion{
         resultado.append(this.derecha.generarCodigo());
         resultado.append("\n");
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
-        resultado.append(String.format("%1$s = %2$s i32 %3$s, %4$s\n", this.getIr_ref(),
-                this.get_llvm_op_code(), this.izquierda.getIr_ref(),
-                this.derecha.getIr_ref()));
+        resultado.append(String.format("%1$s = %6$s%2$s %3$s %4$s, %5$s\n", this.getIr_ref(),
+                this.get_llvm_op_code(), this.getTipo().getTipoLLVM() , this.izquierda.getIr_ref(),
+                this.derecha.getIr_ref(), isFloat()));
+
         return resultado.toString();
+    }
+
+    public String isFloat() {
+        if (this.getTipo().getOperador() == TipoPR.PR_FLOAT)
+            return "f";
+        return "";
     }
 }

@@ -20,7 +20,7 @@ public class ConstanteReal extends Constante {
 
     @Override
     protected String getEtiqueta() {
-        return String.format(String.format("Real %s", getValor()));
+        return String.format(String.format("float %s", getValor()));
     }
     
      @Override
@@ -36,7 +36,7 @@ public class ConstanteReal extends Constante {
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
-        resultado.append(String.format("%1$s = add double 0, %2$s\n", this.getIr_ref(), this.getValor()));
+        resultado.append(String.format("%1$s = fadd double 0.0, %2$s\n", this.getIr_ref(), this.getValor()));
         return resultado.toString();
     }
 }

@@ -29,7 +29,7 @@ public enum TipoPR {
             case PR_FLOAT:
                 return "float";
             case PR_INTEGER:
-                return "integer";
+                return "int";
             case PR_BOOLEAN:
                 return "boolean";
             case PR_DUPLE:

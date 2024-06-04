@@ -30,11 +30,10 @@ public class Identificador extends Expresion {
     public void setNombre(String nombre) {
             this.nombre = nombre;
     }
-    
-    @Override 
-    public String getEtiqueta(){
-        return getNombre();
-        
+
+    @Override
+    protected String getEtiqueta() {
+        return String.format("%s %s", getTipo().getOperador(), getNombre());
     }
     
     protected String getNombreOperacion() {

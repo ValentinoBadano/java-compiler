@@ -21,7 +21,7 @@ public class ConstanteEntera extends Constante {
 
     @Override
     protected String getEtiqueta() {
-        return String.format(String.format("Entero %s", getValor()));
+        return String.format(String.format("int %s", getValor()));
     }
     
     @Override

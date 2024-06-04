@@ -38,4 +38,12 @@ public class FloatADupla extends ExpresionLogica{
     public TipoDato getTipo() {
         return new TipoDato(TipoPR.PR_DUPLE);
     }
+
+    @Override
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        // TODO castear float a dupla
+        resultado.append(String.format("%vdestino = fptosi float %vorigen to i32\n"));
+        return resultado.toString();
+    }
 }
