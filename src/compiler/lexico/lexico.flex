@@ -120,7 +120,7 @@ comentario_unilinea = \#.*
     {constante_entera}	        { return token("ENTERO", Integer.parseInt(yytext())); }
     {dupla}	                { return token("DUPLE", yytext()); }
     {constante_booleana}        { return token("BOOLEAN", yytext()); }
-    {identificador}   	        { return token("IDENTIFICADOR",new Identificador(yytext()));}
+    {identificador}   	        { return token("IDENTIFICADOR", yytext());}
 
          /* whitespace */
     {WhiteSpace}                   { /* ignore */ }
