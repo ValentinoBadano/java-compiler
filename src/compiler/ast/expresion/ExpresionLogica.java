@@ -14,6 +14,7 @@ import compiler.ast.TipoPR;
  */
 public abstract class ExpresionLogica extends Nodo {
     protected TipoDato tipo;
+
     private String ir_ref;
 
     public ExpresionLogica() {
@@ -35,4 +36,8 @@ public abstract class ExpresionLogica extends Nodo {
     public void setIr_ref(String ir_ref) {
         this.ir_ref = ir_ref;
     }
+
+
+
+
 }

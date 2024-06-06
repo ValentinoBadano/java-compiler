@@ -144,7 +144,7 @@ public class Controller implements ActionListener {
             MiLexico lexico = new MiLexico(new StringReader(code));
             final Parser sintactico = new Parser(lexico);
             gc = (GeneracionCodigo) sintactico.parse().value;
-        } catch (Exception e) {
+        } catch (Error | Exception e) {
             view.appendTextOutput("Error al parsear el código\n");
             view.appendTextOutput(e.getMessage());
         }
@@ -159,7 +159,7 @@ public class Controller implements ActionListener {
             System.out.println("Código generado");
             view.appendTextOutput("Código generado y guardado en /programa.ll\n");
         } catch (Exception e){
-            System.out.println("Error con el llvm");
+            System.out.println("Error al generar el código IR");
             view.appendTextOutput(e.toString()); return;
         }
 
@@ -167,10 +167,9 @@ public class Controller implements ActionListener {
             // genera el archivo objeto -> programa.o
             Process process = Runtime.getRuntime().exec("clang -c -o programa.o programa.ll");
             readProcess(process);
-
             System.out.println("Archivo objeto generado");
         } catch (Exception e){
-            System.out.println("Error con el llvm");
+            System.out.println("Error al generar el archivo objeto");
             view.appendTextOutput(e.getMessage()); return;
         }
 
@@ -202,10 +201,11 @@ public class Controller implements ActionListener {
 
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
+            view.appendTextOutput(line  + "\n");
         }
         while ((line = errorReader.readLine()) != null) {
             System.err.println(line);
-            view.appendTextOutput(line);
+            view.appendTextOutput(line  + "\n");
         }
     }
 

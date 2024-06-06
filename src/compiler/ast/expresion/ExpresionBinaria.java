@@ -23,6 +23,9 @@ public abstract class ExpresionBinaria extends Expresion{
         this.validarTipo();
     }
 
+    protected ExpresionBinaria() {
+    }
+
     public abstract String get_llvm_op_code();
 
 

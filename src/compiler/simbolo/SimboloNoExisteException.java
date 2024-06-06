@@ -14,6 +14,6 @@ public class SimboloNoExisteException extends Exception {
 
     @Override
     public String getMessage() {
-        return "ERROR: el símbolo \"" + id + "\" no ha sido definido en la sección de declaración.";
+        return "ERROR: el símbolo \"" + id + "\" no ha sido definido en la sección de declaración.\n";
     }
 }

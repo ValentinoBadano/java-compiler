@@ -5,6 +5,7 @@
 package compiler.ast.sentencia;
 
 import compiler.ast.expresion.ExpresionLogica;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -34,25 +35,6 @@ public class SentenciaUnless extends Sentencia{
     public void setExpresion(ExpresionLogica expresion) {
         this.expresion = expresion;
     }
-
-    public SentenciaUnlessThen getSentenciasThen() {
-        return sentenciasThen;
-    }
-
-    public void setSentenciasThen(SentenciaUnlessThen sentenciasThen) {
-        this.sentenciasThen = sentenciasThen;
-    }
-
-    public SentenciaUnlessElse getSentenciasElse() {
-        return sentenciasElse;
-    }
-
-    public void setSentenciasElse(SentenciaUnlessElse sentenciasElse) {
-        this.sentenciasElse = sentenciasElse;
-    }
-
- 
-
     
     protected String getNombreOperacion() {
         return "unless";
@@ -76,6 +58,34 @@ public class SentenciaUnless extends Sentencia{
 
     public String toString() {
         return "unless " + expresion.toString() + " then " + sentenciasThen.toString() + " else " + sentenciasElse.toString() + " end";
+    }
+
+    public String generarCodigo() {
+        final StringBuilder resultado = new StringBuilder();
+        String tagEnd = CodeGeneratorHelper.getNewTag();
+
+        resultado.append(expresion.generarCodigo());
+        sentenciasElse.setTag(CodeGeneratorHelper.getNewTag());
+        sentenciasThen.setTag(CodeGeneratorHelper.getNewTag());
+
+        // condición
+        resultado.append(String.format("br i1 %s, label %s, label %s\n", expresion.getIr_ref(),
+                "%" + sentenciasElse.getTag(), "%" + sentenciasThen.getTag()));
+
+        // Generar código para las sentencias then
+        resultado.append(String.format("\n%s:\n", sentenciasThen.getTag()));
+        resultado.append(sentenciasThen.generarCodigo());
+        resultado.append(String.format("br label %s\n", "%" + tagEnd));
+
+        // Generar código para las sentencias else
+        resultado.append(String.format("\n%s:\n", sentenciasElse.getTag()));
+        resultado.append(sentenciasElse.generarCodigo());
+        resultado.append(String.format("br label %s\n", "%" + tagEnd));
+
+        // etiqueta de fin
+        resultado.append(String.format("\n%s:\n", tagEnd));
+
+        return resultado.toString();
     }
     
     

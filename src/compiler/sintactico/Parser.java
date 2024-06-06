@@ -5,18 +5,17 @@
 
 package compiler.sintactico;
 
+import compiler.ast.expresion.logica.*;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import compiler.simbolo.*;
 import compiler.ast.*;
-import compiler.ast.casteo.*;
 import compiler.ast.expresion.*;
 import compiler.ast.sentencia.*;
 import compiler.ast.constante.*;
-import compiler.ast.expresion.binaria.*;
-import java_cup.runtime.XMLElement;
+import compiler.ast.expresion.aritmetica.*;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */

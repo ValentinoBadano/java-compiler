@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class SentenciaUnlessElse extends Sentencia {
        private List<Sentencia> sentenciasElse;
+       private String tag;
 
     public SentenciaUnlessElse(List<Sentencia> sentenciasElse) {
         this.sentenciasElse = sentenciasElse;
@@ -52,4 +53,21 @@ public class SentenciaUnlessElse extends Sentencia {
     public String toString() {
         return this.sentenciasElse.toString();
     }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        for(Sentencia sentencia : sentenciasElse){
+            resultado.append(sentencia.generarCodigo());
+        }
+        return resultado.toString();
+    }
 }
+

@@ -92,12 +92,15 @@ public class SentenciaShow extends Sentencia{
             resultado.append(this.getConstanteString().generarCodigo());
             resultado.append(String.format("%1$s = call i32 @printf(i8* getelementptr ([%2$s x i8], [%2$s x i8]* %3$s, i32 0, i32 0))\n",
                     CodeGeneratorHelper.getNewPointer(), getStrLength(), this.getConstanteString().getIr_ref()));
+
         } else {
-            // caso show(expresion)
+            // caso show(expresion) imprime @integer y @float
+            // TODO imprimir booleanos
             resultado.append(this.getExpresion().generarCodigo());
             resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.%4$s, i32 0, i32 0), %3$s %2$s)\n",
                     CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref(), this.getExpresion().getTipo().getTipoLLVM(), this.getExpresion().getTipo().getOperador()));
         }
+        // TODO: manejar otros tipos de show (boolean, duplas)
         return resultado.toString();
     }
 }

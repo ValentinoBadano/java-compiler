@@ -10,7 +10,7 @@ import compiler.ast.casteo.*;
 import compiler.ast.expresion.*;
 import compiler.ast.sentencia.*;
 import compiler.ast.constante.*;
-import compiler.ast.expresion.binaria.*;
+import compiler.ast.expresion.aritmetica.*;
 
 
 class Parser;

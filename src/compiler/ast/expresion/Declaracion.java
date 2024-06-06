@@ -5,6 +5,7 @@
 package compiler.ast.expresion;
 
 import compiler.ast.Identificador;
+import compiler.ast.Nodo;
 import compiler.ast.TipoDato;
 import compiler.ast.expresion.Expresion;
 import compiler.llvm.CodeGeneratorHelper;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author Mari
  */
-public class Declaracion extends Expresion {
+public class Declaracion extends Nodo {
     
     private TipoDato tipoDato;
     private List<Identificador> listaIdentificador;

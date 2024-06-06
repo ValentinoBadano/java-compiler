@@ -39,7 +39,7 @@ public abstract class  Nodo {
     }
 
     public String generarCodigo() {
-        return "null";
+        return "";
     };
 
 }

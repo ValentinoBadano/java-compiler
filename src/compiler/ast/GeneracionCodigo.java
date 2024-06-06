@@ -51,8 +51,10 @@ public class GeneracionCodigo extends Nodo{
 
         // --- sección de declaración ---
         resultado.append("declare i32 @printf(i8*, ...)\n\n");
+
         resultado.append("\t@.int = private constant [4 x i8] c\"%d\\0A\\00\"\n"); // variable para imprimir enteros
         resultado.append("\t@.float = private constant [4 x i8] c\"%f\\0A\\00\"\n"); // variable para imprimir flotantes
+        resultado.append("\t@.boolean = private constant [4 x i8] c\"%d\\0A\\00\"\n"); // variable para imprimir booleanos
 
 
         // declara variables string globales aquí
