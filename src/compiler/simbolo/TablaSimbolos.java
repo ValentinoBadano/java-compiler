@@ -2,7 +2,10 @@ package compiler.simbolo;
 
 import compiler.ast.Identificador;
 import compiler.ast.TipoDato;
+import compiler.ast.TipoPR;
+import compiler.ast.expresion.Declaracion;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -38,6 +41,17 @@ public class TablaSimbolos {
 
     public static TipoDato getTipo(String id) {
         return ts.get(id).getType();
+    }
+
+    public static Declaracion getDeclaracion() {
+        ArrayList<Identificador> declaraciones = new ArrayList<>();
+        ts.forEach((k, v) -> {
+            if (v.getType() != null) {
+                declaraciones.add(new Identificador(v.getName()));
+            }
+        });
+
+        return new Declaracion(new TipoDato(TipoPR.PR_INTEGER), declaraciones);
     }
 
 

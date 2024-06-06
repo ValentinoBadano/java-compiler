@@ -40,4 +40,11 @@ public class SentenciaBreak extends Sentencia{
     protected String getId() {
         return "break_" + this.hashCode();
     }
+
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        String end = SentenciaRepeat.end;
+        resultado.append("br label %" + end + "\n");
+        return resultado.toString();
+    }
 }

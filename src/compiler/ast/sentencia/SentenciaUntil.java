@@ -48,5 +48,11 @@ public class SentenciaUntil extends Sentencia{
     protected String getId() {
         return "until_" + this.hashCode();
     }
+
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        resultado.append(expresion.generarCodigo());
+        return resultado.toString();
+    }
     
 }

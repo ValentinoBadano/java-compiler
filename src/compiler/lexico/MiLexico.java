@@ -1232,7 +1232,7 @@ public class MiLexico implements java_cup.runtime.Scanner {
             // fall through
           case 75: break;
           case 15:
-            { return token("IDENTIFICADOR",new Identificador(yytext()));
+            { return token("IDENTIFICADOR", yytext());
             }
             // fall through
           case 76: break;

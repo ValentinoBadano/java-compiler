@@ -40,6 +40,13 @@ public class SentenciaContinue extends Sentencia {
      @Override
     protected String getId() {
         return "continue_" + this.hashCode();
-    } 
+    }
+
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        String start = SentenciaRepeat.start;
+        resultado.append("br label %" + start + "\n");
+        return resultado.toString();
+    }
     
 }

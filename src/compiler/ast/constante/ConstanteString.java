@@ -38,7 +38,7 @@ public class ConstanteString extends Constante{
     }
     @Override
     public String generarCodigo() {
-        // TODO saltos de lineas en strings
+        // TODO saltos de lineas en strings y escapar comillas
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewGlobalPointer());
         resultado.append(String.format("%1$s = private constant [%3$s x i8] c\"%2$s\\0A\\00\"\n", this.getIr_ref(), this.getValor(), this.getLength()));

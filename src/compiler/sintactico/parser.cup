@@ -11,6 +11,7 @@ import compiler.ast.expresion.*;
 import compiler.ast.sentencia.*;
 import compiler.ast.constante.*;
 import compiler.ast.expresion.aritmetica.*;
+import compiler.ast.expresion.logica.*;
 
 
 class Parser;
@@ -53,7 +54,7 @@ terminal COMA;
 terminal AND, OR, NOT;
 terminal FLOAT, ENTERO, DUPLE, BOOLEAN, STRING_LITERAL;
 
-terminal Identificador IDENTIFICADOR;
+terminal String IDENTIFICADOR;
 
 nonterminal GeneracionCodigo main;
 nonterminal Programa programa;
@@ -158,7 +159,7 @@ lista_de_variables ::=  variable:v COMA lista_de_variables:lv  {:
 /* Variable */
 variable ::= IDENTIFICADOR:id {:
              output.add(String.format("REGLA 6.0: variable -> %s%n", id));
-     	     RESULT = id;
+     	     RESULT = new Identificador(id);
      	   :};
 
 seccion_programa::=  PR_PROGRAM_SECTION bloque_sentencias:bs PR_ENDPROGRAM_SECTION{:
@@ -304,6 +305,7 @@ fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
             Identificador suma = new Identificador("_suma" + n);
 
             TablaSimbolos.add_symbols(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(input, ant, sig, suma)); // agrega los enteros a la tabla de simbolos
+            Declaracion declaracion = new Declaracion(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(new Identificador("_input" + n), new Identificador("_ant" + n), new Identificador("_sig" + n), new Identificador("_suma" + n)));
 
             Asignacion asig1 = new Asignacion(input,e);
             Asignacion asig2 = new Asignacion(ant,new ConstanteEntera(0));
@@ -335,6 +337,7 @@ fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
             SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
             SentenciaUnless unless = new SentenciaUnless(new Menor(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
 
+            sentenciasFibonacci.add(declaracion);
             sentenciasFibonacci.add(asig1);
             sentenciasFibonacci.add(asig2);
             sentenciasFibonacci.add(asig3);
@@ -346,7 +349,8 @@ fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
 
 
 /* Asignación */
-asignacion ::= IDENTIFICADOR:id ASIGNACION expresion_logica:e {:
+asignacion ::= IDENTIFICADOR:ide ASIGNACION expresion_logica:e {:
+                    Identificador id = new Identificador(ide);
       			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
       			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
       			  if (!TablaSimbolos.idExists(id.getNombre())) {
@@ -467,7 +471,8 @@ factor ::=  MENOS factor:f {:
            		 RESULT = fss;
   	    :};
 
-factor_sin_signo ::=    IDENTIFICADOR:id {:
+factor_sin_signo ::=    IDENTIFICADOR:ide {:
+                    Identificador id = new Identificador(ide);
            		   output.add("REGLA 24.1: factor_sin_signo -> IDENTIFICADOR");
            		   output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
            		   if (!TablaSimbolos.idExists(id.getNombre())) {

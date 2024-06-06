@@ -4,6 +4,8 @@
  */
 package compiler.ast.sentencia;
 
+import compiler.llvm.CodeGeneratorHelper;
+
 import java.util.List;
 
 /**
@@ -14,15 +16,13 @@ public class SentenciaRepeat extends Sentencia{
     
      private List<Sentencia> sentenciasRepeat;
      private SentenciaUntil until;
+     public static String start;
+     public static String end;
 
     public SentenciaRepeat(List<Sentencia> sentenciasRepeat, SentenciaUntil until) {
         this.sentenciasRepeat = sentenciasRepeat;
         this.until = until;
     }
-
-   
-
-
 
     public List<Sentencia> getSentenciasRepeat() {
         return sentenciasRepeat;
@@ -62,5 +62,32 @@ public class SentenciaRepeat extends Sentencia{
     @Override
     public String toString() {
         return "repeat " + sentenciasRepeat.toString() + until.toString();
+    }
+
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+
+        start = CodeGeneratorHelper.getNewTag();
+        end = CodeGeneratorHelper.getNewTag();
+
+        resultado.append(String.format("br label %s\n", "%" + start));
+        resultado.append("\n" + start + ":\n");
+
+
+        if(sentenciasRepeat != null){
+              for(Sentencia sentenciaRepeat : sentenciasRepeat){
+                  resultado.append(sentenciaRepeat.generarCodigo());
+            }
+        }
+
+        resultado.append(until.generarCodigo());
+
+        resultado.append(String.format("br i1 %s, label %s, label %s\n", until.getExpresion().getIr_ref(),
+                "%" + end, "%" + start));
+
+
+        resultado.append("\n" + end + ":\n");
+
+        return resultado.toString();
     }
 }

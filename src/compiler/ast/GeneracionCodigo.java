@@ -8,6 +8,7 @@ import compiler.ast.expresion.Declaracion;
 import compiler.ast.sentencia.Sentencia;
 import compiler.ast.sentencia.SentenciaShow;
 import compiler.llvm.CodeGeneratorHelper;
+import compiler.simbolo.TablaSimbolos;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,6 +72,8 @@ public class GeneracionCodigo extends Nodo{
         resultado.append("\ndefine i32 @main(i32, i8**) {\n\t");
 
         StringBuilder resultado_programa = new StringBuilder();
+
+
 
         try {
             // si no hay declaraciones el foreach lanza una NullPointerException y esto no debería detener la compilación

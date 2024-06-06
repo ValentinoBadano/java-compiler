@@ -17,7 +17,7 @@ public class CompilerInterface extends JFrame {
 
     public CompilerInterface() {
         setTitle("Compilador");
-        setSize(600, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 

@@ -5,17 +5,19 @@
 
 package compiler.sintactico;
 
-import compiler.ast.expresion.logica.*;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import compiler.simbolo.*;
 import compiler.ast.*;
+import compiler.ast.casteo.*;
 import compiler.ast.expresion.*;
 import compiler.ast.sentencia.*;
 import compiler.ast.constante.*;
 import compiler.ast.expresion.aritmetica.*;
+import compiler.ast.expresion.logica.*;
+import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -634,10 +636,10 @@ class CUP$Parser$actions {
               Identificador RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Identificador id = (Identificador)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
              output.add(String.format("REGLA 6.0: variable -> %s%n", id));
-     	     RESULT = id;
+     	     RESULT = new Identificador(id);
      	   
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -986,6 +988,7 @@ class CUP$Parser$actions {
             Identificador suma = new Identificador("_suma" + n);
 
             TablaSimbolos.add_symbols(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(input, ant, sig, suma)); // agrega los enteros a la tabla de simbolos
+            Declaracion declaracion = new Declaracion(new TipoDato(TipoPR.PR_INTEGER), Arrays.asList(new Identificador("_input" + n), new Identificador("_ant" + n), new Identificador("_sig" + n), new Identificador("_suma" + n)));
 
             Asignacion asig1 = new Asignacion(input,e);
             Asignacion asig2 = new Asignacion(ant,new ConstanteEntera(0));
@@ -1017,6 +1020,7 @@ class CUP$Parser$actions {
             SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
             SentenciaUnless unless = new SentenciaUnless(new Menor(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
 
+            sentenciasFibonacci.add(declaracion);
             sentenciasFibonacci.add(asig1);
             sentenciasFibonacci.add(asig2);
             sentenciasFibonacci.add(asig3);
@@ -1033,13 +1037,14 @@ class CUP$Parser$actions {
           case 30: // asignacion ::= IDENTIFICADOR ASIGNACION expresion_logica 
             {
               Asignacion RESULT =null;
-		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Identificador id = (Identificador)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int ideleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int ideright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String ide = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionLogica e = (ExpresionLogica)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                    Identificador id = new Identificador(ide);
       			  output.add("REGLA 16.1: asignacion -> IDENTIFICADOR ASIGNACION expresion_general");
       			  output.add(String.format("REGLA 16.1: asignacion -> %s := %s%n", id, e));
       			  if (!TablaSimbolos.idExists(id.getNombre())) {
@@ -1427,10 +1432,11 @@ class CUP$Parser$actions {
           case 52: // factor_sin_signo ::= IDENTIFICADOR 
             {
               ExpresionLogica RESULT =null;
-		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Identificador id = (Identificador)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		int ideleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ideright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String ide = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                    Identificador id = new Identificador(ide);
            		   output.add("REGLA 24.1: factor_sin_signo -> IDENTIFICADOR");
            		   output.add(String.format("REGLA 21.1: factor_sin_signo -> %s%n", id));
            		   if (!TablaSimbolos.idExists(id.getNombre())) {

@@ -8,6 +8,7 @@ import compiler.ast.Identificador;
 import compiler.ast.Nodo;
 import compiler.ast.TipoDato;
 import compiler.ast.expresion.Expresion;
+import compiler.ast.sentencia.Sentencia;
 import compiler.llvm.CodeGeneratorHelper;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Mari
  */
-public class Declaracion extends Nodo {
+public class Declaracion extends Sentencia {
     
     private TipoDato tipoDato;
     private List<Identificador> listaIdentificador;

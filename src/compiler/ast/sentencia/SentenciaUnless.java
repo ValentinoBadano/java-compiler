@@ -57,6 +57,9 @@ public class SentenciaUnless extends Sentencia{
     }
 
     public String toString() {
+        if (sentenciasElse == null) {
+            return "unless " + expresion.toString() + " then " + sentenciasThen.toString() + " end";
+        }
         return "unless " + expresion.toString() + " then " + sentenciasThen.toString() + " else " + sentenciasElse.toString() + " end";
     }
 

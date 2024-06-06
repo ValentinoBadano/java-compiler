@@ -10,6 +10,7 @@ package compiler.ast;
  */
 public abstract class  Nodo {
     private String nombre;
+    private String ir_ref;
 
     public Nodo() {}
 
@@ -41,5 +42,13 @@ public abstract class  Nodo {
     public String generarCodigo() {
         return "";
     };
+
+    public String getIr_ref() {
+        return ir_ref;
+    }
+
+    public void setIr_ref(String ir_ref) {
+        this.ir_ref = ir_ref;
+    }
 
 }
