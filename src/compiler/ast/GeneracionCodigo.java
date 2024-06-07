@@ -56,6 +56,7 @@ public class GeneracionCodigo extends Nodo{
         resultado.append("\t@.int = private constant [4 x i8] c\"%d\\0A\\00\"\n"); // variable para imprimir enteros
         resultado.append("\t@.float = private constant [4 x i8] c\"%f\\0A\\00\"\n"); // variable para imprimir flotantes
         resultado.append("\t@.boolean = private constant [4 x i8] c\"%d\\0A\\00\"\n"); // variable para imprimir booleanos
+        resultado.append("\t@.duple = private constant [10 x i8] c\"(%f, %f)\\0A\\00\"\n"); // variable para imprimir duplas
 
 
         // declara variables string globales aquí
@@ -68,8 +69,15 @@ public class GeneracionCodigo extends Nodo{
             }
         }
 
+        resultado.append("%struct.Tuple = type { double, double }\n");
+        resultado.append("declare i32 @scanf(i8* %0, ...) \n\n");
+        resultado.append("@int_read_format = unnamed_addr constant [3 x i8] c\"%d\\00\"\n");
+        resultado.append("@double_read_format = unnamed_addr constant [4 x i8] c\"%lf\\00\"\n");
+        resultado.append("@bool_read_format = unnamed_addr constant [3 x i8] c\"%d\\00\"\n");
+
         // --- sección de programa ---
         resultado.append("\ndefine i32 @main(i32, i8**) {\n\t");
+
 
         StringBuilder resultado_programa = new StringBuilder();
 

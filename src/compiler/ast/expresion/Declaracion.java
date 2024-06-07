@@ -79,7 +79,7 @@ public class Declaracion extends Sentencia {
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
         for (Identificador id: listaIdentificador) {
-            resultado.append("%" + String.format("%1$s = alloca %2$s\n", id.getNombre(), getTipoDato().getTipoLLVM()));
+            resultado.append("%" + id.getNombre() + " = alloca " + tipoDato.getTipoLLVM() + "\n");
         }
         return resultado.toString();
     }

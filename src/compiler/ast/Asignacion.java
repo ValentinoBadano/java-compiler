@@ -9,6 +9,7 @@ import compiler.ast.casteo.EnteroAFloat;
 import compiler.ast.casteo.FloatADupla;
 import compiler.ast.expresion.ExpresionLogica;
 import compiler.ast.sentencia.Sentencia;
+import compiler.llvm.CodeGeneratorHelper;
 import compiler.simbolo.TablaSimbolos;
 
 /**
@@ -99,8 +100,33 @@ public class Asignacion extends Sentencia {
         StringBuilder resultado = new StringBuilder();
         resultado.append(expresion.generarCodigo());
 
-        resultado.append(String.format("store %1$s %2$s, %1$s* %3$s", tipo.getTipoLLVM(), expresion.getIr_ref(), "%" + identificador.getNombre()));
-        resultado.append("\n");
+        if (tipo.operador == TipoPR.PR_DUPLE) {
+            String prt1_origen = CodeGeneratorHelper.getNewPointer();
+            String prt2_origen = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", prt1_origen, expresion.getIr_ref()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", prt2_origen, expresion.getIr_ref()));
+
+            String ptr1_temp = CodeGeneratorHelper.getNewPointer();
+            String ptr2_temp = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = load double, double* %2$s\n", ptr1_temp, prt1_origen));
+            resultado.append(String.format("%1$s = load double, double* %2$s\n", ptr2_temp, prt2_origen));
+
+
+            String ptr1_dest = CodeGeneratorHelper.getNewPointer();
+            String ptr2_dest = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dest, "%" + identificador.getNombre()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dest, "%" + identificador.getNombre()));
+
+            resultado.append(String.format("store double %1$s, double* %2$s\n", ptr1_temp, ptr1_dest));
+            resultado.append(String.format("store double %1$s, double* %2$s\n", ptr2_temp, ptr2_dest));
+
+
+        } else {
+            resultado.append(String.format("store %1$s %2$s, %1$s* %3$s", tipo.getTipoLLVM(), expresion.getIr_ref(), "%" + identificador.getNombre()));
+            resultado.append("\n");
+        }
+
+
         return resultado.toString();
     }
 

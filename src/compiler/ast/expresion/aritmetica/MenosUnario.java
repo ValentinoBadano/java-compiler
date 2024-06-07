@@ -40,17 +40,21 @@ public class MenosUnario extends ExpresionUnaria {
         resultado.append("\n");
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
 
-        resultado.append(String.format("%1$s = %2$ssub i32 0, %3$s\n", this.getIr_ref(), isFloat(),
-                this.derecha.getIr_ref()));
+        if (this.getTipo().getOperador() == TipoPR.PR_FLOAT) {
+            resultado.append(String.format("%1$s = fsub double 0.0, %2$s\n", this.getIr_ref(),
+                    this.derecha.getIr_ref()));
+        } else {
+            resultado.append(String.format("%1$s = sub i32 0, %2$s\n", this.getIr_ref(),
+                    this.derecha.getIr_ref()));
+        }
+
+
+
+
 
         return resultado.toString();
     }
 
-    public String isFloat() {
-        if (this.getTipo().getOperador() == TipoPR.PR_FLOAT)
-            return "f";
-        return "";
-    }
 
     @Override
     public TipoDato getTipo() {

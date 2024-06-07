@@ -174,7 +174,7 @@ public class Controller implements ActionListener {
         }
 
         try {
-            Process process2 = Runtime.getRuntime().exec("gcc -o programa.exe programa.o");
+            Process process2 = Runtime.getRuntime().exec("gcc -o programa.exe programa.o scanf.o");
             readProcess(process2);
             System.out.println("Ejecutable generado");
             executeProgram();

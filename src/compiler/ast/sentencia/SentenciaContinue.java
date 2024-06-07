@@ -43,6 +43,7 @@ public class SentenciaContinue extends Sentencia {
     }
 
     public String generarCodigo() {
+        // TODO consultar break y continue
         StringBuilder resultado = new StringBuilder();
         String start = SentenciaRepeat.start;
         resultado.append("br label %" + start + "\n");
