@@ -39,6 +39,4 @@ public class EnteroAFloat extends Casteo {
         resultado.append(String.format("%1$s = sitofp i32 %2$s to double\n", this.getIr_ref(), this.getExpresion().getIr_ref()));
         return resultado.toString();
     }
-
-
 }

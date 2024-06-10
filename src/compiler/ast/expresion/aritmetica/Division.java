@@ -21,7 +21,11 @@ public class Division extends ExpresionBinaria {
 
     @Override
     public String get_llvm_op_code() {
-        return "sdiv";
+        if (this.getTipo().getOperador() == TipoPR.PR_FLOAT || this.getTipo().getOperador() == TipoPR.PR_DUPLE) {
+            return "fdiv";
+        } else {
+            return "sdiv";
+        }
     }
 
     @Override
@@ -34,11 +38,12 @@ public class Division extends ExpresionBinaria {
         return "division_" + this.hashCode();
     }
 
-    // caso especial: la división siempre devuelve un entero
     // TODO dividir por 0
-    // TODO division entre flotantes
+
     @Override
-    public TipoDato getTipo() {
-        return new TipoDato(TipoPR.PR_INTEGER);
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        resultado.append(super.generarCodigo());
+        return resultado.toString();
     }
 }

@@ -4,6 +4,7 @@
  */
 package compiler.ast.expresion.aritmetica;
 
+import compiler.ast.TipoPR;
 import compiler.ast.expresion.ExpresionBinaria;
 import compiler.ast.expresion.ExpresionLogica;
 
@@ -19,7 +20,11 @@ public class Multiplicacion extends ExpresionBinaria {
 
     @Override
     public String get_llvm_op_code() {
-        return "mul";
+        if (this.getTipo().getOperador() == TipoPR.PR_FLOAT || this.getTipo().getOperador() == TipoPR.PR_DUPLE) {
+            return "fmul";
+        } else {
+            return "mul";
+        }
     }
 
     @Override

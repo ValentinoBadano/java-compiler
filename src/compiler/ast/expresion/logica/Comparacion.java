@@ -37,7 +37,7 @@ public abstract class Comparacion extends ExpresionBinariaLogica {
         TipoPR tipoIzq = izquierda.getTipo().getOperador();
         TipoPR tipoDer = derecha.getTipo().getOperador();
 
-        if (tipoDer == tipoIzq) {
+        if (tipoDer == tipoIzq && tipoIzq != TipoPR.PR_DUPLE) {
             // Caso mismo tipo
             this.tipo = izquierda.getTipo();
         } else if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_INTEGER) {
@@ -48,7 +48,6 @@ public abstract class Comparacion extends ExpresionBinariaLogica {
             // Caso integer + float
             this.tipo = derecha.getTipo();
             this.izquierda = new EnteroAFloat(izquierda); // castea izquierda a float
-            // TODO caso boolean? casos duple
         } else {
             throw new Exception(String.format("ERROR: Incompatibilidad de tipos en la operación %s %s %s%n", izquierda, getNombreOperacion(), derecha));
         }

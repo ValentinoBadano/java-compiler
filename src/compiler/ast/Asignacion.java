@@ -22,9 +22,8 @@ public class Asignacion extends Sentencia {
     private final ExpresionLogica expresion;
 
     public Asignacion(Identificador identificador, ExpresionLogica expresion) throws AsignacionTiposException {
-        ExpresionLogica expresion1;
         this.identificador = identificador;
-        expresion1 = expresion;
+        ExpresionLogica expresion_temporal = expresion;
 
         TipoDato tipoDeclarado = TablaSimbolos.getTipo(identificador.getNombre());
         TipoDato tipoExpresion = expresion.getTipo();
@@ -38,7 +37,7 @@ public class Asignacion extends Sentencia {
                 break;
             case PR_FLOAT:
                 if (tipoExpresion.operador == TipoPR.PR_INTEGER ) {
-                    expresion1 = new EnteroAFloat(expresion); break;
+                    expresion_temporal = new EnteroAFloat(expresion); break;
                 } else if (tipoExpresion.operador != TipoPR.PR_FLOAT) {
                     throw new AsignacionTiposException(tipoDeclarado, tipoExpresion, identificador);
                 }
@@ -48,16 +47,16 @@ public class Asignacion extends Sentencia {
                     case PR_BOOLEAN:
                         throw new AsignacionTiposException(tipoDeclarado, tipoExpresion, identificador);
                     case PR_INTEGER:
-                        expresion1 = new EnteroADupla(expresion1);
+                        expresion_temporal = new FloatADupla(new EnteroAFloat(expresion_temporal));
                         break;
                     case PR_FLOAT:
-                        expresion1 = new FloatADupla(expresion1); break;
+                        expresion_temporal = new FloatADupla(expresion_temporal); break;
                 }
                 break;
         }
 
 
-        this.expresion = expresion1;
+        this.expresion = expresion_temporal;
     }
 
     public Identificador getIdentificador() {
@@ -101,32 +100,32 @@ public class Asignacion extends Sentencia {
         resultado.append(expresion.generarCodigo());
 
         if (tipo.operador == TipoPR.PR_DUPLE) {
+            // extraer los valores de la dupla
             String prt1_origen = CodeGeneratorHelper.getNewPointer();
             String prt2_origen = CodeGeneratorHelper.getNewPointer();
             resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", prt1_origen, expresion.getIr_ref()));
             resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", prt2_origen, expresion.getIr_ref()));
 
+            // cargar los valores de la dupla en variables temporales
             String ptr1_temp = CodeGeneratorHelper.getNewPointer();
             String ptr2_temp = CodeGeneratorHelper.getNewPointer();
             resultado.append(String.format("%1$s = load double, double* %2$s\n", ptr1_temp, prt1_origen));
             resultado.append(String.format("%1$s = load double, double* %2$s\n", ptr2_temp, prt2_origen));
 
-
+            // crear punteros para la dupla destino
             String ptr1_dest = CodeGeneratorHelper.getNewPointer();
             String ptr2_dest = CodeGeneratorHelper.getNewPointer();
             resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dest, "%" + identificador.getNombre()));
             resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dest, "%" + identificador.getNombre()));
 
+            // almacenar los valores de la dupla en la dupla destino
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr1_temp, ptr1_dest));
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr2_temp, ptr2_dest));
-
-
         } else {
+            // si no es una dupla, se almacena el valor de la expresion en la variable
             resultado.append(String.format("store %1$s %2$s, %1$s* %3$s", tipo.getTipoLLVM(), expresion.getIr_ref(), "%" + identificador.getNombre()));
             resultado.append("\n");
         }
-
-
         return resultado.toString();
     }
 

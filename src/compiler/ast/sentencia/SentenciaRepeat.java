@@ -65,6 +65,7 @@ public class SentenciaRepeat extends Sentencia{
     }
 
     public String generarCodigo() {
+        // TODO fibonacci en repeat
         StringBuilder resultado = new StringBuilder();
 
         start = CodeGeneratorHelper.getNewTag();

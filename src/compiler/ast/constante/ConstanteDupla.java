@@ -40,7 +40,6 @@ public class ConstanteDupla extends Constante{
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
         resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", this.getIr_ref()));
-        // TODO tipo de dato tupla
         String ptr1 = CodeGeneratorHelper.getNewPointer();
         String ptr2 = CodeGeneratorHelper.getNewPointer();
 

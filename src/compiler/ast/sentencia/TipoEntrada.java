@@ -82,6 +82,7 @@ public class TipoEntrada extends Expresion {
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @" +
                         "bool_read_format, i64 0, i64 0), i32* %s)\n", CodeGeneratorHelper.getNewPointer(), temp)); break;
             case PR_DUPLE:
+                // TODO input duple
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @" +
                         "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), temp));
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @" +
