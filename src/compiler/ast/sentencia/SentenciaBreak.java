@@ -43,8 +43,8 @@ public class SentenciaBreak extends Sentencia{
 
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
-        String end = SentenciaRepeat.end;
-        resultado.append("br label %" + end + "\n");
+        //String end = SentenciaRepeat.end;
+        //resultado.append("br label %" + end + "\n");
         return resultado.toString();
     }
 }

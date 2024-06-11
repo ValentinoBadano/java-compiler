@@ -738,6 +738,12 @@ class CUP$Parser$actions {
           			  output.add("REGLA 9.1: bloque_sentencias_repeat -> instruccion_repeat");
           			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is + "\n");
                                   RESULT = new ArrayList();
+                                    if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            RESULT.add(sf);
+          			        }
+                                         sentenciasFibonacci.clear();
+                                    }
                                   RESULT.add(is);
       			  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("bloque_sentencias_repeat",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -756,7 +762,13 @@ class CUP$Parser$actions {
 		Sentencia is = (Sentencia)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
           			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias\n");
-          			  bsr.add(is);
+                                    if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            bsr.add(sf);
+          			        }
+                                         sentenciasFibonacci.clear();
+                                    }
+                                  bsr.add(is);
                                   RESULT = bsr;
       			  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("bloque_sentencias_repeat",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -786,7 +798,7 @@ class CUP$Parser$actions {
 		
        		 output.add("REGLA 8.3: sentencia -> PR_BREAK");
        		 RESULT = new SentenciaBreak(TipoPR.PR_BREAK);
-                 
+
    	 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("instruccion_repeat",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -962,7 +974,7 @@ class CUP$Parser$actions {
                		        output.add("REGLA 14.2: sentenciaSHOW -> PR_SHOW P_ABRE STRING_LITERAL P_CIERRA");
                		        output.add(String.format("REGLA 14.2: sentenciaSHOW -> SHOW(%s)%n",sl));
                                 cte_string = new ConstanteString(sl);
-               		        RESULT = new SentenciaShow(cte_string); 
+               		        RESULT = new SentenciaShow(cte_string);
                		        TablaSimbolos.add_string_const(sl.toString());
            		 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("sentenciaSHOW",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1020,7 +1032,7 @@ class CUP$Parser$actions {
             SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
             SentenciaUnless unless = new SentenciaUnless(new Menor(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
 
-            sentenciasFibonacci.add(declaracion);
+            Programa.declaracionesFibo.add(declaracion);
             sentenciasFibonacci.add(asig1);
             sentenciasFibonacci.add(asig2);
             sentenciasFibonacci.add(asig3);

@@ -16,8 +16,8 @@ public class SentenciaRepeat extends Sentencia{
     
      private List<Sentencia> sentenciasRepeat;
      private SentenciaUntil until;
-     public static String start;
-     public static String end;
+     public String start;
+     public String end;
 
     public SentenciaRepeat(List<Sentencia> sentenciasRepeat, SentenciaUntil until) {
         this.sentenciasRepeat = sentenciasRepeat;

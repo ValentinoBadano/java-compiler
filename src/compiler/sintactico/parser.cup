@@ -208,11 +208,23 @@ bloque_sentencias_repeat ::= instruccion_repeat:is {:
           			  output.add("REGLA 9.1: bloque_sentencias_repeat -> instruccion_repeat");
           			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is + "\n");
                                   RESULT = new ArrayList();
+                                    if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            RESULT.add(sf);
+          			        }
+                                         sentenciasFibonacci.clear();
+                                    }
                                   RESULT.add(is);
       			  :}
       			  | bloque_sentencias_repeat:bsr instruccion_repeat:is  {:
           			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias\n");
-          			  bsr.add(is);
+                                    if (!sentenciasFibonacci.isEmpty()) {
+          			        for (Sentencia sf : sentenciasFibonacci) {
+          			            bsr.add(sf);
+          			        }
+                                         sentenciasFibonacci.clear();
+                                    }
+                                  bsr.add(is);
                                   RESULT = bsr;
       			  :};
 
@@ -223,7 +235,7 @@ instruccion_repeat::= sentencia:s {:
    	 :} | PR_BREAK {:
        		 output.add("REGLA 8.3: sentencia -> PR_BREAK");
        		 RESULT = new SentenciaBreak(TipoPR.PR_BREAK);
-                 
+
    	 :}| PR_CONTINUE {:
        		 output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
        		 RESULT = new SentenciaContinue(TipoPR.PR_CONTINUE);
@@ -288,7 +300,7 @@ sentenciaSHOW ::=   PR_SHOW P_ABRE expresion_logica:e P_CIERRA{:
                		        output.add("REGLA 14.2: sentenciaSHOW -> PR_SHOW P_ABRE STRING_LITERAL P_CIERRA");
                		        output.add(String.format("REGLA 14.2: sentenciaSHOW -> SHOW(%s)%n",sl));
                                 cte_string = new ConstanteString(sl);
-               		        RESULT = new SentenciaShow(cte_string); 
+               		        RESULT = new SentenciaShow(cte_string);
                		        TablaSimbolos.add_string_const(sl.toString());
            		 :};
 
@@ -337,7 +349,7 @@ fibonacci ::= PR_FIBONACCI P_ABRE expresion:e P_CIERRA {:
             SentenciaUnlessElse sentenciasElse = new SentenciaUnlessElse(sElse);
             SentenciaUnless unless = new SentenciaUnless(new Menor(new Identificador("_input"+n), new ConstanteEntera(1)), sentenciasThen, sentenciasElse);
 
-            sentenciasFibonacci.add(declaracion);
+            Programa.declaracionesFibo.add(declaracion);
             sentenciasFibonacci.add(asig1);
             sentenciasFibonacci.add(asig2);
             sentenciasFibonacci.add(asig3);

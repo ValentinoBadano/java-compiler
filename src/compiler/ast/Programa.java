@@ -18,17 +18,22 @@ import java.util.Map;
  * @author Mari
  */
 public class Programa extends Nodo {
-    
+
     List<Declaracion> declaraciones = new ArrayList<>();
     List<Sentencia> sentencias = new ArrayList<>();
-    
+    public static List<Declaracion> declaracionesFibo = new ArrayList<>();
+
     public static Map<String, Simbolo> tablaDeSimbolos = new HashMap<>();
-    
-    
-public Programa( List<Declaracion> declaraciones, List<Sentencia> sentencias) {
-     
+
+
+    public Programa( List<Declaracion> declaraciones, List<Sentencia> sentencias) {
+
         this.declaraciones = declaraciones;
         this.sentencias = sentencias;
+        if (!declaracionesFibo.isEmpty()) {
+            declaraciones.addAll(declaracionesFibo);
+            declaracionesFibo.clear();
+        }
     }
  
     public Programa() {

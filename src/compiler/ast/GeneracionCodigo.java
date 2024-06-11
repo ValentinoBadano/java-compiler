@@ -78,10 +78,16 @@ public class GeneracionCodigo extends Nodo{
         // --- sección de programa ---
         resultado.append("\ndefine i32 @main(i32, i8**) {\n\t");
 
+        Iterator<String> iterator2 = sentenciasPrograma.iterator();
+        while (iterator2.hasNext()) {
+            String s = iterator2.next();
+            if (s.contains("alloca")) {
+                resultado.append("\t").append(s).append("\n");
+                iterator2.remove();
+            }
+        }
 
         StringBuilder resultado_programa = new StringBuilder();
-
-
 
         try {
             // si no hay declaraciones el foreach lanza una NullPointerException y esto no debería detener la compilación
