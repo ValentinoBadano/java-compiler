@@ -16,8 +16,6 @@ public class SentenciaRepeat extends Sentencia{
     
      private List<Sentencia> sentenciasRepeat;
      private SentenciaUntil until;
-     public String start;
-     public String end;
 
     public SentenciaRepeat(List<Sentencia> sentenciasRepeat, SentenciaUntil until) {
         this.sentenciasRepeat = sentenciasRepeat;
@@ -68,18 +66,23 @@ public class SentenciaRepeat extends Sentencia{
         // TODO fibonacci en repeat
         StringBuilder resultado = new StringBuilder();
 
-        start = CodeGeneratorHelper.getNewTag();
-        end = CodeGeneratorHelper.getNewTag();
+        String start = CodeGeneratorHelper.getNewTag();
+        CodeGeneratorHelper.repeatStartFlags.push(start);
+        String end = CodeGeneratorHelper.getNewTag();
+        CodeGeneratorHelper.repeatEndFlags.push(end);
 
         resultado.append(String.format("br label %s\n", "%" + start));
         resultado.append("\n" + start + ":\n");
 
+        CodeGeneratorHelper.setRepeat(true);
 
         if(sentenciasRepeat != null){
               for(Sentencia sentenciaRepeat : sentenciasRepeat){
                   resultado.append(sentenciaRepeat.generarCodigo());
             }
         }
+
+        CodeGeneratorHelper.setRepeat(false);
 
         resultado.append(until.generarCodigo());
 
@@ -88,6 +91,9 @@ public class SentenciaRepeat extends Sentencia{
 
 
         resultado.append("\n" + end + ":\n");
+
+        CodeGeneratorHelper.repeatStartFlags.pop();
+        CodeGeneratorHelper.repeatEndFlags.pop();
 
         return resultado.toString();
     }

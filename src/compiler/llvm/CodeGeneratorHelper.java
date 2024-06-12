@@ -1,5 +1,7 @@
 package compiler.llvm;
 
+import java.util.Stack;
+
 /**
  *
  * @author Valentino
@@ -7,6 +9,9 @@ package compiler.llvm;
 public class CodeGeneratorHelper {
     
     private static int nextID = 0;
+    private static boolean isRepeat = false;
+    public static Stack<String> repeatStartFlags = new Stack<>();
+    public static Stack<String> repeatEndFlags = new Stack<>();
         
     private CodeGeneratorHelper(){}
    
@@ -30,5 +35,12 @@ public class CodeGeneratorHelper {
         ret.append(String.format("tag.%s", nextID));
         return ret.toString();
     }
-    
+
+    public static boolean isRepeat() {
+        return isRepeat;
+    }
+
+    public static void setRepeat(boolean isRepeat) {
+        CodeGeneratorHelper.isRepeat = isRepeat;
+    }
 }

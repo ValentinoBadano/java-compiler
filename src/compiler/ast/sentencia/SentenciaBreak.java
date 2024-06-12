@@ -5,6 +5,7 @@
 package compiler.ast.sentencia;
 
 import compiler.ast.TipoPR;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -43,8 +44,12 @@ public class SentenciaBreak extends Sentencia{
 
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
-        //String end = SentenciaRepeat.end;
-        //resultado.append("br label %" + end + "\n");
+        if (!CodeGeneratorHelper.isRepeat()) {
+            throw new RuntimeException("Break fuera de un repeat");
+        }
+
+        String end = CodeGeneratorHelper.repeatEndFlags.peek();
+        resultado.append("br label %" + end + "\n");
         return resultado.toString();
     }
 }

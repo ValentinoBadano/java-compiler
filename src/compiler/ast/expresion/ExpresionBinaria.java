@@ -8,6 +8,7 @@ import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
 import compiler.ast.casteo.EnteroAFloat;
 import compiler.ast.casteo.FloatADupla;
+import compiler.ast.constante.ConstanteDupla;
 import compiler.llvm.CodeGeneratorHelper;
 
 /**
@@ -102,23 +103,18 @@ public abstract class ExpresionBinaria extends Expresion{
 
         if (this.getTipo().getOperador() == TipoPR.PR_DUPLE) {
             // extraer los valores de la dupla izquierda
-            String ptr1_dupla1 = CodeGeneratorHelper.getNewPointer();
-            String ptr2_dupla1 = CodeGeneratorHelper.getNewPointer();
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dupla1, izquierda.getIr_ref()));
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dupla1, izquierda.getIr_ref()));
+            String ptr1_dupla1 = this.izquierda.getIr_ref() + ".1";
+            String ptr2_dupla1 = this.izquierda.getIr_ref() + ".2";
             // extraer los valores de la dupla derecha
-            String ptr1_dupla2 = CodeGeneratorHelper.getNewPointer();
-            String ptr2_dupla2 = CodeGeneratorHelper.getNewPointer();
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dupla2, derecha.getIr_ref()));
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dupla2, derecha.getIr_ref()));
+            String ptr1_dupla2 = this.derecha.getIr_ref() + ".1";
+            String ptr2_dupla2 = this.derecha.getIr_ref() + ".2";
 
-            // asigna el espacio para una nueva dupla
-            resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", this.getIr_ref()));
-            // punteros temporales a los valores de la dupla
-            String ptr1 = CodeGeneratorHelper.getNewPointer();
-            String ptr2 = CodeGeneratorHelper.getNewPointer();
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1, getIr_ref()));
-            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2, getIr_ref()));
+            ConstanteDupla dupla = new ConstanteDupla(0.0, 0.0);
+            dupla.generarCodigo();
+            String ptr1 = dupla.getIr_ref() + ".1";
+            String ptr2 = dupla.getIr_ref() + ".2";
+            this.setIr_ref(dupla.getIr_ref());
+
 
             // carga los valores de las duplas en 2 nuevas variables temporales con load
             String val1_dupla1 = CodeGeneratorHelper.getNewPointer();
@@ -139,6 +135,7 @@ public abstract class ExpresionBinaria extends Expresion{
                     ptr1_dest, this.get_llvm_op_code(), "double", val1_dupla1, val1_dupla2));
             resultado.append(String.format("%1$s = %2$s %3$s %4$s, %5$s\n",
                     ptr2_dest, this.get_llvm_op_code(), "double", val2_dupla1, val2_dupla2));
+
             // almacenar los valores de la dupla en la dupla destino
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr1_dest, ptr1));
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr2_dest, ptr2));

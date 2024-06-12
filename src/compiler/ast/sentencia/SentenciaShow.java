@@ -92,8 +92,15 @@ public class SentenciaShow extends Sentencia{
             resultado.append(this.getConstanteString().generarCodigo());
             resultado.append(String.format("%1$s = call i32 @printf(i8* getelementptr ([%2$s x i8], [%2$s x i8]* %3$s, i32 0, i32 0))\n",
                     CodeGeneratorHelper.getNewPointer(), getStrLength(), this.getConstanteString().getIr_ref()));
+        } else if (this.getExpresion().getTipo().getOperador() == TipoPR.PR_BOOLEAN) {
+            // caso show(boolean)
+            resultado.append(this.getExpresion().generarCodigo());
+            String temp = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = zext i1 %2$s to i32\n", temp , this.getExpresion().getIr_ref())); // castea el i1 a i32
+            resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.boolean, i32 0, i32 0), i32 %2$s)\n",
+                    CodeGeneratorHelper.getNewPointer(), temp, this.getExpresion().getTipo().getOperador()));
         } else {
-            // TODO imprimir booleanos
+            // caso show(int) o show(float) o show(duple)
             resultado.append(this.getExpresion().generarCodigo());
             resultado.append(String.format("%1$s = call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.%4$s, i32 0, i32 0), %3$s %2$s)\n",
                     CodeGeneratorHelper.getNewPointer(), this.getExpresion().getIr_ref(), this.getExpresion().getTipo().getTipoLLVM(), this.getExpresion().getTipo().getOperador()));

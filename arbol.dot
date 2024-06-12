@@ -1,0 +1,34 @@
+graph G {nodo_281692033[label="Programa"]
+declaracion_2081945697[label=":"]
+nodo_281692033--declaracion_2081945697
+integer_2102451150[label="int"]
+declaracion_2081945697--integer_2102451150
+identificador_635064372[label="int a"]
+declaracion_2081945697--identificador_635064372
+identificador_1735327041[label="int b"]
+declaracion_2081945697--identificador_1735327041
+asignacion_620348733[label=":="]
+nodo_281692033--asignacion_620348733
+identificador_1594684615[label="int a"]
+asignacion_620348733--identificador_1594684615
+suma_673203426[label="int +"]
+asignacion_620348733--suma_673203426
+cte_entera_942940242[label="int 30"]
+suma_673203426--cte_entera_942940242
+cte_entera_1385093700[label="int 4"]
+suma_673203426--cte_entera_1385093700
+asignacion_1788655134[label=":="]
+nodo_281692033--asignacion_1788655134
+identificador_1077016827[label="int b"]
+asignacion_1788655134--identificador_1077016827
+suma_1503557151[label="int +"]
+asignacion_1788655134--suma_1503557151
+identificador_2112277394[label="int a"]
+suma_1503557151--identificador_2112277394
+cte_entera_1925561974[label="int 35"]
+suma_1503557151--cte_entera_1925561974
+show_1039955701[label="Show"]
+nodo_281692033--show_1039955701
+identificador_402182619[label="int b"]
+show_1039955701--identificador_402182619
+}

@@ -7,7 +7,6 @@ package compiler.ast.constante;
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
 import compiler.llvm.CodeGeneratorHelper;
-import compiler.simbolo.TablaSimbolos;
 
 /**
  *

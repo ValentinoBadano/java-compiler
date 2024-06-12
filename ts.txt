@@ -1,0 +1,2 @@
+Simbolo{NOMBRE='b', TOKEN='ID', TIPO='int', VALOR='', LONG=0}
+Simbolo{NOMBRE='a', TOKEN='ID', TIPO='int', VALOR='', LONG=0}

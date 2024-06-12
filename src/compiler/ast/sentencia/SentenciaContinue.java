@@ -5,6 +5,7 @@
 package compiler.ast.sentencia;
 
 import compiler.ast.TipoPR;
+import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *
@@ -45,8 +46,11 @@ public class SentenciaContinue extends Sentencia {
     public String generarCodigo() {
         // TODO consultar break y continue
         StringBuilder resultado = new StringBuilder();
-        //String start = SentenciaRepeat.start;
-        //resultado.append("br label %" + start + "\n");
+        if (!CodeGeneratorHelper.isRepeat()) {
+            throw new RuntimeException("Continue fuera de un repeat");
+        }
+        String start = CodeGeneratorHelper.repeatStartFlags.peek();
+        resultado.append("br label %" + start + "\n");
         return resultado.toString();
     }
     

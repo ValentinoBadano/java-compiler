@@ -7,6 +7,8 @@ package compiler.ast.sentencia;
 import compiler.ast.expresion.ExpresionLogica;
 import compiler.llvm.CodeGeneratorHelper;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Mari
@@ -20,6 +22,7 @@ public class SentenciaUnless extends Sentencia{
     public SentenciaUnless(ExpresionLogica expresion, SentenciaUnlessThen sentenciasThen) {
         this.expresion = expresion;
         this.sentenciasThen = sentenciasThen;
+        this.sentenciasElse = new SentenciaUnlessElse(new ArrayList<>());
     }
     
     public SentenciaUnless(ExpresionLogica expresion, SentenciaUnlessThen sentenciasThen, SentenciaUnlessElse sentenciasElse ) {
@@ -68,6 +71,9 @@ public class SentenciaUnless extends Sentencia{
         String tagEnd = CodeGeneratorHelper.getNewTag();
 
         resultado.append(expresion.generarCodigo());
+
+
+
         sentenciasElse.setTag(CodeGeneratorHelper.getNewTag());
         sentenciasThen.setTag(CodeGeneratorHelper.getNewTag());
 

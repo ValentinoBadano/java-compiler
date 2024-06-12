@@ -71,8 +71,6 @@ nonterminal List<Sentencia> seccion_programa;
 nonterminal List<Sentencia> bloque_sentencias;
 nonterminal Sentencia sentencia;
 
-nonterminal List<Sentencia> bloque_sentencias_repeat;
-nonterminal Sentencia instruccion_repeat;
 nonterminal Sentencia sentenciaREPEAT; 
 
 nonterminal Sentencia sentenciaUNLESS; 
@@ -202,46 +200,6 @@ bloque_sentencias ::= sentencia:s {:
                                    RESULT = bs;
       			  :};
 
-// Bloque instrucciones para REPEAT
-
-bloque_sentencias_repeat ::= instruccion_repeat:is {:
-          			  output.add("REGLA 9.1: bloque_sentencias_repeat -> instruccion_repeat");
-          			  output.add("REGLA 9.1: bloque_sentencias_repeat ->" + is + "\n");
-                                  RESULT = new ArrayList();
-                                    if (!sentenciasFibonacci.isEmpty()) {
-          			        for (Sentencia sf : sentenciasFibonacci) {
-          			            RESULT.add(sf);
-          			        }
-                                         sentenciasFibonacci.clear();
-                                    }
-                                  RESULT.add(is);
-      			  :}
-      			  | bloque_sentencias_repeat:bsr instruccion_repeat:is  {:
-          			  output.add("REGLA 9.2: bloque_sentencias -> instruccion_repeat bloque_sentencias\n");
-                                    if (!sentenciasFibonacci.isEmpty()) {
-          			        for (Sentencia sf : sentenciasFibonacci) {
-          			            bsr.add(sf);
-          			        }
-                                         sentenciasFibonacci.clear();
-                                    }
-                                  bsr.add(is);
-                                  RESULT = bsr;
-      			  :};
-
-instruccion_repeat::= sentencia:s {:
-       		 output.add("REGLA 8.25: instruccion_repeat -> sentencia");
-       		 output.add(String.format("REGLA 10.1: instruccion_repeat -> %s%n",s));
-       		 RESULT = s;
-   	 :} | PR_BREAK {:
-       		 output.add("REGLA 8.3: sentencia -> PR_BREAK");
-       		 RESULT = new SentenciaBreak(TipoPR.PR_BREAK);
-
-   	 :}| PR_CONTINUE {:
-       		 output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
-       		 RESULT = new SentenciaContinue(TipoPR.PR_CONTINUE);
-   	 :};
-
-
 sentencia ::= sentenciaREPEAT:sr {:
            		 output.add("REGLA 11.1: sentencia -> sentenciaREPEAT");
            		 output.add(String.format("REGLA 11.1: sentencia -> %s%n",sr));
@@ -261,11 +219,18 @@ sentencia ::= sentenciaREPEAT:sr {:
       			  output.add("REGLA 11.4: sentencia -> asignación");
   	     		 output.add(String.format("REGLA 11.4: sentencia -> %s%n",a));
       			  RESULT = a;
- 		 :};
+ 		 :} | PR_BREAK {:
+                		 output.add("REGLA 8.3: sentencia -> PR_BREAK");
+                		 RESULT = new SentenciaBreak(TipoPR.PR_BREAK);
+
+         :}| PR_CONTINUE {:
+                 output.add("REGLA 8.1: sentencia -> PR_CONTINUE");
+                 RESULT = new SentenciaContinue(TipoPR.PR_CONTINUE);
+         :};
 
 
 /* Sentencia REPEAT */
-sentenciaREPEAT ::= PR_REPEAT bloque_sentencias_repeat:bsr PR_UNTIL expresion_logica:explog {:
+sentenciaREPEAT ::= PR_REPEAT bloque_sentencias:bsr PR_UNTIL expresion_logica:explog {:
           		 output.add("REGLA 12.1: sentenciaREPEAT -> PR_REPEAT bloque_sentencias PR_UNTIL expresion_logica");
            		 output.add(String.format("REGLA 12.1: sentenciaREPEAT -> REPEAT %s UNTIL %s%n",bsr,explog));
            		 sentenciaRepeat = new SentenciaRepeat(bsr,new SentenciaUntil(explog));

@@ -22,7 +22,7 @@ public class Distinto extends Comparacion {
         if (tipo == TipoPR.PR_FLOAT) {
             return "fcmp une";
         }
-        return "cmp ne";
+        return "icmp ne";
     }
 
 

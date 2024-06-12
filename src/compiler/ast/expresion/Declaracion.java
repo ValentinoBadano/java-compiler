@@ -4,9 +4,9 @@
  */
 package compiler.ast.expresion;
 
-import compiler.ast.Identificador;
-import compiler.ast.Nodo;
-import compiler.ast.TipoDato;
+import compiler.ast.*;
+import compiler.ast.constante.ConstanteDupla;
+import compiler.ast.constante.ConstanteEntera;
 import compiler.ast.expresion.Expresion;
 import compiler.ast.sentencia.Sentencia;
 import compiler.llvm.CodeGeneratorHelper;
@@ -80,7 +80,26 @@ public class Declaracion extends Sentencia {
         StringBuilder resultado = new StringBuilder();
         for (Identificador id: listaIdentificador) {
             resultado.append("%" + id.getNombre() + " = alloca " + tipoDato.getTipoLLVM() + "\n");
+            switch (tipoDato.getOperador()) {
+                case PR_INTEGER:
+                    resultado.append("store " + tipoDato.getTipoLLVM() + " 0, " + tipoDato.getTipoLLVM() + "* %" + id.getNombre() + "\n");
+                    break;
+                case PR_FLOAT:
+                    resultado.append("store " + tipoDato.getTipoLLVM() + " 0.0, " + tipoDato.getTipoLLVM() + "* %" + id.getNombre() + "\n");
+                    break;
+                case PR_BOOLEAN:
+                    resultado.append("store " + tipoDato.getTipoLLVM() + " false, " + tipoDato.getTipoLLVM() + "* %" + id.getNombre() + "\n");
+                    break;
+                case PR_DUPLE:
+                    try {
+                        new Asignacion(id, new ConstanteDupla(0,0)).generarCodigo();
+                    } catch (AsignacionTiposException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+            }
         }
+
         return resultado.toString();
     }
     
