@@ -36,8 +36,16 @@ public class ConstanteBooleana extends Constante {
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
         // constante boolean -> i1 (1 bit)
-        resultado.append(String.format("%1$s = add i1 0, %2$s\n", this.getIr_ref(), this.getValor()));
+        resultado.append(String.format("%1$s = add i1 0, %2$s\n", this.getIr_ref(), this.getBitValue()));
         return resultado.toString();
+    }
+
+    private String getBitValue() {
+        if (this.getValor().equals("true")) {
+            return "1";
+        } else {
+            return "0";
+        }
     }
     
 }

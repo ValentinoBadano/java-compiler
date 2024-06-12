@@ -27,4 +27,12 @@ public class EnteroADupla extends Casteo {
     public TipoDato getTipo() {
         return new TipoDato(TipoPR.PR_DUPLE);
     }
+
+    @Override
+    public String generarCodigo() {
+        StringBuilder resultado = new StringBuilder();
+        resultado.append(this.getExpresion().generarCodigo());
+
+        return resultado.toString();
+    }
 }
