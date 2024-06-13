@@ -110,11 +110,10 @@ public abstract class ExpresionBinaria extends Expresion{
             String ptr2_dupla2 = this.derecha.getIr_ref() + ".2";
 
             ConstanteDupla dupla = new ConstanteDupla(0.0, 0.0);
-            dupla.generarCodigo();
+            resultado.append(dupla.generarCodigo());
             String ptr1 = dupla.getIr_ref() + ".1";
             String ptr2 = dupla.getIr_ref() + ".2";
             this.setIr_ref(dupla.getIr_ref());
-
 
             // carga los valores de las duplas en 2 nuevas variables temporales con load
             String val1_dupla1 = CodeGeneratorHelper.getNewPointer();

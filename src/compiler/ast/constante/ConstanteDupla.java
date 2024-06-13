@@ -16,8 +16,6 @@ public class ConstanteDupla extends Constante{
 
     private double valor1;
     private double valor2;
-    private String ptro1;
-    private String ptro2;
 
 
     public ConstanteDupla(Object valor) {
@@ -47,16 +45,24 @@ public class ConstanteDupla extends Constante{
     @Override
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();
-        this.setIr_ref(CodeGeneratorHelper.getNewPointer());
-        resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", this.getIr_ref()));
-        ptro1 = this.getIr_ref() + ".1";
-        ptro2 = this.getIr_ref() + ".2";
+        String ir_ref = CodeGeneratorHelper.getNewPointer();
+        this.setIr_ref(ir_ref);
+        resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", ir_ref));
+        String ptro1 = ir_ref + ".1";
+        String ptro2 = ir_ref + ".2";
 
-        resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptro1, getIr_ref()));
-        resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptro2, getIr_ref()));
+        resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptro1, ir_ref));
+        resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptro2, ir_ref));
 
         resultado.append(String.format("store double %1$s, double* %2$s\n", this.valor1, ptro1));
         resultado.append(String.format("store double %1$s, double* %2$s\n", this.valor2, ptro2));
+
+        String ptrov1 = ir_ref + ".v1";
+        String ptrov2 = ir_ref + ".v2";
+
+        resultado.append(String.format("%1$s = load double, double* %2$s\n", ptrov1, ptro1));
+        resultado.append(String.format("%1$s = load double, double* %2$s\n", ptrov2, ptro2));
+
         return resultado.toString();
     }
 
