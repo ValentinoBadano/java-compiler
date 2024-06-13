@@ -5,8 +5,10 @@
 package compiler.ast.sentencia;
 
 
+import compiler.ast.Asignacion;
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
+import compiler.ast.constante.ConstanteDupla;
 import compiler.ast.expresion.Expresion;
 import compiler.llvm.CodeGeneratorHelper;
 
@@ -69,31 +71,39 @@ public class TipoEntrada extends Expresion {
         StringBuilder resultado = new StringBuilder();
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
         String temp = CodeGeneratorHelper.getNewPointer();
-        resultado.append(String.format("%s = alloca i32\n", temp));
+
 
         switch (tipo.getOperador()) {
             case PR_INTEGER:
+                resultado.append(String.format("%s = alloca i32\n", temp));
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @" +
                         "int_read_format, i64 0, i64 0), i32* %s)\n", CodeGeneratorHelper.getNewPointer(), temp)); break;
             case PR_FLOAT:
+                resultado.append(String.format("%s = alloca double\n", temp));
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @" +
                         "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), temp)); break;
             case PR_BOOLEAN:
+                resultado.append(String.format("%s = alloca i32\n", temp));
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @" +
                         "bool_read_format, i64 0, i64 0), i32* %s)\n", CodeGeneratorHelper.getNewPointer(), temp)); break;
             case PR_DUPLE:
-                // TODO input duple
+                resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", this.getIr_ref()));
+                String ptr1 = CodeGeneratorHelper.getNewPointer();
+                String ptr2 = CodeGeneratorHelper.getNewPointer();
+
+                resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1, getIr_ref()));
+                resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2, getIr_ref()));
+
+                // asigna el primer valor de la dupla
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @" +
-                        "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), temp));
+                        "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), ptr1));
+                // asigna el segundo valor de la dupla
                 resultado.append(String.format("%s = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @" +
-                        "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), temp)); break;
+                        "double_read_format, i64 0, i64 0), double* %s)\n", CodeGeneratorHelper.getNewPointer(), ptr2));
+                return resultado.toString();
         }
 
-
-
-
         resultado.append(String.format("%1$s = load %2$s, %2$s* %3$s\n", this.getIr_ref(), this.getTipo().getTipoLLVM(), temp));
-
         return resultado.toString();
     }
 

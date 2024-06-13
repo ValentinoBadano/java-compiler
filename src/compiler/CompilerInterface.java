@@ -6,14 +6,14 @@ import java.io.*;
 
 public class CompilerInterface extends JFrame {
 
-    private JTextArea codeTextArea;
-    private JButton lexicButton;
-    private JButton syntacticButton;
-    private JButton executeButton;
+    private final JTextArea codeTextArea;
+    private final JButton lexicButton;
+    private final JButton syntacticButton;
+    private final JButton executeButton;
     private JMenuItem astMenuItem;
-    private JTextArea outputTextArea;
-    private JButton cleanButton;
-    private JMenuItem symbolTableItem;
+    private final JTextArea outputTextArea;
+    private final JButton cleanButton;
+    private final JMenuItem symbolTableItem;
 
     public CompilerInterface() {
         setTitle("Compilador");

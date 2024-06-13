@@ -11,11 +11,13 @@ package compiler.ast;
 public abstract class  Nodo {
     private String nombre;
     private String ir_ref;
+    protected String color;
 
     public Nodo() {}
 
     public Nodo(String nombre) {
         this.nombre = nombre;
+        this.color = "black";
     }
 
     protected String getId() {
@@ -33,7 +35,7 @@ public abstract class  Nodo {
     
     public String graficar(String idPadre){
         StringBuilder grafico = new StringBuilder();
-        grafico.append(String.format("%1$s[label=\"%2$s\"]\n", this.getId(), this.getEtiqueta()));
+        grafico.append(String.format("%1$s[label=\"%2$s\", color=\"%3$s\"]\n", this.getId(), this.getEtiqueta(), this.color));
         if(idPadre != null)
             grafico.append(String.format("%1$s--%2$s\n", idPadre, this.getId()));
         return grafico.toString();

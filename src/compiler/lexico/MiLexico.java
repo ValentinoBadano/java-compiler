@@ -6,10 +6,6 @@
 package compiler.lexico;
 
 
-import compiler.sintactico.*;
-import compiler.ast.*;
-import java.util.ArrayList;
-import java_cup.runtime.*;
 import java_cup.sym;
 
 
@@ -726,7 +722,7 @@ public class MiLexico implements java_cup.runtime.Scanner {
     int string_yycolumn = 0;
     int comment_cont = 0;
 
-    StringBuffer string = new StringBuffer();
+    final StringBuffer string = new StringBuffer();
 
     private MiToken token(String nombre) {
         return new MiToken(nombre, this.yyline, this.yycolumn);

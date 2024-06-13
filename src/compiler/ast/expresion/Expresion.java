@@ -4,9 +4,7 @@
  */
 package compiler.ast.expresion;
 
-import compiler.ast.TipoDato;
 import compiler.ast.expresion.ExpresionLogica;
-import compiler.llvm.CodeGeneratorHelper;
 
 /**
  *

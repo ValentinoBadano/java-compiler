@@ -4,7 +4,6 @@ import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
 import compiler.ast.constante.ConstanteDupla;
 import compiler.ast.expresion.ExpresionLogica;
-import compiler.llvm.CodeGeneratorHelper;
 
 public class FloatADupla extends Casteo{
 
@@ -51,6 +50,12 @@ public class FloatADupla extends Casteo{
         // le asigna el valor de la expresion a los punteros
         resultado.append(String.format("store double %1$s, double* %2$s\n", this.getExpresion().getIr_ref(), dupla.getIr_ref() + ".1"));
         resultado.append(String.format("store double %1$s, double* %2$s\n", this.getExpresion().getIr_ref(), dupla.getIr_ref() + ".2"));
+
+        String ptrov1 = getIr_ref() + ".v1";
+        String ptrov2 = getIr_ref() + ".v2";
+
+        resultado.append(String.format("%1$s = load double, double* %2$s\n", ptrov1, ptr1));
+        resultado.append(String.format("%1$s = load double, double* %2$s\n", ptrov2, ptr2));
         return resultado.toString();
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TablaSimbolos {
 
-    public static Hashtable<String, Simbolo> ts = new Hashtable<>();
+    public static final Hashtable<String, Simbolo> ts = new Hashtable<>();
 
     // agrega varios simbolos a la tabla dada una string tipo "INT" y "a, b, c"
     public static void add_symbols(TipoDato type, List<Identificador> identifiers) throws SimboloExistenteException {

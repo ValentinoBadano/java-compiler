@@ -15,7 +15,7 @@ import java.util.List;
 public class SentenciaRepeat extends Sentencia{
     
      private List<Sentencia> sentenciasRepeat;
-     private SentenciaUntil until;
+     private final SentenciaUntil until;
 
     public SentenciaRepeat(List<Sentencia> sentenciasRepeat, SentenciaUntil until) {
         this.sentenciasRepeat = sentenciasRepeat;

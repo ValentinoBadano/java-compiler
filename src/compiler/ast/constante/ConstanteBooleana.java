@@ -28,9 +28,6 @@ public class ConstanteBooleana extends Constante {
         return "cte_boolean_" + this.hashCode();
     }
 
-    public TipoDato getTipo() {
-        return new TipoDato(TipoPR.PR_BOOLEAN);
-    }
     @Override
     public String generarCodigo() {
         StringBuilder resultado = new StringBuilder();

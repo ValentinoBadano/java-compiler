@@ -4,7 +4,6 @@
  */
 package compiler.ast.expresion.aritmetica;
 
-import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
 import compiler.ast.expresion.ExpresionBinaria;
 import compiler.ast.expresion.ExpresionLogica;

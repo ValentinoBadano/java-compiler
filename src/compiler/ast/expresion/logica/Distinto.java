@@ -5,7 +5,6 @@
 package compiler.ast.expresion.logica;
 
 import compiler.ast.TipoPR;
-import compiler.ast.expresion.ExpresionBinariaLogica;
 import compiler.ast.expresion.ExpresionLogica;
 
 /**

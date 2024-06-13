@@ -6,6 +6,7 @@ package compiler.ast.expresion;
 
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
+import compiler.ast.casteo.EnteroADupla;
 import compiler.ast.casteo.EnteroAFloat;
 import compiler.ast.casteo.FloatADupla;
 import compiler.ast.constante.ConstanteDupla;
@@ -61,34 +62,24 @@ public abstract class ExpresionBinaria extends Expresion{
         TipoPR tipoDer = derecha.getTipo().getOperador();
 
         if (tipoDer == tipoIzq) {
-            // Caso mismo tipo
             this.tipo = izquierda.getTipo();
-        } else if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_INTEGER) {
-            // Caso float + integer
-            this.tipo = izquierda.getTipo();
-            this.derecha = new EnteroAFloat(derecha); // castea derecha a float
-        } else if (tipoIzq == TipoPR.PR_INTEGER && tipoDer == TipoPR.PR_FLOAT) {
-            // Caso integer + float
-            this.tipo = derecha.getTipo();
-            this.izquierda = new EnteroAFloat(izquierda); // castea izquierda a float
-        } else if (tipoIzq == TipoPR.PR_DUPLE && tipoDer == TipoPR.PR_FLOAT) {
-            // Caso duple + float
-            this.tipo = izquierda.getTipo();
-            this.derecha = new FloatADupla(derecha); // castea derecha a duple
-        } else if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_DUPLE) {
-            // Caso float + duple
-            this.tipo = derecha.getTipo();
-            this.izquierda = new FloatADupla(izquierda); // castea izquierda a duple
-        } else if (tipoIzq == TipoPR.PR_DUPLE && tipoDer == TipoPR.PR_INTEGER) {
-            // Caso duple + integer
-            this.tipo = izquierda.getTipo();
-            this.derecha = new FloatADupla(new EnteroAFloat(derecha)); // castea derecha a float y luego a duple
-        } else if (tipoIzq == TipoPR.PR_INTEGER && tipoDer == TipoPR.PR_DUPLE) {
-            // Caso integer + duple
-            this.tipo = derecha.getTipo();
-            this.izquierda = new FloatADupla(new EnteroAFloat(izquierda)); // castea izquierda a float y luego a duple
         } else {
-            throw new Exception(String.format("ERROR: Incompatibilidad de tipos en la operación %s %s %s%n", izquierda, getNombreOperacion(), derecha));
+            if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_INTEGER) {
+                this.derecha = new EnteroAFloat(derecha);
+            } else if (tipoIzq == TipoPR.PR_INTEGER && tipoDer == TipoPR.PR_FLOAT) {
+                this.izquierda = new EnteroAFloat(izquierda);
+            } else if (tipoIzq == TipoPR.PR_DUPLE && tipoDer == TipoPR.PR_FLOAT) {
+                this.derecha = new FloatADupla(derecha);
+            } else if (tipoIzq == TipoPR.PR_FLOAT && tipoDer == TipoPR.PR_DUPLE) {
+                this.izquierda = new FloatADupla(izquierda);
+            } else if (tipoIzq == TipoPR.PR_DUPLE && tipoDer == TipoPR.PR_INTEGER) {
+                this.derecha =  new EnteroADupla(derecha);
+            } else if (tipoIzq == TipoPR.PR_INTEGER && tipoDer == TipoPR.PR_DUPLE) {
+                this.izquierda = new EnteroADupla(izquierda);
+            } else {
+                throw new Exception(String.format("ERROR: Incompatibilidad de tipos en la operación %s %s %s%n", izquierda, getNombreOperacion(), derecha));
+            }
+            this.tipo = (tipoIzq == TipoPR.PR_INTEGER) ? derecha.getTipo() : izquierda.getTipo();
         }
     }
 
@@ -102,18 +93,23 @@ public abstract class ExpresionBinaria extends Expresion{
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
 
         if (this.getTipo().getOperador() == TipoPR.PR_DUPLE) {
-            // extraer los valores de la dupla izquierda
-            String ptr1_dupla1 = this.izquierda.getIr_ref() + ".1";
-            String ptr2_dupla1 = this.izquierda.getIr_ref() + ".2";
+            String ptr1_dupla1 = CodeGeneratorHelper.getNewPointer();
+            String ptr2_dupla1 = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dupla1, izquierda.getIr_ref()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dupla1, izquierda.getIr_ref()));
             // extraer los valores de la dupla derecha
-            String ptr1_dupla2 = this.derecha.getIr_ref() + ".1";
-            String ptr2_dupla2 = this.derecha.getIr_ref() + ".2";
+            String ptr1_dupla2 = CodeGeneratorHelper.getNewPointer();
+            String ptr2_dupla2 = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1_dupla2, derecha.getIr_ref()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2_dupla2, derecha.getIr_ref()));
 
-            ConstanteDupla dupla = new ConstanteDupla(0.0, 0.0);
-            resultado.append(dupla.generarCodigo());
-            String ptr1 = dupla.getIr_ref() + ".1";
-            String ptr2 = dupla.getIr_ref() + ".2";
-            this.setIr_ref(dupla.getIr_ref());
+            // asigna el espacio para una nueva dupla
+            resultado.append(String.format("%1$s = alloca %%struct.Tuple\n", this.getIr_ref()));
+            // punteros temporales a los valores de la dupla
+            String ptr1 = CodeGeneratorHelper.getNewPointer();
+            String ptr2 = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", ptr1, getIr_ref()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", ptr2, getIr_ref()));
 
             // carga los valores de las duplas en 2 nuevas variables temporales con load
             String val1_dupla1 = CodeGeneratorHelper.getNewPointer();
@@ -134,7 +130,6 @@ public abstract class ExpresionBinaria extends Expresion{
                     ptr1_dest, this.get_llvm_op_code(), "double", val1_dupla1, val1_dupla2));
             resultado.append(String.format("%1$s = %2$s %3$s %4$s, %5$s\n",
                     ptr2_dest, this.get_llvm_op_code(), "double", val2_dupla1, val2_dupla2));
-
             // almacenar los valores de la dupla en la dupla destino
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr1_dest, ptr1));
             resultado.append(String.format("store double %1$s, double* %2$s\n", ptr2_dest, ptr2));

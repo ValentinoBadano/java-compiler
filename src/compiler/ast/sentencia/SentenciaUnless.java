@@ -15,8 +15,8 @@ import java.util.ArrayList;
  */
 public class SentenciaUnless extends Sentencia{
     private ExpresionLogica expresion;
-    private SentenciaUnlessThen sentenciasThen;
-    private SentenciaUnlessElse sentenciasElse;
+    private final SentenciaUnlessThen sentenciasThen;
+    private final SentenciaUnlessElse sentenciasElse;
     
     
     public SentenciaUnless(ExpresionLogica expresion, SentenciaUnlessThen sentenciasThen) {
@@ -71,8 +71,6 @@ public class SentenciaUnless extends Sentencia{
         String tagEnd = CodeGeneratorHelper.getNewTag();
 
         resultado.append(expresion.generarCodigo());
-
-
 
         sentenciasElse.setTag(CodeGeneratorHelper.getNewTag());
         sentenciasThen.setTag(CodeGeneratorHelper.getNewTag());

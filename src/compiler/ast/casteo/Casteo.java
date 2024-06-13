@@ -7,12 +7,14 @@ public abstract class Casteo extends ExpresionLogica {
 
     public Casteo(ExpresionLogica expresion) {
         this.expresion = expresion;
+        this.color = "blue";
     }
 
     @Override
     public String graficar(String idPadre) {
         final String miId = this.getId();
-        return super.graficar(idPadre) + getExpresion().graficar(miId);
+        String s = super.graficar(idPadre) +  getExpresion().graficar(miId);
+        return s;
     }
 
     public ExpresionLogica getExpresion() {

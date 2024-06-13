@@ -4,7 +4,6 @@
  */
 package compiler.ast;
 
-import compiler.ast.casteo.EnteroADupla;
 import compiler.ast.casteo.EnteroAFloat;
 import compiler.ast.casteo.FloatADupla;
 import compiler.ast.expresion.ExpresionLogica;
@@ -100,9 +99,11 @@ public class Asignacion extends Sentencia {
         resultado.append(expresion.generarCodigo());
 
         if (tipo.operador == TipoPR.PR_DUPLE) {
-            // si es una dupla, se almacena cada valor en su respectiva posicion
-            String prt1_origen = expresion.getIr_ref() + ".1";
-            String prt2_origen = expresion.getIr_ref() + ".2";
+            // extraer los valores de la dupla
+            String prt1_origen = CodeGeneratorHelper.getNewPointer();
+            String prt2_origen = CodeGeneratorHelper.getNewPointer();
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 0\n", prt1_origen, expresion.getIr_ref()));
+            resultado.append(String.format("%1$s = getelementptr %%struct.Tuple, %%struct.Tuple* %2$s, i32 0, i32 1\n", prt2_origen, expresion.getIr_ref()));
 
             // cargar los valores de la dupla en variables temporales
             String ptr1_temp = CodeGeneratorHelper.getNewPointer();

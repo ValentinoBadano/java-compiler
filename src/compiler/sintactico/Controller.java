@@ -104,7 +104,7 @@ public class Controller implements ActionListener {
             String code = view.getCodeTextArea().getText();
             MiLexico lexico = new MiLexico(new StringReader(code));
             Parser parser = new Parser(lexico);
-            final GeneracionCodigo gc = (GeneracionCodigo) parser.parse().value;
+            final Programa gc = (Programa) parser.parse().value;
 
             parser.parse();
             output = parser.action_obj.output;
@@ -137,13 +137,13 @@ public class Controller implements ActionListener {
     private void doCompilation() {
         System.out.println("Compilando..");
         TablaSimbolos.reset(); view.clearOutput();
-        GeneracionCodigo gc = null;
+        Programa gc = null;
 
         try {
             String code = view.getCodeTextArea().getText();
             MiLexico lexico = new MiLexico(new StringReader(code));
             final Parser sintactico = new Parser(lexico);
-            gc = (GeneracionCodigo) sintactico.parse().value;
+            gc = (Programa) sintactico.parse().value;
         } catch (Error | Exception e) {
             view.appendTextOutput("Error al parsear el código\n");
             view.appendTextOutput(e.getMessage());

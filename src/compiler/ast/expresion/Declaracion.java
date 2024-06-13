@@ -6,10 +6,7 @@ package compiler.ast.expresion;
 
 import compiler.ast.*;
 import compiler.ast.constante.ConstanteDupla;
-import compiler.ast.constante.ConstanteEntera;
-import compiler.ast.expresion.Expresion;
 import compiler.ast.sentencia.Sentencia;
-import compiler.llvm.CodeGeneratorHelper;
 
 import java.util.List;
 

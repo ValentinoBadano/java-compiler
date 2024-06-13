@@ -1,7 +1,7 @@
 package compiler.simbolo;
 
 public class SimboloExistenteException extends Exception {
-    private String name;
+    private final String name;
     public SimboloExistenteException(String name) {
         this.name = name;
     }

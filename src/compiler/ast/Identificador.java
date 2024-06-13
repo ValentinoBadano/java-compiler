@@ -6,7 +6,6 @@ package compiler.ast;
 
 import compiler.ast.expresion.Expresion;
 import compiler.llvm.CodeGeneratorHelper;
-import compiler.simbolo.SimboloNoExisteException;
 import compiler.simbolo.TablaSimbolos;
 
 /**
@@ -55,7 +54,6 @@ public class Identificador extends Expresion {
 
     @Override
     public String generarCodigo() {
-        // TODO: variables no inicializadas -> datos basura?
         TipoDato tipo = TablaSimbolos.getTipo(getNombre());
         this.setIr_ref(CodeGeneratorHelper.getNewPointer());
         StringBuilder resultado = new StringBuilder();

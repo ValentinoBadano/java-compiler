@@ -1,9 +1,7 @@
 package compiler.ast.casteo;
 
-import compiler.ast.Nodo;
 import compiler.ast.TipoDato;
 import compiler.ast.TipoPR;
-import compiler.ast.expresion.Expresion;
 import compiler.ast.expresion.ExpresionLogica;
 import compiler.llvm.CodeGeneratorHelper;
 

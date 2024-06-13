@@ -3,7 +3,7 @@ package compiler.simbolo;
 import compiler.ast.Identificador;
 
 public class SimboloNoExisteException extends Exception {
-    private String id;
+    private final String id;
     public SimboloNoExisteException(Identificador id) {
         this.id = id.getNombre();
     }

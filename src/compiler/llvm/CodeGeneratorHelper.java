@@ -10,8 +10,8 @@ public class CodeGeneratorHelper {
     
     private static int nextID = 0;
     private static boolean isRepeat = false;
-    public static Stack<String> repeatStartFlags = new Stack<>();
-    public static Stack<String> repeatEndFlags = new Stack<>();
+    public static final Stack<String> repeatStartFlags = new Stack<>();
+    public static final Stack<String> repeatEndFlags = new Stack<>();
         
     private CodeGeneratorHelper(){}
    
